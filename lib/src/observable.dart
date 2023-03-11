@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 final _observableChanges = StreamController<Observable>.broadcast(sync: true);
 
@@ -49,7 +48,7 @@ class ObservableComputedValue<T> implements Observable<T> {
 
   @override
   T get value {
-    ObservableComputedValue.current?._dependencies.add(this);
+    ObservableComputedValue.current?._addDependency(this);
     return _computeAndUpdateDependencies();
   }
 
@@ -59,6 +58,14 @@ class ObservableComputedValue<T> implements Observable<T> {
       .map((_) => _computeAndUpdateDependencies());
 
   final _dependencies = <Observable>{};
+  void _addDependency(Observable observable) {
+    _dependencies.add(observable);
+    if (observable is ObservableComputedValue) {
+      for (final dependency in observable._dependencies) {
+        _addDependency(dependency);
+      }
+    }
+  }
 
   T _computeAndUpdateDependencies() {
     return runZoned(() {
@@ -70,21 +77,5 @@ class ObservableComputedValue<T> implements Observable<T> {
   }
 
   @override
-  String toString() => const JsonEncoder.withIndent('  ').convert(_toMap(this));
-}
-
-Map<String, dynamic> _toMap(Observable observable) {
-  if (observable is ObservableValue) {
-    return {
-      'type': 'Observable.mutable',
-      'value': observable.value,
-    };
-  }
-  if (observable is ObservableComputedValue) {
-    return {
-      'type': 'Observable.computed',
-      'dependencies': observable._dependencies.map((e) => _toMap(e)).toList(),
-    };
-  }
-  throw UnimplementedError();
+  String toString() => 'Observable.computed';
 }
