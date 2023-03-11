@@ -12,6 +12,8 @@ extension _MutationExtension<T> on ObservableMutableValue<T> {
 
 extension ObservableIterableExtension<E> on Observable<Iterable<E>> {
   Iterator<E> get iterator => value.iterator;
+  bool get isEmpty => value.isEmpty;
+  bool get isNotEmpty => value.isNotEmpty;
 
   bool any(bool Function(E element) test) => value.any(test);
   Iterable<T> cast<T>() => value.cast<T>();
@@ -44,9 +46,11 @@ extension ObservableIterableExtension<E> on Observable<Iterable<E>> {
 
 extension ObservableListExtension<E> on Observable<List<E>> {
   int get length => value.length;
-  E operator [](int index) => value[index];
-  List<E> sublist(int start, [int? end]) => value.sublist(start, end);
   Iterable<E> get reversed => value.reversed;
+
+  E operator [](int index) => value[index];
+
+  List<E> sublist(int start, [int? end]) => value.sublist(start, end);
   Map<int, E> asMap() => value.asMap();
 }
 
@@ -84,4 +88,58 @@ extension ObservableMutableListExtension<E> on ObservableMutableValue<List<E>> {
   void shuffle([Random? random]) => mutate(() => value.shuffle(random));
   void sort([int Function(E a, E b)? compare]) =>
       mutate(() => value.sort(compare));
+}
+
+extension ObservableMapExtension<K, V> on Observable<Map<K, V>> {
+  Iterable<K> get keys => value.keys;
+  Iterable<V> get values => value.values;
+  int get length => value.length;
+  bool get isEmpty => value.isEmpty;
+  bool get isNotEmpty => value.isNotEmpty;
+
+  V? operator [](Object? key) => value[key];
+
+  bool containsKey(Object? key) => value.containsKey(key);
+  bool containsValue(Object? value) => this.value.containsValue(value);
+  void forEach(void Function(K key, V value) f) => value.forEach(f);
+}
+
+extension ObservableMutableMapExtension<K, V>
+    on ObservableMutableValue<Map<K, V>> {
+  void operator []=(K key, V value) => mutate(() => this.value[key] = value);
+
+  void addAll(Map<K, V> other) => mutate(() => value.addAll(other));
+  void clear() => mutate(() => value.clear());
+  V? remove(Object? key) => mutate(() => value.remove(key));
+  void removeWhere(bool Function(K key, V value) test) =>
+      mutate(() => value.removeWhere(test));
+}
+
+extension ObservableSetExtension<E> on Observable<Set<E>> {
+  int get length => value.length;
+
+  bool contains(Object? element) => value.contains(element);
+  void forEach(void Function(E element) f) => value.forEach(f);
+
+  Set<E> intersection(Set<Object?> other) => value.intersection(other);
+  Set<E> difference(Set<Object?> other) => value.difference(other);
+  Set<E> union(Set<E> other) => value.union(other);
+
+  List<E> toList({bool growable = true}) => value.toList();
+  Set<E> toSet() => value.toSet();
+}
+
+extension ObservableMutableSetExtension<E> on ObservableMutableValue<Set<E>> {
+  void add(E value) => mutate(() => this.value.add(value));
+  void addAll(Iterable<E> elements) => mutate(() => value.addAll(elements));
+  void clear() => mutate(() => value.clear());
+  bool remove(Object? value) => mutate(() => this.value.remove(value));
+  void removeAll(Iterable<Object?> elements) =>
+      mutate(() => value.removeAll(elements));
+  void removeWhere(bool Function(E element) test) =>
+      mutate(() => value.removeWhere(test));
+  void retainAll(Iterable<Object?> elements) =>
+      mutate(() => value.retainAll(elements));
+  void retainWhere(bool Function(E element) test) =>
+      mutate(() => value.retainWhere(test));
 }
