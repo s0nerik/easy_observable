@@ -37,7 +37,9 @@ class ObservableComputedValue<T> implements Observable<T> {
   static ObservableComputedValue? get current =>
       Zone.current[ObservableComputedValue.zoneKey];
 
-  ObservableComputedValue._(this._computeCallback);
+  ObservableComputedValue._(this._computeCallback) {
+    _computeAndUpdateDependencies();
+  }
 
   final T Function() _computeCallback;
 
