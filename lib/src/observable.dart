@@ -17,7 +17,7 @@ class ObservableValue<T> implements Observable<T> {
   T _value;
   @override
   T get value {
-    ObservableComputedValue.current?.addDependency(this);
+    ObservableComputedValue.current?._dependencies.add(this);
     return _value;
   }
 
@@ -52,9 +52,6 @@ class ObservableComputedValue<T> implements Observable<T> {
       .map((_) => _computeAndUpdateDependencies());
 
   final _dependencies = <Observable>{};
-  void addDependency(Observable observable) {
-    _dependencies.add(observable);
-  }
 
   T _computeAndUpdateDependencies() {
     return runZoned(() {
