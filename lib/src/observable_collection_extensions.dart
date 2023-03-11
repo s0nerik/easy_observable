@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:easy_observable/easy_observable.dart';
 
-extension _MutationExtension<T> on ObservableMutableValue<T> {
+extension _MutationExtension<T> on MutableObservable<T> {
   TResult mutate<TResult>(TResult Function() applyMutation) {
     final result = applyMutation();
     value = value;
@@ -54,7 +54,7 @@ extension ObservableListExtension<E> on Observable<List<E>> {
   Map<int, E> asMap() => value.asMap();
 }
 
-extension ObservableMutableListExtension<E> on ObservableMutableValue<List<E>> {
+extension ObservableMutableListExtension<E> on MutableObservable<List<E>> {
   int get length => value.length;
   set length(int newLength) => mutate(() => value.length = newLength);
 
@@ -105,8 +105,7 @@ extension ObservableMapExtension<K, V> on Observable<Map<K, V>> {
   void forEach(void Function(K key, V value) f) => value.forEach(f);
 }
 
-extension ObservableMutableMapExtension<K, V>
-    on ObservableMutableValue<Map<K, V>> {
+extension ObservableMutableMapExtension<K, V> on MutableObservable<Map<K, V>> {
   void operator []=(K key, V value) => mutate(() => this.value[key] = value);
 
   void addAll(Map<K, V> other) => mutate(() => value.addAll(other));
@@ -125,7 +124,7 @@ extension ObservableSetExtension<E> on Observable<Set<E>> {
   Set<E> difference(Set<Object?> other) => value.difference(other);
 }
 
-extension ObservableMutableSetExtension<E> on ObservableMutableValue<Set<E>> {
+extension ObservableMutableSetExtension<E> on MutableObservable<Set<E>> {
   void add(E value) => mutate(() => this.value.add(value));
   void addAll(Iterable<E> elements) => mutate(() => value.addAll(elements));
 

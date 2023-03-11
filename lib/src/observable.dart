@@ -3,22 +3,21 @@ import 'dart:async';
 final _observableChanges = StreamController<Observable>.broadcast(sync: true);
 
 abstract class Observable<T> {
-  static ObservableMutableValue<T> mutable<T>(T value) =>
-      ObservableMutableValue._(value);
-  static Observable<T> computed<T>(T Function() compute) =>
-      ObservableComputedValue._(compute);
+  static MutableObservable<T> mutable<T>(T value) => MutableObservable._(value);
+  static ComputedObservable<T> computed<T>(T Function() compute) =>
+      ComputedObservable._(compute);
 
   T get value;
   Stream<T> get stream;
 }
 
-class ObservableMutableValue<T> implements Observable<T> {
-  ObservableMutableValue._(this._value);
+class MutableObservable<T> implements Observable<T> {
+  MutableObservable._(this._value);
 
   T _value;
   @override
   T get value {
-    ObservableComputedValue.current?._dependencies.add(this);
+    ComputedObservable.current?._dependencies.add(this);
     return _value;
   }
 
@@ -36,12 +35,12 @@ class ObservableMutableValue<T> implements Observable<T> {
   String toString() => 'Observable.mutable($value)';
 }
 
-class ObservableComputedValue<T> implements Observable<T> {
-  static const zoneKey = 'ObservableComputedValue';
-  static ObservableComputedValue? get current =>
-      Zone.current[ObservableComputedValue.zoneKey];
+class ComputedObservable<T> implements Observable<T> {
+  static const zoneKey = 'ComputedObservable';
+  static ComputedObservable? get current =>
+      Zone.current[ComputedObservable.zoneKey];
 
-  ObservableComputedValue._(this._compute) {
+  ComputedObservable._(this._compute) {
     _computeAndUpdateDependencies();
   }
 
@@ -49,7 +48,7 @@ class ObservableComputedValue<T> implements Observable<T> {
 
   @override
   T get value {
-    ObservableComputedValue.current?._addDependency(this);
+    ComputedObservable.current?._addDependency(this);
     return _computeAndUpdateDependencies();
   }
 
@@ -61,7 +60,7 @@ class ObservableComputedValue<T> implements Observable<T> {
   final _dependencies = <Observable>{};
   void _addDependency(Observable observable) {
     _dependencies.add(observable);
-    if (observable is ObservableComputedValue) {
+    if (observable is ComputedObservable) {
       for (final dependency in observable._dependencies) {
         _addDependency(dependency);
       }
@@ -73,7 +72,7 @@ class ObservableComputedValue<T> implements Observable<T> {
       _dependencies.clear();
       return _compute();
     }, zoneValues: {
-      ObservableComputedValue.zoneKey: this,
+      ComputedObservable.zoneKey: this,
     });
   }
 
