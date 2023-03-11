@@ -69,7 +69,7 @@ mixin ObserverElementMixin on ComponentElement {
   @override
   Widget build() {
     _subscription?.cancel();
-    final computedWidget = Observable.computed(() => super.build());
+    final computedWidget = Observable.computed(super.build);
     _subscription = computedWidget.stream.listen((_) => markNeedsBuild());
     return computedWidget.value;
   }
