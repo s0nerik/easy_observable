@@ -14,7 +14,10 @@ class ObservableValue<T> implements Observable<T> {
 
   T _value;
   @override
-  T get value => _value;
+  T get value {
+    ObservableComputedScope.current?.notifyRead(this);
+    return _value;
+  }
 
   set value(T newValue) {
     _value = newValue;
@@ -40,14 +43,18 @@ class ObservableComputedValue<T> implements Observable<T> {
 }
 
 class ObservableComputedScope {
-  ObservableComputedScope._() {}
+  ObservableComputedScope._();
 
-  static const zoneKey = 'computed_scope';
+  static const zoneKey = 'ObservableComputedScope';
   static ObservableComputedScope? get current =>
       Zone.current[ObservableComputedScope.zoneKey];
 
   T run<T>(T Function() fn) =>
       runZoned(fn, zoneValues: {ObservableComputedScope.zoneKey: this});
 
-  final _observables = <Observable>[];
+  final _observables = <Observable>{};
+
+  void notifyRead(Observable observable) {
+    _observables.add(observable);
+  }
 }
