@@ -15,7 +15,7 @@ class ObservableValue<T> implements Observable<T> {
   T _value;
   @override
   T get value {
-    ObservableComputedScope.current?.notifyRead(this);
+    ObservableComputedValue.current?.notifyRead(this);
     return _value;
   }
 
@@ -30,42 +30,41 @@ class ObservableValue<T> implements Observable<T> {
 }
 
 class ObservableComputedValue<T> implements Observable<T> {
-  ObservableComputedValue._(this._compute) {
-    _value = scope.run(_compute);
+  static const zoneKey = 'ObservableComputedValue';
+  static ObservableComputedValue? get current =>
+      Zone.current[ObservableComputedValue.zoneKey];
+
+  ObservableComputedValue._(this._computeCallback) {
+    _compute();
   }
 
-  final T Function() _compute;
-  final scope = ObservableComputedScope._();
+  final T Function() _computeCallback;
 
   late T _value;
   @override
   T get value => _value;
-}
 
-class ObservableComputedScope {
-  ObservableComputedScope._();
+  final _streamController = StreamController<T>.broadcast();
+  @override
+  Stream<T> get stream => _streamController.stream;
 
-  static const zoneKey = 'ObservableComputedScope';
-  static ObservableComputedScope? get current =>
-      Zone.current[ObservableComputedScope.zoneKey];
-
-  T run<T>(T Function() fn) {
-    return runZoned(() {
-      final oldObservables = Set.of(_observables);
-      _observables.clear();
-      final result = fn();
-      final newObservables = _observables;
-      final toRemove = oldObservables.difference(newObservables);
-      final toAdd = newObservables.difference(oldObservables);
-      return result;
-    }, zoneValues: {
-      ObservableComputedScope.zoneKey: this,
-    });
-  }
-
-  final _observables = <Observable>{};
+  final _dependencies = <Observable>{};
 
   void notifyRead(Observable observable) {
-    _observables.add(observable);
+    _dependencies.add(observable);
+  }
+
+  void _compute() {
+    runZoned(() {
+      final oldObservables = Set.of(_dependencies);
+      _dependencies.clear();
+      _value = _computeCallback();
+      final newObservables = _dependencies;
+      final toRemove = oldObservables.difference(newObservables);
+      final toAdd = newObservables.difference(oldObservables);
+    }, zoneValues: {
+      ObservableComputedValue.zoneKey: this,
+    });
+    _streamController.add(_value);
   }
 }
