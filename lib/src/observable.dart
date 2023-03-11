@@ -4,8 +4,8 @@ final _observableChanges = StreamController<Observable>.broadcast();
 
 abstract class Observable<T> {
   static ObservableValue<T> mutable<T>(T value) => ObservableValue._(value);
-  static ObservableComputedValue<T> computed<T>(T Function() valueGenerator) =>
-      ObservableComputedValue._(valueGenerator);
+  static ObservableComputedValue<T> computed<T>(T Function() compute) =>
+      ObservableComputedValue._(compute);
 
   T get value;
   Stream<T> get stream;
