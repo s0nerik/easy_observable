@@ -2,7 +2,7 @@ import 'package:easy_observable/easy_observable.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('Observable.stream notifies of value changes', () async {
+  test('ObservableValue.stream notifies of value changes', () async {
     var observable = Observable.mutable(0);
 
     var value = 0;
