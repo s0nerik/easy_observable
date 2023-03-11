@@ -5,7 +5,7 @@ final _observableChanges = StreamController<Observable>.broadcast(sync: true);
 abstract class Observable<T> {
   static MutableObservable<T> mutable<T>(T value) => MutableObservable._(value);
   static Observable<T> computed<T>(T Function() compute) =>
-      ComputedObservable._(compute);
+      _ComputedObservable(compute);
 
   T get value;
   Stream<T> get stream;
@@ -17,7 +17,7 @@ class MutableObservable<T> implements Observable<T> {
   T _value;
   @override
   T get value {
-    ComputedObservable.current?._dependencies.add(this);
+    _ComputedObservable.current?.addDependency(this);
     return _value;
   }
 
@@ -35,12 +35,12 @@ class MutableObservable<T> implements Observable<T> {
   String toString() => 'Observable.mutable($value)';
 }
 
-class ComputedObservable<T> implements Observable<T> {
+class _ComputedObservable<T> implements Observable<T> {
   static const zoneKey = 'ComputedObservable';
-  static ComputedObservable? get current =>
-      Zone.current[ComputedObservable.zoneKey];
+  static _ComputedObservable? get current =>
+      Zone.current[_ComputedObservable.zoneKey];
 
-  ComputedObservable._(this._compute) {
+  _ComputedObservable(this._compute) {
     _computeAndUpdateDependencies();
   }
 
@@ -48,7 +48,7 @@ class ComputedObservable<T> implements Observable<T> {
 
   @override
   T get value {
-    ComputedObservable.current?._addDependency(this);
+    _ComputedObservable.current?.addDependency(this);
     return _computeAndUpdateDependencies();
   }
 
@@ -58,11 +58,11 @@ class ComputedObservable<T> implements Observable<T> {
       .map((_) => _computeAndUpdateDependencies());
 
   final _dependencies = <Observable>{};
-  void _addDependency(Observable observable) {
+  void addDependency(Observable observable) {
     _dependencies.add(observable);
-    if (observable is ComputedObservable) {
+    if (observable is _ComputedObservable) {
       for (final dependency in observable._dependencies) {
-        _addDependency(dependency);
+        addDependency(dependency);
       }
     }
   }
@@ -72,7 +72,7 @@ class ComputedObservable<T> implements Observable<T> {
       _dependencies.clear();
       return _compute();
     }, zoneValues: {
-      ComputedObservable.zoneKey: this,
+      _ComputedObservable.zoneKey: this,
     });
   }
 
