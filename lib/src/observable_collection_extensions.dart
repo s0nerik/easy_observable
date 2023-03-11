@@ -12,6 +12,7 @@ extension _MutationExtension<T> on ObservableMutableValue<T> {
 
 extension ObservableIterableExtension<E> on Observable<Iterable<E>> {
   Iterator<E> get iterator => value.iterator;
+  int get length => value.length;
   bool get isEmpty => value.isEmpty;
   bool get isNotEmpty => value.isNotEmpty;
 
@@ -45,7 +46,6 @@ extension ObservableIterableExtension<E> on Observable<Iterable<E>> {
 }
 
 extension ObservableListExtension<E> on Observable<List<E>> {
-  int get length => value.length;
   Iterable<E> get reversed => value.reversed;
 
   E operator [](int index) => value[index];
