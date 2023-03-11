@@ -1,6 +1,6 @@
 import 'dart:async';
 
-final _observableChanges = StreamController<Observable>.broadcast();
+final _observableChanges = StreamController<Observable>.broadcast(sync: true);
 
 abstract class Observable<T> {
   static ObservableValue<T> mutable<T>(T value) => ObservableValue._(value);
@@ -30,6 +30,9 @@ class ObservableValue<T> implements Observable<T> {
   Stream<T> get stream => _observableChanges.stream
       .where((observable) => identical(observable, this))
       .map((observable) => observable.value);
+
+  @override
+  String toString() => 'Observable.mutable($value)';
 }
 
 class ObservableComputedValue<T> implements Observable<T> {
