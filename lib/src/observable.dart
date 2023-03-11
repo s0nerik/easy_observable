@@ -11,6 +11,7 @@ abstract class Observable<T> {
       ObservableComputedValue._(valueGenerator);
 
   T get value;
+  Stream<T> get stream;
 }
 
 extension ObservableStreamExtension<T> on Observable<T> {
