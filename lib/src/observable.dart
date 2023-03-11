@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:weak_map/weak_map.dart';
 
-final _observableControllers = WeakMap<Observable, StreamController>();
+final _observableChangeControllers = WeakMap<Observable, StreamController>();
 
 abstract class Observable<T> {
   static ObservableValue<T> mutable<T>(T value) => ObservableValue._(value);
@@ -11,15 +11,15 @@ abstract class Observable<T> {
 }
 
 extension ObservableStreamExtension<T> on Observable<T> {
-  Stream<T> get stream => _streamController.stream;
+  Stream<T> get stream => _changesStreamController.stream;
 }
 
 extension ObservableStreamControllerExtension<T> on Observable<T> {
-  StreamController<T> get _streamController {
-    var controller = _observableControllers[this] as StreamController<T>?;
+  StreamController<T> get _changesStreamController {
+    var controller = _observableChangeControllers[this] as StreamController<T>?;
     if (controller == null) {
       controller = StreamController<T>.broadcast();
-      _observableControllers[this] = controller;
+      _observableChangeControllers[this] = controller;
     }
     return controller;
   }
@@ -34,6 +34,6 @@ class ObservableValue<T> implements Observable<T> {
 
   set value(T newValue) {
     _value = newValue;
-    _streamController.add(newValue);
+    _changesStreamController.add(newValue);
   }
 }
