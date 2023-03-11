@@ -1,5 +1,7 @@
 import 'dart:async';
 
+final _observableChanges = StreamController<Observable>.broadcast();
+
 abstract class Observable<T> {
   static ObservableValue<T> mutable<T>(T value) => ObservableValue._(value);
   static ObservableComputedValue<T> computed<T>(T Function() valueGenerator) =>
@@ -15,18 +17,19 @@ class ObservableValue<T> implements Observable<T> {
   T _value;
   @override
   T get value {
-    ObservableComputedValue.current?.notifyRead(this);
+    ObservableComputedValue.current?.addDependency(this);
     return _value;
   }
 
   set value(T newValue) {
     _value = newValue;
-    _streamController.add(newValue);
+    _observableChanges.add(this);
   }
 
-  final _streamController = StreamController<T>.broadcast();
   @override
-  Stream<T> get stream => _streamController.stream;
+  Stream<T> get stream => _observableChanges.stream
+      .where((observable) => identical(observable, this))
+      .map((observable) => observable.value);
 }
 
 class ObservableComputedValue<T> implements Observable<T> {
@@ -34,37 +37,29 @@ class ObservableComputedValue<T> implements Observable<T> {
   static ObservableComputedValue? get current =>
       Zone.current[ObservableComputedValue.zoneKey];
 
-  ObservableComputedValue._(this._computeCallback) {
-    _compute();
-  }
+  ObservableComputedValue._(this._computeCallback);
 
   final T Function() _computeCallback;
 
-  late T _value;
   @override
-  T get value => _value;
+  T get value => _computeAndUpdateDependencies();
 
-  final _streamController = StreamController<T>.broadcast();
   @override
-  Stream<T> get stream => _streamController.stream;
+  Stream<T> get stream => _observableChanges.stream
+      .where((observable) => _dependencies.contains(observable))
+      .map((_) => _computeAndUpdateDependencies());
 
   final _dependencies = <Observable>{};
-
-  void notifyRead(Observable observable) {
+  void addDependency(Observable observable) {
     _dependencies.add(observable);
   }
 
-  void _compute() {
-    runZoned(() {
-      final oldObservables = Set.of(_dependencies);
+  T _computeAndUpdateDependencies() {
+    return runZoned(() {
       _dependencies.clear();
-      _value = _computeCallback();
-      final newObservables = _dependencies;
-      final toRemove = oldObservables.difference(newObservables);
-      final toAdd = newObservables.difference(oldObservables);
+      return _computeCallback();
     }, zoneValues: {
       ObservableComputedValue.zoneKey: this,
     });
-    _streamController.add(_value);
   }
 }
