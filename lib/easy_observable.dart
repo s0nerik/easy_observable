@@ -1,3 +1,3 @@
 export 'src/observable.dart';
-export 'src/observable_extensions.dart';
+export 'src/observable_collection_extensions.dart';
 export 'src/observer.dart';
