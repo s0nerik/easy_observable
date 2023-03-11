@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:easy_observable/easy_observable.dart';
 import 'package:flutter/widgets.dart';
 
-class ObserverBuilder extends StatefulObserverWidget {
+class ObserverBuilder extends ObserverStatefulWidget {
   const ObserverBuilder({
     Key? key,
     required this.builder,
@@ -22,28 +22,28 @@ class _ObserverBuilderState extends State<ObserverBuilder> {
   }
 }
 
-abstract class StatelessObserverWidget extends StatelessWidget {
-  const StatelessObserverWidget({Key? key}) : super(key: key);
+abstract class ObserverStatelessWidget extends StatelessWidget {
+  const ObserverStatelessWidget({Key? key}) : super(key: key);
 
   @override
-  StatelessElement createElement() => StatelessObserverElement(this);
+  StatelessElement createElement() => ObserverStatelessElement(this);
 }
 
-class StatelessObserverElement extends StatelessElement
+class ObserverStatelessElement extends StatelessElement
     with ObserverElementMixin {
-  StatelessObserverElement(super.widget);
+  ObserverStatelessElement(super.widget);
 }
 
-abstract class StatefulObserverWidget extends StatefulWidget {
-  const StatefulObserverWidget({Key? key}) : super(key: key);
+abstract class ObserverStatefulWidget extends StatefulWidget {
+  const ObserverStatefulWidget({Key? key}) : super(key: key);
 
   @override
-  StatefulElement createElement() => StatefulObserverElement(this);
+  StatefulElement createElement() => ObserverStatefulElement(this);
 }
 
-class StatefulObserverElement extends StatefulElement
+class ObserverStatefulElement extends StatefulElement
     with ObserverElementMixin {
-  StatefulObserverElement(super.widget);
+  ObserverStatefulElement(super.widget);
 }
 
 mixin ObserverElementMixin on ComponentElement {

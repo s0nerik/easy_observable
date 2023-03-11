@@ -43,7 +43,7 @@ class MainApp extends StatelessWidget {
   }
 }
 
-class _Counter1 extends StatelessObserverWidget {
+class _Counter1 extends ObserverStatelessWidget {
   const _Counter1({Key? key}) : super(key: key);
 
   @override
@@ -60,7 +60,7 @@ class _Counter1 extends StatelessObserverWidget {
   }
 }
 
-class _Counter2 extends StatelessObserverWidget {
+class _Counter2 extends ObserverStatelessWidget {
   const _Counter2({Key? key}) : super(key: key);
 
   @override
@@ -77,7 +77,7 @@ class _Counter2 extends StatelessObserverWidget {
   }
 }
 
-class _CounterSum extends StatelessObserverWidget {
+class _CounterSum extends ObserverStatelessWidget {
   const _CounterSum({Key? key}) : super(key: key);
 
   @override
@@ -86,7 +86,7 @@ class _CounterSum extends StatelessObserverWidget {
   }
 }
 
-class _SumSquared extends StatelessObserverWidget {
+class _SumSquared extends ObserverStatelessWidget {
   const _SumSquared({Key? key}) : super(key: key);
 
   @override
@@ -95,7 +95,7 @@ class _SumSquared extends StatelessObserverWidget {
   }
 }
 
-class _List extends StatelessObserverWidget {
+class _List extends ObserverStatelessWidget {
   const _List({Key? key}) : super(key: key);
 
   @override
