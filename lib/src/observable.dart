@@ -44,7 +44,10 @@ class ObservableComputedValue<T> implements Observable<T> {
   final T Function() _computeCallback;
 
   @override
-  T get value => _computeAndUpdateDependencies();
+  T get value {
+    ObservableComputedValue.current?._dependencies.add(this);
+    return _computeAndUpdateDependencies();
+  }
 
   @override
   Stream<T> get stream => _observableChanges.stream
