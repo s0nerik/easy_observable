@@ -1,10 +1,5 @@
 import 'dart:async';
 
-import 'package:weak_map/weak_map.dart';
-
-final _observableChangeControllers = WeakMap<Observable, StreamController>();
-final _observableScopes = WeakMap<Observable, ObservableComputedScope>();
-
 abstract class Observable<T> {
   static ObservableValue<T> mutable<T>(T value) => ObservableValue._(value);
   static ObservableComputedValue<T> computed<T>(T Function() valueGenerator) =>
@@ -12,21 +7,6 @@ abstract class Observable<T> {
 
   T get value;
   Stream<T> get stream;
-}
-
-extension ObservableStreamExtension<T> on Observable<T> {
-  Stream<T> get stream => _changesStreamController.stream;
-}
-
-extension ObservableStreamControllerExtension<T> on Observable<T> {
-  StreamController<T> get _changesStreamController {
-    var controller = _observableChangeControllers[this] as StreamController<T>?;
-    if (controller == null) {
-      controller = StreamController<T>.broadcast();
-      _observableChangeControllers[this] = controller;
-    }
-    return controller;
-  }
 }
 
 class ObservableValue<T> implements Observable<T> {
@@ -38,8 +18,12 @@ class ObservableValue<T> implements Observable<T> {
 
   set value(T newValue) {
     _value = newValue;
-    _changesStreamController.add(newValue);
+    _streamController.add(newValue);
   }
+
+  final _streamController = StreamController<T>.broadcast();
+  @override
+  Stream<T> get stream => _streamController.stream;
 }
 
 class ObservableComputedValue<T> implements Observable<T> {
