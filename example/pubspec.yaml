@@ -11,6 +11,7 @@ dependencies:
     sdk: flutter
   easy_observable:
     path: ../
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:
