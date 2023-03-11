@@ -16,7 +16,6 @@ class ObserverBuilder extends StatefulWidget {
 }
 
 class _ObserverBuilderState extends State<ObserverBuilder> {
-  ObservableComputedValue<Widget>? _computedWidget;
   StreamSubscription? _subscription;
 
   @override
@@ -28,8 +27,8 @@ class _ObserverBuilderState extends State<ObserverBuilder> {
   @override
   Widget build(BuildContext context) {
     _subscription?.cancel();
-    _computedWidget = Observable.computed(() => widget.builder(context));
-    _subscription = _computedWidget!.stream.listen((_) => setState(() {}));
-    return _computedWidget!.value;
+    final computedWidget = Observable.computed(() => widget.builder(context));
+    _subscription = computedWidget.stream.listen((_) => setState(() {}));
+    return computedWidget.value;
   }
 }
