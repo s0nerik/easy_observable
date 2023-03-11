@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 class _State {
   final counter1 = Observable.mutable(0);
   final counter2 = Observable.mutable(0);
-  late final sum = Observable.computed(() => counter1.value + counter2.value);
-  late final sumSquared = Observable.computed(() => sum.value * sum.value);
+  late final counterSum =
+      Observable.computed(() => counter1.value + counter2.value);
+  late final counterSumSquared =
+      Observable.computed(() => counterSum.value * counterSum.value);
+
+  late final list = Observable.mutable(<int>[]);
 }
 
 final state = _State();
@@ -25,11 +29,13 @@ class MainApp extends StatelessWidget {
           title: const Text('easy_observable example'),
         ),
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
             _Counter1(),
             _Counter2(),
-            _Sum(),
+            _CounterSum(),
             _SumSquared(),
+            _List(),
           ],
         ),
       ),
@@ -71,12 +77,12 @@ class _Counter2 extends StatelessObserverWidget {
   }
 }
 
-class _Sum extends StatelessObserverWidget {
-  const _Sum({Key? key}) : super(key: key);
+class _CounterSum extends StatelessObserverWidget {
+  const _CounterSum({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Text('Sum: ${state.sum.value}');
+    return Text('Counter sum: ${state.counterSum.value}');
   }
 }
 
@@ -85,6 +91,23 @@ class _SumSquared extends StatelessObserverWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text('Sum squared: ${state.sumSquared.value}');
+    return Text('Counter sum squared: ${state.counterSumSquared.value}');
+  }
+}
+
+class _List extends StatelessObserverWidget {
+  const _List({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text('List: ${state.list.value}'),
+        TextButton(
+          onPressed: () => state.list.add(state.list.length),
+          child: const Text('Add'),
+        ),
+      ],
+    );
   }
 }
