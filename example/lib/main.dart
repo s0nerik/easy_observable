@@ -37,62 +37,54 @@ class MainApp extends StatelessWidget {
   }
 }
 
-class _Counter1 extends StatelessWidget {
+class _Counter1 extends StatelessObserverWidget {
   const _Counter1({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ObserverBuilder(
-      builder: (context) => Row(
-        children: [
-          Text('Counter 1: ${state.counter1.value}'),
-          TextButton(
-            onPressed: () => state.counter1.value++,
-            child: const Text('Increment'),
-          ),
-        ],
-      ),
+    return Row(
+      children: [
+        Text('Counter 1: ${state.counter1.value}'),
+        TextButton(
+          onPressed: () => state.counter1.value++,
+          child: const Text('Increment'),
+        ),
+      ],
     );
   }
 }
 
-class _Counter2 extends StatelessWidget {
+class _Counter2 extends StatelessObserverWidget {
   const _Counter2({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ObserverBuilder(
-      builder: (context) => Row(
-        children: [
-          Text('Counter 2: ${state.counter2.value}'),
-          TextButton(
-            onPressed: () => state.counter2.value++,
-            child: const Text('Increment'),
-          ),
-        ],
-      ),
+    return Row(
+      children: [
+        Text('Counter 2: ${state.counter2.value}'),
+        TextButton(
+          onPressed: () => state.counter2.value++,
+          child: const Text('Increment'),
+        ),
+      ],
     );
   }
 }
 
-class _Sum extends StatelessWidget {
+class _Sum extends StatelessObserverWidget {
   const _Sum({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ObserverBuilder(
-      builder: (context) => Text('Sum: ${state.sum.value}'),
-    );
+    return Text('Sum: ${state.sum.value}');
   }
 }
 
-class _SumSquared extends StatelessWidget {
+class _SumSquared extends StatelessObserverWidget {
   const _SumSquared({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ObserverBuilder(
-      builder: (context) => Text('Sum squared: ${state.sumSquared.value}'),
-    );
+    return Text('Sum squared: ${state.sumSquared.value}');
   }
 }

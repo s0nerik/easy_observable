@@ -32,3 +32,45 @@ class _ObserverBuilderState extends State<ObserverBuilder> {
     return computedWidget.value;
   }
 }
+
+abstract class StatelessObserverWidget extends StatelessWidget {
+  const StatelessObserverWidget({Key? key}) : super(key: key);
+
+  @override
+  StatelessElement createElement() => StatelessObserverElement(this);
+}
+
+class StatelessObserverElement extends StatelessElement
+    with ObserverElementMixin {
+  StatelessObserverElement(super.widget);
+}
+
+abstract class StatefulObserverWidget extends StatefulWidget {
+  const StatefulObserverWidget({Key? key}) : super(key: key);
+
+  @override
+  StatefulElement createElement() => StatefulObserverElement(this);
+}
+
+class StatefulObserverElement extends StatefulElement
+    with ObserverElementMixin {
+  StatefulObserverElement(super.widget);
+}
+
+mixin ObserverElementMixin on ComponentElement {
+  StreamSubscription? _subscription;
+
+  @override
+  void unmount() {
+    _subscription?.cancel();
+    super.unmount();
+  }
+
+  @override
+  Widget build() {
+    _subscription?.cancel();
+    final computedWidget = Observable.computed(() => super.build());
+    _subscription = computedWidget.stream.listen((_) => markNeedsBuild());
+    return computedWidget.value;
+  }
+}
