@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 final _observableChanges = StreamController<Observable>.broadcast(sync: true);
 
@@ -67,4 +68,23 @@ class ObservableComputedValue<T> implements Observable<T> {
       ObservableComputedValue.zoneKey: this,
     });
   }
+
+  @override
+  String toString() => const JsonEncoder.withIndent('  ').convert(_toMap(this));
+}
+
+Map<String, dynamic> _toMap(Observable observable) {
+  if (observable is ObservableValue) {
+    return {
+      'type': 'Observable.mutable',
+      'value': observable.value,
+    };
+  }
+  if (observable is ObservableComputedValue) {
+    return {
+      'type': 'Observable.computed',
+      'dependencies': observable._dependencies.map((e) => _toMap(e)).toList(),
+    };
+  }
+  throw UnimplementedError();
 }
