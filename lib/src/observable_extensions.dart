@@ -39,15 +39,20 @@ extension ObservableIterableExtension<E> on Observable<Iterable<E>> {
   Iterable<E> takeWhile(bool Function(E value) test) => value.takeWhile(test);
   List<E> toList({bool growable = true}) => value.toList(growable: growable);
   Set<E> toSet() => value.toSet();
-
   Iterable<T> whereType<T>() => value.whereType<T>();
 }
 
-extension ObservableMutableListExtension<E> on ObservableMutableValue<List<E>> {
+extension ObservableListExtension<E> on Observable<List<E>> {
   int get length => value.length;
+  E operator [](int index) => value[index];
+  List<E> sublist(int start, [int? end]) => value.sublist(start, end);
+  Iterable<E> get reversed => value.reversed;
+  Map<int, E> asMap() => value.asMap();
+}
+
+extension ObservableMutableListExtension<E> on ObservableMutableValue<List<E>> {
   set length(int newLength) => mutate(() => value.length = newLength);
 
-  E operator [](int index) => value[index];
   void operator []=(int index, E newValue) =>
       mutate(() => value[index] = newValue);
 
@@ -79,9 +84,4 @@ extension ObservableMutableListExtension<E> on ObservableMutableValue<List<E>> {
   void shuffle([Random? random]) => mutate(() => value.shuffle(random));
   void sort([int Function(E a, E b)? compare]) =>
       mutate(() => value.sort(compare));
-
-  List<E> sublist(int start, [int? end]) => value.sublist(start, end);
-
-  Iterable<E> get reversed => value.reversed;
-  Map<int, E> asMap() => value.asMap();
 }
