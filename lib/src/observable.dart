@@ -49,8 +49,19 @@ class ObservableComputedScope {
   static ObservableComputedScope? get current =>
       Zone.current[ObservableComputedScope.zoneKey];
 
-  T run<T>(T Function() fn) =>
-      runZoned(fn, zoneValues: {ObservableComputedScope.zoneKey: this});
+  T run<T>(T Function() fn) {
+    return runZoned(() {
+      final oldObservables = Set.of(_observables);
+      _observables.clear();
+      final result = fn();
+      final newObservables = _observables;
+      final toRemove = oldObservables.difference(newObservables);
+      final toAdd = newObservables.difference(oldObservables);
+      return result;
+    }, zoneValues: {
+      ObservableComputedScope.zoneKey: this,
+    });
+  }
 
   final _observables = <Observable>{};
 
