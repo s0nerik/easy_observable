@@ -40,11 +40,11 @@ class ObservableComputedValue<T> implements Observable<T> {
   static ObservableComputedValue? get current =>
       Zone.current[ObservableComputedValue.zoneKey];
 
-  ObservableComputedValue._(this._computeCallback) {
+  ObservableComputedValue._(this._compute) {
     _computeAndUpdateDependencies();
   }
 
-  final T Function() _computeCallback;
+  final T Function() _compute;
 
   @override
   T get value {
@@ -70,7 +70,7 @@ class ObservableComputedValue<T> implements Observable<T> {
   T _computeAndUpdateDependencies() {
     return runZoned(() {
       _dependencies.clear();
-      return _computeCallback();
+      return _compute();
     }, zoneValues: {
       ObservableComputedValue.zoneKey: this,
     });
