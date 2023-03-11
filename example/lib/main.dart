@@ -5,6 +5,7 @@ class _State {
   final counter1 = Observable.mutable(0);
   final counter2 = Observable.mutable(0);
   late final sum = Observable.computed(() => counter1.value + counter2.value);
+  late final sumSquared = Observable.computed(() => sum.value * sum.value);
 }
 
 final state = _State();
@@ -28,6 +29,7 @@ class MainApp extends StatelessWidget {
             _Counter1(),
             _Counter2(),
             _Sum(),
+            _SumSquared(),
           ],
         ),
       ),
@@ -80,6 +82,17 @@ class _Sum extends StatelessWidget {
   Widget build(BuildContext context) {
     return ObserverBuilder(
       builder: (context) => Text('Sum: ${state.sum.value}'),
+    );
+  }
+}
+
+class _SumSquared extends StatelessWidget {
+  const _SumSquared({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ObserverBuilder(
+      builder: (context) => Text('Sum squared: ${state.sumSquared.value}'),
     );
   }
 }
