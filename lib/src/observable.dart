@@ -3,7 +3,8 @@ import 'dart:async';
 final _observableChanges = StreamController<Observable>.broadcast(sync: true);
 
 abstract class Observable<T> {
-  static ObservableValue<T> mutable<T>(T value) => ObservableValue._(value);
+  static ObservableMutableValue<T> mutable<T>(T value) =>
+      ObservableMutableValue._(value);
   static ObservableComputedValue<T> computed<T>(T Function() compute) =>
       ObservableComputedValue._(compute);
 
@@ -11,8 +12,8 @@ abstract class Observable<T> {
   Stream<T> get stream;
 }
 
-class ObservableValue<T> implements Observable<T> {
-  ObservableValue._(this._value);
+class ObservableMutableValue<T> implements Observable<T> {
+  ObservableMutableValue._(this._value);
 
   T _value;
   @override
