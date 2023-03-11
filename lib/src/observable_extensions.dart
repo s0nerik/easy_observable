@@ -10,6 +10,39 @@ extension _MutationExtension<T> on ObservableMutableValue<T> {
   }
 }
 
+extension ObservableIterableExtension<E> on Observable<Iterable<E>> {
+  Iterator<E> get iterator => value.iterator;
+
+  bool any(bool Function(E element) test) => value.any(test);
+  Iterable<T> cast<T>() => value.cast<T>();
+  bool contains(Object? element) => value.contains(element);
+  E elementAt(int index) => value.elementAt(index);
+  bool every(bool Function(E element) test) => value.every(test);
+  Iterable<T> expand<T>(Iterable<T> Function(E element) f) => value.expand(f);
+  E firstWhere(bool Function(E element) test, {E Function()? orElse}) =>
+      value.firstWhere(test, orElse: orElse);
+  T fold<T>(T initialValue, T Function(T previousValue, E element) combine) =>
+      value.fold(initialValue, combine);
+  Iterable<E> followedBy(Iterable<E> other) => value.followedBy(other);
+  void forEach(void Function(E element) f) => value.forEach(f);
+  Iterable<E> where(bool Function(E element) test) => value.where(test);
+  String join([String separator = '']) => value.join(separator);
+  E lastWhere(bool Function(E element) test, {E Function()? orElse}) =>
+      value.lastWhere(test, orElse: orElse);
+  Iterable<T> map<T>(T Function(E e) f) => value.map(f);
+  E reduce(E Function(E value, E element) combine) => value.reduce(combine);
+  E singleWhere(bool Function(E element) test, {E Function()? orElse}) =>
+      value.singleWhere(test, orElse: orElse);
+  Iterable<E> skip(int count) => value.skip(count);
+  Iterable<E> skipWhile(bool Function(E value) test) => value.skipWhile(test);
+  Iterable<E> take(int count) => value.take(count);
+  Iterable<E> takeWhile(bool Function(E value) test) => value.takeWhile(test);
+  List<E> toList({bool growable = true}) => value.toList(growable: growable);
+  Set<E> toSet() => value.toSet();
+
+  Iterable<T> whereType<T>() => value.whereType<T>();
+}
+
 extension ObservableMutableListExtension<E> on ObservableMutableValue<List<E>> {
   int get length => value.length;
   set length(int newLength) => mutate(() => value.length = newLength);
