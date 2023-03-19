@@ -27,21 +27,25 @@ void main() {
       () async {
     final dep0 = Observable.mutable('a');
     final dep1 = Observable.mutable(0);
-    final observable = Observable.computed(
-      () => '${dep0.value} ${dep1.value}',
-    );
+    final computedDep =
+        Observable.computed(() => '${dep0.value} ${dep1.value}');
+    final observable =
+        Observable.computed(() => 'result: ${computedDep.value}');
 
-    var value = observable.value;
-    observable.stream.listen((observedValue) => value = observedValue);
+    final streamNotifications = <String>[];
+    observable.stream.listen(streamNotifications.add);
 
-    expect(value, 'a 0');
+    expect(streamNotifications, []);
+    expect(observable.value, 'result: a 0');
 
     dep0.value = 'b';
     await Future.value();
-    expect(value, 'b 0');
+    expect(observable.value, 'result: b 0');
+    expect(streamNotifications, ['result: b 0']);
 
     dep1.value = 1;
     await Future.value();
-    expect(value, 'b 1');
+    expect(observable.value, 'result: b 1');
+    expect(streamNotifications, ['result: b 0', 'result: b 1']);
   });
 }
