@@ -76,4 +76,88 @@ void main() {
     expect(streamNotifications1, ['result: b 0', 'result: b 1']);
     expect(streamNotifications2, ['result: b 0', 'result: b 1']);
   });
+  group('ObservableComputedValue recompute rules', () {
+    late MutableObservable<String> dep1;
+    late MutableObservable<int> dep2;
+    late MutableObservable<bool> dep3;
+    late Observable<String> computed1;
+    late Observable<String> computed2;
+    late Observable<String> computed3;
+    late Observable<String> combinedComputed;
+    late Map<Observable, List> streamNotifications;
+
+    setUp(() {
+      dep1 = Observable.mutable('a');
+      dep2 = Observable.mutable(0);
+      dep3 = Observable.mutable(false);
+      computed1 = Observable.computed(() => 'computed1: ${dep1.value}');
+      computed2 = Observable.computed(() => 'computed2: ${dep2.value}');
+      computed3 = Observable.computed(() => 'computed3: ${dep3.value}');
+      combinedComputed =
+          Observable.computed(() => '${computed1.value}, ${computed2.value}');
+      streamNotifications = {};
+      dep1.stream.listen(
+        (value) => streamNotifications.putIfAbsent(dep1, () => []).add(value),
+      );
+      dep2.stream.listen(
+        (value) => streamNotifications.putIfAbsent(dep2, () => []).add(value),
+      );
+      dep3.stream.listen(
+        (value) => streamNotifications.putIfAbsent(dep3, () => []).add(value),
+      );
+      computed1.stream.listen(
+        (value) =>
+            streamNotifications.putIfAbsent(computed1, () => []).add(value),
+      );
+      computed2.stream.listen(
+        (value) =>
+            streamNotifications.putIfAbsent(computed2, () => []).add(value),
+      );
+      computed3.stream.listen(
+        (value) =>
+            streamNotifications.putIfAbsent(computed3, () => []).add(value),
+      );
+      combinedComputed.stream.listen(
+        (value) => streamNotifications
+            .putIfAbsent(combinedComputed, () => [])
+            .add(value),
+      );
+    });
+
+    test(
+      'ObservableComputedValue is recomputed only when a dependency is changed (1)',
+      () async {
+        dep1.value = 'b';
+        await Future.value();
+        expect(streamNotifications[dep1], ['b']);
+        expect(streamNotifications[dep2], isNull);
+        expect(streamNotifications[dep3], isNull);
+        expect(streamNotifications[computed1], ['computed1: b']);
+        expect(streamNotifications[computed2], isNull);
+        expect(streamNotifications[computed3], isNull);
+        expect(
+          streamNotifications[combinedComputed],
+          ['computed1: b, computed2: 0'],
+        );
+      },
+    );
+    test(
+      'ObservableComputedValue is recomputed only when a dependency is changed (2)',
+      () async {
+        dep1.value = 'b';
+        dep3.value = true;
+        await Future.value();
+        expect(streamNotifications[dep1], ['b']);
+        expect(streamNotifications[dep2], isNull);
+        expect(streamNotifications[dep3], [true]);
+        expect(streamNotifications[computed1], ['computed1: b']);
+        expect(streamNotifications[computed2], isNull);
+        expect(streamNotifications[computed3], ['computed3: true']);
+        expect(
+          streamNotifications[combinedComputed],
+          ['computed1: b, computed2: 0'],
+        );
+      },
+    );
+  });
 }
