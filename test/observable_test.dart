@@ -48,4 +48,32 @@ void main() {
     expect(observable.value, 'result: b 1');
     expect(streamNotifications, ['result: b 0', 'result: b 1']);
   });
+  test(
+      'No matter how many subscribers, ObservableComputedValue.stream notifies them of a computed value change only once',
+      () async {
+    final dep0 = Observable.mutable('a');
+    final dep1 = Observable.mutable(0);
+    final computedDep =
+        Observable.computed(() => '${dep0.value} ${dep1.value}');
+    final observable =
+        Observable.computed(() => 'result: ${computedDep.value}');
+
+    final streamNotifications1 = <String>[];
+    final streamNotifications2 = <String>[];
+    observable.stream.listen(streamNotifications1.add);
+    observable.stream.listen(streamNotifications2.add);
+
+    expect(streamNotifications1, []);
+    expect(streamNotifications2, []);
+
+    dep0.value = 'b';
+    await Future.value();
+    expect(streamNotifications1, ['result: b 0']);
+    expect(streamNotifications2, ['result: b 0']);
+
+    dep1.value = 1;
+    await Future.value();
+    expect(streamNotifications1, ['result: b 0', 'result: b 1']);
+    expect(streamNotifications2, ['result: b 0', 'result: b 1']);
+  });
 }
