@@ -159,5 +159,32 @@ void main() {
         );
       },
     );
+    test(
+      'ObservableComputedValue is recomputed even if a dependency is changed to the same value',
+      () async {
+        dep1.value = 'b';
+        dep1.value = 'b';
+        await Future.value();
+        dep1.value = 'b';
+        await Future.value();
+        expect(streamNotifications[dep1], ['b', 'b', 'b']);
+        expect(
+          streamNotifications[computed1],
+          [
+            'computed1: b',
+            'computed1: b',
+            'computed1: b',
+          ],
+        );
+        expect(
+          streamNotifications[combinedComputed],
+          [
+            'computed1: b, computed2: 0',
+            'computed1: b, computed2: 0',
+            'computed1: b, computed2: 0',
+          ],
+        );
+      },
+    );
   });
 }
