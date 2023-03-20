@@ -222,17 +222,32 @@ void main() {
       );
     });
     group('Observer widget rules', () {
+      late int rebuilds;
+      late Widget widget;
+
+      setUp(() {
+        rebuilds = 0;
+        widget = ObserverBuilder(
+          builder: (context) {
+            computed1and2.value;
+            rebuilds++;
+            return const SizedBox.shrink();
+          },
+        );
+      });
+
       testWidgets(
-        'ObserverBuilder does not rebuild unnecessarily',
+        'ObserverBuilder builds only once before the first change',
         (widgetTester) async {
-          var rebuilds = 0;
-          final widget = ObserverBuilder(
-            builder: (context) {
-              computed1and2.value;
-              rebuilds++;
-              return const SizedBox.shrink();
-            },
-          );
+          await widgetTester.pumpWidget(widget);
+          await widgetTester.pumpAndSettle();
+          expect(rebuilds, 1);
+        },
+      );
+
+      testWidgets(
+        'ObserverBuilder rebuilds only once after each change',
+        (widgetTester) async {
           await widgetTester.pumpWidget(widget);
           expect(rebuilds, 1);
 
