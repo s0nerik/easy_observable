@@ -279,6 +279,36 @@ void main() {
           expect(rebuilds, 3);
         },
       );
+      testWidgets(
+        'ObserverBuilder subscribes to changes in all Observables accessed during the previous build',
+        (widgetTester) async {
+          await widgetTester.pumpWidget(widget);
+          expect(rebuilds, 1);
+
+          observed.clear();
+          observed.add(dep1);
+
+          dep1.value = 'b';
+          await widgetTester.pumpAndSettle();
+          // Since `computed1and2` was accessed during the previous build,
+          // and it depends on `dep1`, we expect a rebuild.
+          expect(rebuilds, 2);
+
+          dep2.value = 1;
+          await widgetTester.pumpAndSettle();
+          // Since `dep2` was_not accessed during the previous build,
+          // changing its value should_not trigger an additional rebuild.
+          expect(rebuilds, 3);
+
+          observed.add(dep2);
+          await widgetTester.pumpAndSettle();
+          expect(rebuilds, 3);
+
+          dep2.value = 2;
+          await widgetTester.pumpAndSettle();
+          expect(rebuilds, 4);
+        },
+      );
     });
   });
 }
