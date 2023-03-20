@@ -20,7 +20,8 @@ abstract class Observable<T> {
 
   void _notifyChange() {
     _changes.add(_value);
-    for (final dependant in _dependants) {
+    final dependants = _dependants.toList();
+    for (final dependant in dependants) {
       dependant.recompute();
     }
   }
