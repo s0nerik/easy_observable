@@ -224,12 +224,17 @@ void main() {
     group('Observer widget rules', () {
       late int rebuilds;
       late Widget widget;
+      late List<Observable> observed;
 
       setUp(() {
+        observed = [computed1and2];
         rebuilds = 0;
         widget = ObserverBuilder(
           builder: (context) {
-            computed1and2.value;
+            for (final observable in observed) {
+              // read the value to create a subscription
+              observable.value;
+            }
             rebuilds++;
             return const SizedBox.shrink();
           },
@@ -252,6 +257,19 @@ void main() {
           expect(rebuilds, 1);
 
           dep1.value = 'b';
+          await widgetTester.pumpAndSettle();
+          expect(rebuilds, 2);
+        },
+      );
+
+      testWidgets(
+        'ObserverBuilder rebuilds only once after each bunch of synchronous changes',
+        (widgetTester) async {
+          await widgetTester.pumpWidget(widget);
+          expect(rebuilds, 1);
+
+          dep1.value = 'b';
+          dep2.value = 1;
           await widgetTester.pumpAndSettle();
           expect(rebuilds, 2);
         },
