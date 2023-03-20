@@ -272,6 +272,11 @@ void main() {
           dep2.value = 1;
           await widgetTester.pumpAndSettle();
           expect(rebuilds, 2);
+
+          dep1.value = 'c';
+          dep2.value = 2;
+          await widgetTester.pumpAndSettle();
+          expect(rebuilds, 3);
         },
       );
     });
