@@ -234,6 +234,11 @@ void main() {
             },
           );
           await widgetTester.pumpWidget(widget);
+          expect(rebuilds, 1);
+
+          dep1.value = 'b';
+          await widgetTester.pumpAndSettle();
+          expect(rebuilds, 2);
         },
       );
     });
