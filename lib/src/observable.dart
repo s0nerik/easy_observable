@@ -57,7 +57,7 @@ class _ComputedObservable<T> implements Observable<T> {
   @override
   T get value {
     final computed = _ComputedObservable.current;
-    if (computed != null) {
+    if (computed != null && computed != this) {
       _dependants.add(computed);
     }
     return _value;
