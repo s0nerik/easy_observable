@@ -95,5 +95,5 @@ class _ComputedObservable<T> implements Observable<T> {
   }
 
   @override
-  String toString() => 'Observable.computed';
+  String toString() => 'Observable.computed(${identityHashCode(this)})';
 }
