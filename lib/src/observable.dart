@@ -41,10 +41,12 @@ class _ComputedObservable<T> implements Observable<T> {
       Zone.current[_ComputedObservable.zoneKey];
 
   _ComputedObservable(this._compute) {
-    _computeAndUpdateDependencies();
+    _value = _computeAndUpdateDependencies();
   }
 
   final T Function() _compute;
+
+  late T _value;
 
   @override
   T get value {
@@ -54,13 +56,13 @@ class _ComputedObservable<T> implements Observable<T> {
         computedScope.addDependency(dependency);
       }
     }
-    return _computeAndUpdateDependencies();
+    return _value;
   }
 
   @override
   Stream<T> get stream => _observableChanges.stream
       .where((observable) => _dependencies.contains(observable))
-      .map((_) => _computeAndUpdateDependencies());
+      .map((_) => _value = _computeAndUpdateDependencies());
 
   final _dependencies = <Observable>{};
   void addDependency(Observable observable) {
