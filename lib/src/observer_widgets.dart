@@ -48,8 +48,8 @@ class ObserverStatefulElement extends StatefulElement
 }
 
 mixin ObserverElementMixin on ComponentElement {
+  Observable<Widget>? _computedWidget;
   StreamSubscription? _subscription;
-  late final _build = kDebugMode ? _buildWithTypeErrorDebugging : super.build;
 
   @override
   void unmount() {
@@ -85,9 +85,10 @@ mixin ObserverElementMixin on ComponentElement {
 
   @override
   Widget build() {
-    _subscription?.cancel();
-    final computedWidget = Observable.computed(_build);
-    _subscription = computedWidget.stream.listen((_) => markNeedsBuild());
-    return computedWidget.value;
+    _computedWidget ??= Observable.computed(
+      kDebugMode ? _buildWithTypeErrorDebugging : super.build,
+    );
+    _subscription ??= _computedWidget!.stream.listen((_) => markNeedsBuild());
+    return _computedWidget!.value;
   }
 }
