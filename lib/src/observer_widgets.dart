@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:easy_observable/easy_observable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 class ObserverBuilder extends ObserverStatefulWidget {
@@ -88,8 +89,14 @@ mixin ObserverElementMixin on ComponentElement {
     }
   }
 
+  bool get _shouldWaitForNextFrame {
+    final schedulerPhase = SchedulerBinding.instance.schedulerPhase;
+    return schedulerPhase != SchedulerPhase.idle &&
+        schedulerPhase != SchedulerPhase.postFrameCallbacks;
+  }
+
   Widget _build() {
-    if (dirty && !_initialBuild) {
+    if (!_initialBuild && (dirty || _shouldWaitForNextFrame)) {
       return _computedWidget!.value;
     }
     if (_initialBuild) {
@@ -98,14 +105,20 @@ mixin ObserverElementMixin on ComponentElement {
     return _builder();
   }
 
+  void _markNeedsBuildNextFrame() async {
+    if (_shouldWaitForNextFrame) {
+      await SchedulerBinding.instance.endOfFrame;
+    }
+    if (!mounted || dirty) return;
+
+    markNeedsBuild();
+  }
+
   @override
   Widget build() {
     _computedWidget ??= Observable.computed(_build);
-    _subscription ??= _computedWidget!.stream.listen((_) {
-      if (!dirty) {
-        markNeedsBuild();
-      }
-    });
+    _subscription ??=
+        _computedWidget!.stream.listen((_) => _markNeedsBuildNextFrame());
     return _computedWidget!.value;
   }
 }
