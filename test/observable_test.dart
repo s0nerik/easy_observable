@@ -156,7 +156,7 @@ void main() {
 
     group('`stream` notification rules', () {
       test(
-        'ObservableComputedValue.stream is notified only when a dependency is changed (1)',
+        'emits only when a dependency is changed (1)',
         () async {
           dep1.value = 'b';
           await Future.value();
@@ -173,7 +173,7 @@ void main() {
         },
       );
       test(
-        'ObservableComputedValue.stream is notified only when a dependency is changed (2)',
+        'emits only when a dependency is changed (2)',
         () async {
           dep1.value = 'b';
           dep3.value = true;
@@ -191,7 +191,7 @@ void main() {
         },
       );
       test(
-        'ObservableComputedValue.stream is notified even if a dependency is changed to the same value',
+        'emits even if a dependency is changed to the same value',
         () async {
           dep1.value = 'b';
           dep1.value = 'b';
@@ -219,4 +219,24 @@ void main() {
       );
     });
   });
+  // group('Observer widget rules', () {
+  //   testWidgets(
+  //     'ObserverBuilder does not rebuild unnecessarily',
+  //     (widgetTester) {
+  //       final dep = Observable.mutable(0);
+  //       final computed = Observable.computed(() => dep.value);
+  //       final widget = ObserverBuilder(
+  //         builder: (context) {
+  //           return const SizedBox.shrink();
+  //         },
+  //       );
+  //       final observer = ObserverWidget(widget);
+  //       expect(observer.buildCount, 0);
+  //       expect(observer.buildCount, 0);
+  //       dep.value = 1;
+  //       expect(observer.buildCount, 0);
+  //       expect(observer.buildCount, 0);
+  //     },
+  //   );
+  // });
 }
