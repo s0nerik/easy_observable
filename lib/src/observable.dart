@@ -1,6 +1,8 @@
 import 'dart:async';
 
-final _observableChanges = StreamController<Observable>.broadcast(sync: true);
+import 'package:weak_map/weak_map.dart';
+
+final _observableDependants = WeakMap<Observable, Set<_ComputedObservable>>();
 
 abstract class Observable<T> {
   static MutableObservable<T> mutable<T>(T value) => MutableObservable._(value);
@@ -12,7 +14,14 @@ abstract class Observable<T> {
 }
 
 class MutableObservable<T> implements Observable<T> {
-  MutableObservable._(this._value);
+  MutableObservable._(this._value) {
+    _observableDependants[this] = {};
+    _dependants = _observableDependants[this]!;
+  }
+
+  late final Set<_ComputedObservable> _dependants;
+
+  final _changes = StreamController<void>.broadcast(sync: true);
 
   T _value;
   @override
@@ -23,13 +32,14 @@ class MutableObservable<T> implements Observable<T> {
 
   set value(T newValue) {
     _value = newValue;
-    _observableChanges.add(this);
+    _changes.add(null);
+    for (final dependant in _dependants) {
+      dependant.recompute();
+    }
   }
 
   @override
-  Stream<T> get stream => _observableChanges.stream
-      .where((observable) => identical(observable, this))
-      .map((observable) => observable.value);
+  Stream<T> get stream => _changes.stream.map((_) => _value);
 
   @override
   String toString() => 'Observable.mutable($value)';
@@ -41,10 +51,12 @@ class _ComputedObservable<T> implements Observable<T> {
       Zone.current[_ComputedObservable.zoneKey];
 
   _ComputedObservable(this._compute) {
-    _value = _computeAndUpdateDependencies();
+    recompute();
   }
 
   final T Function() _compute;
+
+  final _changes = StreamController<void>.broadcast(sync: true);
 
   late T _value;
 
@@ -60,27 +72,26 @@ class _ComputedObservable<T> implements Observable<T> {
   }
 
   @override
-  Stream<T> get stream => _observableChanges.stream
-      .where((observable) => _dependencies.contains(observable))
-      .map((_) => _value = _computeAndUpdateDependencies());
+  Stream<T> get stream => _changes.stream.map((_) => _value);
 
   final _dependencies = <Observable>{};
   void addDependency(Observable observable) {
     _dependencies.add(observable);
-    if (observable is _ComputedObservable) {
-      for (final dependency in observable._dependencies) {
-        addDependency(dependency);
-      }
+    if (observable is MutableObservable) {
+      observable._dependants.add(this);
     }
   }
 
-  T _computeAndUpdateDependencies() {
-    return runZoned(() {
-      _dependencies.clear();
-      return _compute();
-    }, zoneValues: {
+  void recompute() {
+    runZoned(_doRecompute, zoneValues: {
       _ComputedObservable.zoneKey: this,
     });
+  }
+
+  void _doRecompute() {
+    _dependencies.clear();
+    _value = _compute();
+    _changes.add(null);
   }
 
   @override
