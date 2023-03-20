@@ -89,12 +89,11 @@ mixin ObserverElementMixin on ComponentElement {
   }
 
   Widget _build() {
-    if (_initialBuild) {
-      _initialBuild = false;
-      return _builder();
-    }
     if (dirty && !_initialBuild) {
       return _computedWidget!.value;
+    }
+    if (_initialBuild) {
+      _initialBuild = false;
     }
     return _builder();
   }
@@ -102,7 +101,11 @@ mixin ObserverElementMixin on ComponentElement {
   @override
   Widget build() {
     _computedWidget ??= Observable.computed(_build);
-    _subscription ??= _computedWidget!.stream.listen((_) => markNeedsBuild());
+    _subscription ??= _computedWidget!.stream.listen((_) {
+      if (!dirty) {
+        markNeedsBuild();
+      }
+    });
     return _computedWidget!.value;
   }
 }
