@@ -1,9 +1,5 @@
 import 'dart:async';
 
-import 'package:weak_map/weak_map.dart';
-
-final _observableDependants = WeakMap<Observable, Set<_ComputedObservable>>();
-
 abstract class Observable<T> {
   static MutableObservable<T> mutable<T>(T value) => MutableObservable._(value);
   static Observable<T> computed<T>(T Function() compute) =>
@@ -14,19 +10,18 @@ abstract class Observable<T> {
 }
 
 class MutableObservable<T> implements Observable<T> {
-  MutableObservable._(this._value) {
-    _observableDependants[this] = {};
-    _dependants = _observableDependants[this]!;
-  }
+  MutableObservable._(this._value);
 
-  late final Set<_ComputedObservable> _dependants;
-
+  final _dependants = <_ComputedObservable>{};
   final _changes = StreamController<void>.broadcast(sync: true);
 
   T _value;
   @override
   T get value {
-    _ComputedObservable.current?.addDependency(this);
+    final computed = _ComputedObservable.current;
+    if (computed != null) {
+      _dependants.add(computed);
+    }
     return _value;
   }
 
@@ -55,32 +50,21 @@ class _ComputedObservable<T> implements Observable<T> {
   }
 
   final T Function() _compute;
-
+  final _dependants = <_ComputedObservable>{};
   final _changes = StreamController<void>.broadcast(sync: true);
 
   late T _value;
-
   @override
   T get value {
-    final computedScope = _ComputedObservable.current;
-    if (computedScope != null) {
-      for (final dependency in _dependencies) {
-        computedScope.addDependency(dependency);
-      }
+    final computed = _ComputedObservable.current;
+    if (computed != null) {
+      _dependants.add(computed);
     }
     return _value;
   }
 
   @override
   Stream<T> get stream => _changes.stream.map((_) => _value);
-
-  final _dependencies = <Observable>{};
-  void addDependency(Observable observable) {
-    _dependencies.add(observable);
-    if (observable is MutableObservable) {
-      observable._dependants.add(this);
-    }
-  }
 
   void recompute() {
     runZoned(_doRecompute, zoneValues: {
@@ -89,9 +73,11 @@ class _ComputedObservable<T> implements Observable<T> {
   }
 
   void _doRecompute() {
-    _dependencies.clear();
     _value = _compute();
     _changes.add(null);
+    for (final dependant in _dependants) {
+      dependant.recompute();
+    }
   }
 
   @override
