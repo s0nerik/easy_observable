@@ -48,7 +48,12 @@ class _ComputedObservable<T> implements Observable<T> {
 
   @override
   T get value {
-    _ComputedObservable.current?.addDependency(this);
+    final computedScope = _ComputedObservable.current;
+    if (computedScope != null) {
+      for (final dependency in _dependencies) {
+        computedScope.addDependency(dependency);
+      }
+    }
     return _computeAndUpdateDependencies();
   }
 
