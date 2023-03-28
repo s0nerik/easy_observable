@@ -58,6 +58,7 @@ extension ObservableMutableListExtension<E> on MutableObservable<List<E>> {
   int get length => value.length;
   set length(int newLength) => mutate(() => value.length = newLength);
 
+  E operator [](int index) => value[index];
   void operator []=(int index, E newValue) =>
       mutate(() => value[index] = newValue);
 
