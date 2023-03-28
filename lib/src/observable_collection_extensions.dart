@@ -107,6 +107,7 @@ extension ObservableMapExtension<K, V> on Observable<Map<K, V>> {
 }
 
 extension ObservableMutableMapExtension<K, V> on MutableObservable<Map<K, V>> {
+  V? operator [](Object? key) => value[key];
   void operator []=(K key, V value) => mutate(() => this.value[key] = value);
 
   void addAll(Map<K, V> other) => mutate(() => value.addAll(other));
