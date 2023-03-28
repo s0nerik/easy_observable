@@ -309,6 +309,31 @@ void main() {
           expect(rebuilds, 4);
         },
       );
+
+      testWidgets(
+        'Acessing a specific list item rebuilds only when the value at that index changes',
+        (widgetTester) async {
+          final listObservable = Observable.mutable(['a', 'b', 'c']);
+
+          await widgetTester.pumpWidget(
+            ObserverBuilder(
+              builder: (context) {
+                listObservable[1];
+                rebuilds++;
+                return const SizedBox.shrink();
+              },
+            ),
+          );
+
+          await widgetTester.pumpAndSettle();
+          expect(rebuilds, 1);
+
+          listObservable[0] = 'aa';
+
+          await widgetTester.pumpAndSettle();
+          expect(rebuilds, 1);
+        },
+      );
     });
   });
 }
