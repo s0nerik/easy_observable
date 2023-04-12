@@ -3,6 +3,7 @@ export 'src/observable.dart'
         ComputedObservable,
         ObserveValueExtension,
         NotifyChangeExtension,
-        RegisterKeyReferenceExtension;
+        RegisterKeyReferenceExtension,
+        ComputedNotifierExtension;
 export 'src/observable_collection_extensions.dart';
 export 'src/observer_widgets.dart';

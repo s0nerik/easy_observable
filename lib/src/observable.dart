@@ -33,6 +33,11 @@ extension NotifyChangeExtension on Observable {
   }
 }
 
+@internal
+extension ComputedNotifierExtension on Observable {
+  ComputedNotifier get computedNotifier => _computedNotifier;
+}
+
 abstract class Observable<T> {
   static MutableObservable<T> mutable<T>(T value) => MutableObservable._(value);
   static Observable<T> computed<T>(T Function() compute) =>
