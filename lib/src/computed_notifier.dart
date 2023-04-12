@@ -1,12 +1,10 @@
 import 'observable.dart';
 
-class _ValueKey {
-  const _ValueKey();
-}
+enum _Key { value }
 
 class ObservedKey {
   const ObservedKey(this.key);
-  const ObservedKey.value() : key = const _ValueKey();
+  const ObservedKey.value() : key = _Key.value;
 
   final Object? key;
 
@@ -19,6 +17,9 @@ class ObservedKey {
 
   @override
   int get hashCode => key.hashCode;
+
+  @override
+  String toString() => 'ObservedKey($key)';
 }
 
 class ComputedNotifier {
