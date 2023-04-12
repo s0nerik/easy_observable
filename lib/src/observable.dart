@@ -5,18 +5,25 @@ import 'package:meta/meta.dart';
 import 'computed_notifier.dart';
 
 @internal
-extension ObserveValueExtension<T> on Observable<T> {
-  T observeValue(ObservedKey key) {
+extension RegisterKeyReferenceExtension on Observable {
+  void registerKeyReference(ObservedKey key) {
     final computed = ComputedObservable.current;
     if (computed != null && !identical(this, computed)) {
       _computedNotifier.registerKeyReference(computed, key);
     }
+  }
+}
+
+@internal
+extension ObserveValueExtension<T> on Observable<T> {
+  T observeValue(ObservedKey key) {
+    registerKeyReference(key);
     return _value;
   }
 }
 
 @internal
-extension NotifyChangeExtension<T> on Observable<T> {
+extension NotifyChangeExtension on Observable {
   void notifyChange(ObservedKey key) {
     _changes.add(_value);
     _computedNotifier.recompute(key);
