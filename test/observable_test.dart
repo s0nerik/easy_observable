@@ -311,7 +311,7 @@ void main() {
       );
 
       testWidgets(
-        'Acessing a specific list item rebuilds only when the value at that index changes',
+        'Accessing a specific list item rebuilds only when the value at that index changes',
         (widgetTester) async {
           final listObservable = Observable.mutable(['a', 'b', 'c']);
 
