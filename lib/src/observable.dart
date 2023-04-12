@@ -24,9 +24,11 @@ extension ObserveValueExtension<T> on Observable<T> {
 
 @internal
 extension NotifyChangeExtension on Observable {
-  void notifyChange(ObservedKey key) {
+  void notifyChange(List<ObservedKey> keys) {
     _changes.add(_value);
-    _computedNotifier.recompute(key);
+    for (final key in keys) {
+      _computedNotifier.recompute(key);
+    }
   }
 }
 
@@ -50,7 +52,7 @@ class MutableObservable<T> extends Observable<T> {
 
   set value(T newValue) {
     _value = newValue;
-    notifyChange(const ObservedKey.value());
+    notifyChange(const [ObservedKey.value()]);
   }
 
   @override
@@ -76,7 +78,7 @@ class ComputedObservable<T> extends Observable<T> {
 
   void _recompute() {
     _value = _compute();
-    notifyChange(const ObservedKey.value());
+    notifyChange(const [ObservedKey.value()]);
   }
 
   @override
