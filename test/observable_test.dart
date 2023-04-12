@@ -331,4 +331,47 @@ void main() {
       );
     });
   });
+
+  group('Observable.computed recompute rules', () {
+    test('value is recomputed only when referenced observables notify', () {
+      final obs1 = Observable.mutable('a');
+      final obs2 = Observable.mutable(0);
+
+      var recomputations = 0;
+      final computed = Observable.computed(() {
+        recomputations++;
+        return '${obs1.value}${obs2.value}';
+      });
+
+      expect(computed.value, 'a0');
+      expect(recomputations, 1);
+
+      obs1.value = 'b';
+      expect(computed.value, 'b0');
+      expect(recomputations, 2);
+
+      obs2.value = 1;
+      expect(computed.value, 'b1');
+      expect(recomputations, 3);
+    });
+
+    test('each referenced observable notification == 1 recompute', () {
+      final obs1 = Observable.mutable('a');
+      final obs2 = Observable.mutable(0);
+
+      var recomputations = 0;
+      final computed = Observable.computed(() {
+        recomputations++;
+        return '${obs1.value}${obs2.value}';
+      });
+
+      expect(computed.value, 'a0');
+      expect(recomputations, 1);
+
+      obs1.value = 'b';
+      obs2.value = 1;
+      expect(computed.value, 'b1');
+      expect(recomputations, 3);
+    });
+  });
 }
