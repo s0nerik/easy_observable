@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'computed_notifier.dart';
+
 abstract class Observable<T> {
   static MutableObservable<T> mutable<T>(T value) => MutableObservable._(value);
   static Observable<T> computed<T>(T Function() compute) =>
@@ -9,21 +11,21 @@ abstract class Observable<T> {
   T get value {
     final computed = ComputedObservable.current;
     if (computed != null && !identical(this, computed)) {
-      _dependants.add(computed);
+      _computedNotifier.registerKeyReference(
+        computed,
+        const ObservedKey.value(),
+      );
     }
     return _value;
   }
 
-  final _dependants = <ComputedObservable>{};
+  final _computedNotifier = ComputedNotifier();
   final _changes = StreamController<T>.broadcast(sync: true);
   Stream<T> get stream => _changes.stream;
 
-  void _notifyChange() {
+  void _notifyChange(ObservedKey key) {
     _changes.add(_value);
-    final dependants = _dependants.toList();
-    for (final dependant in dependants) {
-      dependant.recompute();
-    }
+    _computedNotifier.recompute(key);
   }
 }
 
@@ -34,7 +36,7 @@ class MutableObservable<T> extends Observable<T> {
 
   set value(T newValue) {
     _value = newValue;
-    _notifyChange();
+    _notifyChange(const ObservedKey.value());
   }
 
   @override
@@ -60,7 +62,7 @@ class ComputedObservable<T> extends Observable<T> {
 
   void _recompute() {
     _value = _compute();
-    _notifyChange();
+    _notifyChange(const ObservedKey.value());
   }
 
   @override
