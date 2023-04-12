@@ -1,6 +1,27 @@
 import 'dart:async';
 
+import 'package:meta/meta.dart';
+
 import 'computed_notifier.dart';
+
+@internal
+extension ObserveValueExtension<T> on Observable<T> {
+  T observeValue(ObservedKey key) {
+    final computed = ComputedObservable.current;
+    if (computed != null && !identical(this, computed)) {
+      _computedNotifier.registerKeyReference(computed, key);
+    }
+    return _value;
+  }
+}
+
+@internal
+extension NotifyChangeExtension<T> on Observable<T> {
+  void notifyChange(ObservedKey key) {
+    _changes.add(_value);
+    _computedNotifier.recompute(key);
+  }
+}
 
 abstract class Observable<T> {
   static MutableObservable<T> mutable<T>(T value) => MutableObservable._(value);
@@ -8,25 +29,11 @@ abstract class Observable<T> {
       ComputedObservable(compute);
 
   late T _value;
-  T get value {
-    final computed = ComputedObservable.current;
-    if (computed != null && !identical(this, computed)) {
-      _computedNotifier.registerKeyReference(
-        computed,
-        const ObservedKey.value(),
-      );
-    }
-    return _value;
-  }
+  T get value => observeValue(const ObservedKey.value());
 
   final _computedNotifier = ComputedNotifier();
   final _changes = StreamController<T>.broadcast(sync: true);
   Stream<T> get stream => _changes.stream;
-
-  void _notifyChange(ObservedKey key) {
-    _changes.add(_value);
-    _computedNotifier.recompute(key);
-  }
 }
 
 class MutableObservable<T> extends Observable<T> {
@@ -36,7 +43,7 @@ class MutableObservable<T> extends Observable<T> {
 
   set value(T newValue) {
     _value = newValue;
-    _notifyChange(const ObservedKey.value());
+    notifyChange(const ObservedKey.value());
   }
 
   @override
@@ -62,7 +69,7 @@ class ComputedObservable<T> extends Observable<T> {
 
   void _recompute() {
     _value = _compute();
-    _notifyChange(const ObservedKey.value());
+    notifyChange(const ObservedKey.value());
   }
 
   @override

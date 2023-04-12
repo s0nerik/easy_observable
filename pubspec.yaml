@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   weak_map: ^2.1.0
+  meta: ^1.8.0
 
 dev_dependencies:
   flutter_test:
