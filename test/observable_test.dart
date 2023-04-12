@@ -79,7 +79,7 @@ void main() {
     expect(streamNotifications1, ['result: b 0', 'result: b 1']);
     expect(streamNotifications2, ['result: b 0', 'result: b 1']);
   });
-  group('ObservableComputedValue', () {
+  group('ComputedObservable', () {
     late MutableObservable<String> dep1;
     late MutableObservable<int> dep2;
     late MutableObservable<bool> dep3;
