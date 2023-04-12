@@ -10,6 +10,7 @@ extension RegisterKeyReferenceExtension on Observable {
     final computed = ComputedObservable.current;
     if (computed != null && !identical(this, computed)) {
       _computedNotifier.registerKeyReference(computed, key);
+      computed._dependencies.add(this);
     }
   }
 }
@@ -70,7 +71,13 @@ class ComputedObservable<T> extends Observable<T> {
 
   final T Function() _compute;
 
+  final _dependencies = <Observable>{};
+
   void recompute() {
+    for (final dependency in _dependencies) {
+      dependency._computedNotifier.unregisterKeyReferences(this);
+    }
+    _dependencies.clear();
     runZoned(_recompute, zoneValues: {
       ComputedObservable.zoneKey: this,
     });
