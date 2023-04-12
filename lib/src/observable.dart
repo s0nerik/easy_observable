@@ -3,18 +3,18 @@ import 'dart:async';
 abstract class Observable<T> {
   static MutableObservable<T> mutable<T>(T value) => MutableObservable._(value);
   static Observable<T> computed<T>(T Function() compute) =>
-      _ComputedObservable(compute);
+      ComputedObservable(compute);
 
   late T _value;
   T get value {
-    final computed = _ComputedObservable.current;
+    final computed = ComputedObservable.current;
     if (computed != null && !identical(this, computed)) {
       _dependants.add(computed);
     }
     return _value;
   }
 
-  final _dependants = <_ComputedObservable>{};
+  final _dependants = <ComputedObservable>{};
   final _changes = StreamController<T>.broadcast(sync: true);
   Stream<T> get stream => _changes.stream;
 
@@ -41,12 +41,12 @@ class MutableObservable<T> extends Observable<T> {
   String toString() => 'Observable.mutable($_value)';
 }
 
-class _ComputedObservable<T> extends Observable<T> {
+class ComputedObservable<T> extends Observable<T> {
   static const zoneKey = 'ComputedObservable';
-  static _ComputedObservable? get current =>
-      Zone.current[_ComputedObservable.zoneKey];
+  static ComputedObservable? get current =>
+      Zone.current[ComputedObservable.zoneKey];
 
-  _ComputedObservable(this._compute) {
+  ComputedObservable(this._compute) {
     recompute();
   }
 
@@ -54,7 +54,7 @@ class _ComputedObservable<T> extends Observable<T> {
 
   void recompute() {
     runZoned(_recompute, zoneValues: {
-      _ComputedObservable.zoneKey: this,
+      ComputedObservable.zoneKey: this,
     });
   }
 
