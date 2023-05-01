@@ -94,9 +94,9 @@ void main() {
       streamNotifications = {};
       streamComputations = {};
 
-      dep1 = Observable.mutable('a');
-      dep2 = Observable.mutable(0);
-      dep3 = Observable.mutable(false);
+      dep1 = Observable.mutable('a', debugLabel: 'dep1');
+      dep2 = Observable.mutable(0, debugLabel: 'dep2');
+      dep3 = Observable.mutable(false, debugLabel: 'dep3');
       dep1computed = Observable.computed(() {
         scheduleMicrotask(() {
           streamComputations.putIfAbsent(dep1computed, () => 0);
@@ -104,7 +104,7 @@ void main() {
               streamComputations[dep1computed]! + 1;
         });
         return 'dep1computed: ${dep1.value}';
-      });
+      }, debugLabel: 'dep1computed');
       dep2computed = Observable.computed(() {
         scheduleMicrotask(() {
           streamComputations.putIfAbsent(dep2computed, () => 0);
@@ -112,7 +112,7 @@ void main() {
               streamComputations[dep2computed]! + 1;
         });
         return 'dep2computed: ${dep2.value}';
-      });
+      }, debugLabel: 'dep2computed');
       dep3computed = Observable.computed(() {
         scheduleMicrotask(() {
           streamComputations.putIfAbsent(dep3computed, () => 0);
@@ -120,7 +120,7 @@ void main() {
               streamComputations[dep3computed]! + 1;
         });
         return 'dep3computed: ${dep3.value}';
-      });
+      }, debugLabel: 'dep3computed');
       computed1and2 = Observable.computed(() {
         scheduleMicrotask(() {
           streamComputations.putIfAbsent(computed1and2, () => 0);
@@ -128,7 +128,7 @@ void main() {
               streamComputations[computed1and2]! + 1;
         });
         return '${dep1computed.value}, ${dep2computed.value}';
-      });
+      }, debugLabel: 'computed1and2');
 
       dep1.stream.listen(
         (value) => streamNotifications.putIfAbsent(dep1, () => []).add(value),
