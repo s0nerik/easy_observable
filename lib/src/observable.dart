@@ -21,6 +21,9 @@ extension RegisterKeyReferenceExtension on Observable {
 @internal
 extension ObserveValueExtension<T> on Observable<T> {
   T observeValue(ObservedKey key) {
+    if (_debugLogging) {
+      debugPrint('OBSERVE $this -> $key');
+    }
     registerKeyReference(key);
     return _value;
   }
