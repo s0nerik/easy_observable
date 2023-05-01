@@ -116,7 +116,8 @@ mixin ObserverElementMixin on ComponentElement {
 
   @override
   Widget build() {
-    _computedWidget ??= Observable.computed(_build);
+    _computedWidget ??=
+        Observable.computed(_build, debugLabel: widget.toString());
     _subscription ??=
         _computedWidget!.stream.listen((_) => _markNeedsBuildNextFrame());
     return _computedWidget!.value;
