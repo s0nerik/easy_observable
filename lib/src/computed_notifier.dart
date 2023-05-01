@@ -21,7 +21,10 @@ class ObservedKey {
   int get hashCode => key.hashCode;
 
   @override
-  String toString() => 'ObservedKey($key)';
+  String toString() {
+    if (key == _Key.value) return 'value';
+    return '$key';
+  }
 }
 
 class ComputedNotifier {
