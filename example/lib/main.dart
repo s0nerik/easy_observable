@@ -1,4 +1,5 @@
 import 'package:easy_observable/easy_observable.dart';
+import 'package:easy_provider/easy_provider.dart';
 import 'package:flutter/material.dart';
 
 class _State {
@@ -12,8 +13,6 @@ class _State {
   late final list = Observable.mutable(<int>[]);
 }
 
-final state = _State();
-
 void main() {
   runApp(const MainApp());
 }
@@ -23,20 +22,23 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('easy_observable example'),
-        ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            _Counter1(),
-            _Counter2(),
-            _CounterSum(),
-            _SumSquared(),
-            _List(),
-          ],
+    return EasyProvider(
+      init: (scope) => scope..provide(_State()),
+      child: MaterialApp(
+        home: Scaffold(
+          appBar: AppBar(
+            title: const Text('easy_observable example'),
+          ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              _Counter1(),
+              _Counter2(),
+              _CounterSum(),
+              _SumSquared(),
+              _List(),
+            ],
+          ),
         ),
       ),
     );
@@ -48,6 +50,7 @@ class _Counter1 extends ObserverStatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.get<_State>();
     return Row(
       children: [
         Text('Counter 1: ${state.counter1.value}'),
@@ -65,6 +68,7 @@ class _Counter2 extends ObserverStatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.get<_State>();
     return Row(
       children: [
         Text('Counter 2: ${state.counter2.value}'),
@@ -82,6 +86,7 @@ class _CounterSum extends ObserverStatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.get<_State>();
     return Text('Counter sum: ${state.counterSum.value}');
   }
 }
@@ -91,6 +96,7 @@ class _SumSquared extends ObserverStatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.get<_State>();
     return Text('Counter sum squared: ${state.counterSumSquared.value}');
   }
 }
@@ -100,6 +106,7 @@ class _List extends ObserverStatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.get<_State>();
     return Row(
       children: [
         Text('List: ${state.list.value}'),
