@@ -72,7 +72,7 @@ class MutableObservable<T> extends Observable<T> {
   set value(T newValue) {
     _value = newValue;
     if (_debugLogging) {
-      debugPrint('$this SET VALUE: $newValue');
+      debugPrint('SET VALUE $this -> $newValue');
     }
     notifyChange(const [ObservedKey.value]);
   }
