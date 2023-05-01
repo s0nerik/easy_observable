@@ -4,7 +4,9 @@ enum _Key { value }
 
 class ObservedKey {
   const ObservedKey(this.key);
-  const ObservedKey.value() : key = _Key.value;
+  const ObservedKey._value() : key = _Key.value;
+
+  static const value = ObservedKey._value();
 
   final Object? key;
 
