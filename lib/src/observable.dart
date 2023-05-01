@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 
 import 'computed_notifier.dart';
+
+const _debugLogging = kDebugMode;
 
 @internal
 extension RegisterKeyReferenceExtension on Observable {
@@ -39,12 +42,20 @@ extension ComputedNotifierExtension on Observable {
 }
 
 abstract class Observable<T> {
-  static MutableObservable<T> mutable<T>(T value) => MutableObservable._(value);
-  static Observable<T> computed<T>(T Function() compute) =>
-      ComputedObservable(compute);
+  static MutableObservable<T> mutable<T>(
+    T value, {
+    String? debugLabel,
+  }) =>
+      MutableObservable._(value, debugLabel);
+
+  static Observable<T> computed<T>(
+    T Function() compute, {
+    String? debugLabel,
+  }) =>
+      ComputedObservable(compute, debugLabel);
 
   late T _value;
-  T get value => observeValue(const ObservedKey.value());
+  T get value => observeValue(ObservedKey.value);
 
   final _computedNotifier = ComputedNotifier();
   final _changes = StreamController<T>.broadcast(sync: true);
@@ -52,17 +63,23 @@ abstract class Observable<T> {
 }
 
 class MutableObservable<T> extends Observable<T> {
-  MutableObservable._(T value) {
+  MutableObservable._(T value, [this._debugLabel]) {
     _value = value;
   }
 
+  final String? _debugLabel;
+
   set value(T newValue) {
     _value = newValue;
-    notifyChange(const [ObservedKey.value()]);
+    if (_debugLogging) {
+      debugPrint('$this SET VALUE: $newValue');
+    }
+    notifyChange(const [ObservedKey.value]);
   }
 
   @override
-  String toString() => 'Observable.mutable($_value)';
+  String toString() =>
+      '${_debugLabel != null ? '($_debugLabel) ' : ''}Observable.mutable($_value)';
 }
 
 class ComputedObservable<T> extends Observable<T> {
@@ -70,13 +87,17 @@ class ComputedObservable<T> extends Observable<T> {
   static ComputedObservable? get current =>
       Zone.current[ComputedObservable.zoneKey];
 
-  ComputedObservable(this._compute) {
+  ComputedObservable(this._compute, [this._debugLabel]) {
     recompute();
   }
+
+  final String? _debugLabel;
 
   final T Function() _compute;
 
   final _dependencies = <Observable>{};
+
+  bool _initialized = false;
 
   void recompute() {
     for (final dependency in _dependencies) {
@@ -89,10 +110,34 @@ class ComputedObservable<T> extends Observable<T> {
   }
 
   void _recompute() {
+    if (_debugLogging) {
+      debugPrint('BEFORE RECOMPUTE:');
+      debugPrint('  $this');
+      final desc = _computedNotifier.debugKeyReferencesTreeDescription();
+      if (desc.isNotEmpty) {
+        debugPrint(desc);
+      }
+    }
+
     _value = _compute();
-    notifyChange(const [ObservedKey.value()]);
+    notifyChange(const [ObservedKey.value]);
+    _initialized = true;
+
+    if (_debugLogging) {
+      debugPrint('AFTER RECOMPUTE:');
+      debugPrint('  $this');
+      final desc2 = _computedNotifier.debugKeyReferencesTreeDescription();
+      if (desc2.isNotEmpty) {
+        debugPrint(desc2);
+      }
+    }
   }
 
   @override
-  String toString() => 'Observable.computed($_value)';
+  String toString() {
+    if (!_initialized) {
+      return '${_debugLabel != null ? '($_debugLabel) ' : ''}Observable.computed(UNINITIALIZED)';
+    }
+    return '${_debugLabel != null ? '($_debugLabel) ' : ''}Observable.computed($_value)';
+  }
 }
