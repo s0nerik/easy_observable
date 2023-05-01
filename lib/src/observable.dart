@@ -112,7 +112,7 @@ class ComputedObservable<T> extends Observable<T> {
   void _recompute() {
     if (_debugLogging) {
       debugPrint('BEFORE RECOMPUTE:');
-      debugPrint('  $this');
+      debugPrint('value <- $this');
       final desc = _computedNotifier.debugKeyReferencesTreeDescription();
       if (desc.isNotEmpty) {
         debugPrint(desc);
@@ -125,7 +125,7 @@ class ComputedObservable<T> extends Observable<T> {
 
     if (_debugLogging) {
       debugPrint('AFTER RECOMPUTE:');
-      debugPrint('  $this');
+      debugPrint('value <- $this');
       final desc2 = _computedNotifier.debugKeyReferencesTreeDescription();
       if (desc2.isNotEmpty) {
         debugPrint(desc2);
