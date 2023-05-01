@@ -60,4 +60,23 @@ class ComputedNotifier {
       ref.recompute();
     }
   }
+
+  String debugKeyReferencesTreeDescription({
+    int nestingLevel = 1,
+    StringBuffer? strBuf,
+  }) {
+    final nesting = '  ' * nestingLevel;
+
+    final sb = strBuf ?? StringBuffer();
+    for (final entry in _keyReferences.entries) {
+      for (final ref in entry.value) {
+        sb.writeln('$nesting${entry.key} <- $ref');
+        ref.computedNotifier.debugKeyReferencesTreeDescription(
+          nestingLevel: nestingLevel + 1,
+          strBuf: sb,
+        );
+      }
+    }
+    return sb.toString();
+  }
 }
