@@ -1,18 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 
 import 'computed_notifier.dart';
-
-const _debugLogging = kDebugMode;
-var _debugComputeDepth = 0;
-String get _debugComputePrefix => '  ' * _debugComputeDepth;
-const _debugPrintBeforeRecompute = _debugLogging;
-const _debugPrintAfterRecompute = _debugLogging;
-const _debugPrintObserveValue = _debugLogging;
-const _debugPrintSetValue = _debugLogging;
-const _debugPrintNotifyChange = _debugLogging;
+import 'observable_debug_logging.dart';
 
 @internal
 extension RegisterKeyReferenceExtension on Observable {
@@ -28,9 +19,7 @@ extension RegisterKeyReferenceExtension on Observable {
 @internal
 extension ObserveValueExtension<T> on Observable<T> {
   T observeValue(ObservedKey key) {
-    if (_debugPrintObserveValue) {
-      debugPrint('${_debugComputePrefix}OBSERVE $this -> $key');
-    }
+    assert(debugPrintObserveValue(this, key));
     registerKeyReference(key);
     return _value;
   }
@@ -39,9 +28,7 @@ extension ObserveValueExtension<T> on Observable<T> {
 @internal
 extension NotifyChangeExtension on Observable {
   void notifyChange(List<ObservedKey> keys) {
-    if (_debugPrintNotifyChange) {
-      debugPrint('${_debugComputePrefix}NOTIFY $this -> $keys');
-    }
+    assert(debugPrintNotifyChange(this, keys));
     _changes.add(_value);
     for (final key in keys) {
       _computedNotifier.recompute(key);
@@ -83,10 +70,8 @@ class MutableObservable<T> extends Observable<T> {
   final String? _debugLabel;
 
   set value(T newValue) {
+    assert(debugPrintSetValue(this, ObservedKey.value, newValue));
     _value = newValue;
-    if (_debugPrintSetValue) {
-      debugPrint('${_debugComputePrefix}SET VALUE $this -> $newValue');
-    }
     notifyChange(const [ObservedKey.value]);
   }
 
@@ -113,9 +98,7 @@ class ComputedObservable<T> extends Observable<T> {
   bool _initialized = false;
 
   void recompute() {
-    if (_debugLogging && current == null) {
-      _debugComputeDepth = 0;
-    }
+    assert(debugClearComputeDepth(current));
     for (final dependency in _dependencies) {
       dependency._computedNotifier.unregisterKeyReferences(this);
     }
@@ -126,33 +109,19 @@ class ComputedObservable<T> extends Observable<T> {
   }
 
   void _recompute() {
-    if (_debugLogging) {
-      _debugComputeDepth++;
-    }
-    if (_debugPrintBeforeRecompute) {
-      debugPrint('${_debugComputePrefix}BEFORE RECOMPUTE:');
-      debugPrint('$_debugComputePrefix╰ value <- $this');
-      final descLines = _computedNotifier.debugKeyReferencesTreeDescription();
-      for (final line in descLines) {
-        debugPrint('$_debugComputePrefix  $line');
-      }
-    }
+    assert(debugIncrementComputeDepth());
+    assert(
+      debugPrintBeforeRecompute(this, ObservedKey.value, computedNotifier),
+    );
 
     _value = _compute();
     notifyChange(const [ObservedKey.value]);
     _initialized = true;
 
-    if (_debugPrintAfterRecompute) {
-      debugPrint('${_debugComputePrefix}AFTER RECOMPUTE:');
-      debugPrint('$_debugComputePrefix╰ value <- $this');
-      final descLines2 = _computedNotifier.debugKeyReferencesTreeDescription();
-      for (final line in descLines2) {
-        debugPrint('$_debugComputePrefix  $line');
-      }
-    }
-    if (_debugLogging) {
-      _debugComputeDepth--;
-    }
+    assert(
+      debugPrintAfterRecompute(this, ObservedKey.value, computedNotifier),
+    );
+    assert(debugDecrementComputeDepth());
   }
 
   @override
