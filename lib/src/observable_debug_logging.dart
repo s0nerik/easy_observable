@@ -12,6 +12,8 @@ const _printObserveValue = true;
 const _printSetValue = true;
 const _printNotifyChange = true;
 
+const _targetComputeDepth = 1;
+
 bool debugClearComputeDepth(ComputedObservable? currentScope) {
   if (currentScope == null) {
     _computeDepth = 0;
@@ -34,6 +36,9 @@ bool debugPrintBeforeRecompute(
   ObservedKey key,
   ComputedNotifier computedNotifier,
 ) {
+  if (_targetComputeDepth != -1 && _computeDepth != _targetComputeDepth) {
+    return true;
+  }
   if (_printBeforeRecompute) {
     debugPrint('${_computePrefix}BEFORE RECOMPUTE:');
     debugPrint('$_computePrefix╰ $key <- $observable');
@@ -50,6 +55,9 @@ bool debugPrintAfterRecompute(
   ObservedKey key,
   ComputedNotifier computedNotifier,
 ) {
+  if (_targetComputeDepth != -1 && _computeDepth != _targetComputeDepth) {
+    return true;
+  }
   if (_printAfterRecompute) {
     debugPrint('${_computePrefix}AFTER RECOMPUTE:');
     debugPrint('$_computePrefix╰ $key <- $observable');
