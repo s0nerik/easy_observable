@@ -99,6 +99,11 @@ class ComputedObservable<T> extends Observable<T> {
 
   void recompute() {
     assert(debugClearComputeDepthIfNeeded(current));
+    assert(debugIncrementComputeDepth());
+    assert(
+      debugPrintBeforeRecompute(this, ObservedKey.value, computedNotifier),
+    );
+
     for (final dependency in _dependencies) {
       dependency._computedNotifier.unregisterKeyReferences(this);
     }
@@ -106,22 +111,17 @@ class ComputedObservable<T> extends Observable<T> {
     runZoned(_recompute, zoneValues: {
       ComputedObservable.zoneKey: this,
     });
-  }
-
-  void _recompute() {
-    assert(debugIncrementComputeDepth());
-    assert(
-      debugPrintBeforeRecompute(this, ObservedKey.value, computedNotifier),
-    );
-
-    _value = _compute();
-    notifyChange(const [ObservedKey.value]);
-    _initialized = true;
 
     assert(
       debugPrintAfterRecompute(this, ObservedKey.value, computedNotifier),
     );
     assert(debugDecrementComputeDepth());
+  }
+
+  void _recompute() {
+    _value = _compute();
+    notifyChange(const [ObservedKey.value]);
+    _initialized = true;
   }
 
   @override
