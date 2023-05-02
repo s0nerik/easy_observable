@@ -79,4 +79,23 @@ class ComputedNotifier {
     }
     return lines;
   }
+
+  List<String> debugReferencedKeysTreeDescription({
+    int nestingLevel = 0,
+    List<String>? lines,
+  }) {
+    final nesting = '  ' * nestingLevel;
+
+    lines ??= <String>[];
+    for (final entry in _referencedKeys.entries) {
+      for (final key in entry.value) {
+        lines.add('$nesting╰ $key <- ${entry.key}');
+        entry.key.computedNotifier.debugReferencedKeysTreeDescription(
+          nestingLevel: nestingLevel + 1,
+          lines: lines,
+        );
+      }
+    }
+    return lines;
+  }
 }
