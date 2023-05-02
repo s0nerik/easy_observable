@@ -61,6 +61,7 @@ bool debugDecrementComputeDepth() {
 bool debugPrintRecomputeStatus(
   Observable observable,
   ObservedKey key,
+  Set<Observable> dependencies,
   ComputedNotifier computedNotifier,
   DebugRecomputeState recomputeState,
 ) {
@@ -72,11 +73,17 @@ bool debugPrintRecomputeStatus(
       : _printAfterRecompute;
   if (shouldPrint) {
     if (recomputeState == DebugRecomputeState.beforeRecompute) {
-      debugPrint('$_computePrefix$_eventBeforeRecompute:');
+      debugPrint('$_computePrefix$_eventBeforeRecompute $observable:');
     } else {
-      debugPrint('$_computePrefix$_eventAfterRecompute:');
+      debugPrint('$_computePrefix$_eventAfterRecompute $observable:');
     }
-    debugPrint('$_computePrefix╰ $key <- $observable');
+
+    debugPrint('${_computePrefix}DEPENDENCIES:');
+    for (final dependency in dependencies) {
+      debugPrint('$_computePrefix  - $dependency');
+    }
+
+    debugPrint('${_computePrefix}KEY REFERENCES:');
     final descLines = computedNotifier.debugKeyReferencesTreeDescription();
     for (final line in descLines) {
       debugPrint('$_computePrefix  $line');

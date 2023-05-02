@@ -104,6 +104,7 @@ class ComputedObservable<T> extends Observable<T> {
       debugPrintRecomputeStatus(
         this,
         ObservedKey.value,
+        _dependencies,
         computedNotifier,
         DebugRecomputeState.beforeRecompute,
       ),
@@ -121,6 +122,7 @@ class ComputedObservable<T> extends Observable<T> {
       debugPrintRecomputeStatus(
         this,
         ObservedKey.value,
+        _dependencies,
         computedNotifier,
         DebugRecomputeState.afterRecompute,
       ),
