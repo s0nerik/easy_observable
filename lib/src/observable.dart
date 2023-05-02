@@ -7,6 +7,9 @@ import 'computed_notifier.dart';
 
 const _debugLogging = kDebugMode;
 
+var _debugComputeDepth = 0;
+String get _debugComputePrefix => '  ' * _debugComputeDepth;
+
 @internal
 extension RegisterKeyReferenceExtension on Observable {
   void registerKeyReference(ObservedKey key) {
@@ -22,7 +25,7 @@ extension RegisterKeyReferenceExtension on Observable {
 extension ObserveValueExtension<T> on Observable<T> {
   T observeValue(ObservedKey key) {
     if (_debugLogging) {
-      debugPrint('OBSERVE $this -> $key');
+      debugPrint('${_debugComputePrefix}OBSERVE $this -> $key');
     }
     registerKeyReference(key);
     return _value;
@@ -75,7 +78,7 @@ class MutableObservable<T> extends Observable<T> {
   set value(T newValue) {
     _value = newValue;
     if (_debugLogging) {
-      debugPrint('SET VALUE $this -> $newValue');
+      debugPrint('${_debugComputePrefix}SET VALUE $this -> $newValue');
     }
     notifyChange(const [ObservedKey.value]);
   }
@@ -103,6 +106,9 @@ class ComputedObservable<T> extends Observable<T> {
   bool _initialized = false;
 
   void recompute() {
+    if (_debugLogging && current == null) {
+      _debugComputeDepth = 0;
+    }
     for (final dependency in _dependencies) {
       dependency._computedNotifier.unregisterKeyReferences(this);
     }
@@ -114,11 +120,12 @@ class ComputedObservable<T> extends Observable<T> {
 
   void _recompute() {
     if (_debugLogging) {
-      debugPrint('BEFORE RECOMPUTE:');
-      debugPrint('| value <- $this');
+      _debugComputeDepth++;
+      debugPrint('${_debugComputePrefix}BEFORE RECOMPUTE:');
+      debugPrint('$_debugComputePrefix| value <- $this');
       final descLines = _computedNotifier.debugKeyReferencesTreeDescription();
       for (final line in descLines) {
-        debugPrint('| $line');
+        debugPrint('$_debugComputePrefix| $line');
       }
     }
 
@@ -127,11 +134,12 @@ class ComputedObservable<T> extends Observable<T> {
     _initialized = true;
 
     if (_debugLogging) {
-      debugPrint('AFTER RECOMPUTE:');
-      debugPrint('| value <- $this');
+      _debugComputeDepth--;
+      debugPrint('${_debugComputePrefix}AFTER RECOMPUTE:');
+      debugPrint('$_debugComputePrefix| value <- $this');
       final descLines2 = _computedNotifier.debugKeyReferencesTreeDescription();
       for (final line in descLines2) {
-        debugPrint('| $line');
+        debugPrint('$_debugComputePrefix| $line');
       }
     }
   }
