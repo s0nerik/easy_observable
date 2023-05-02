@@ -131,10 +131,10 @@ class ComputedObservable<T> extends Observable<T> {
     }
     if (_debugPrintBeforeRecompute) {
       debugPrint('${_debugComputePrefix}BEFORE RECOMPUTE:');
-      debugPrint('$_debugComputePrefix| value <- $this');
+      debugPrint('$_debugComputePrefix╰ value <- $this');
       final descLines = _computedNotifier.debugKeyReferencesTreeDescription();
       for (final line in descLines) {
-        debugPrint('$_debugComputePrefix| $line');
+        debugPrint('$_debugComputePrefix  $line');
       }
     }
 
@@ -144,10 +144,10 @@ class ComputedObservable<T> extends Observable<T> {
 
     if (_debugPrintAfterRecompute) {
       debugPrint('${_debugComputePrefix}AFTER RECOMPUTE:');
-      debugPrint('$_debugComputePrefix| value <- $this');
+      debugPrint('$_debugComputePrefix╰ value <- $this');
       final descLines2 = _computedNotifier.debugKeyReferencesTreeDescription();
       for (final line in descLines2) {
-        debugPrint('$_debugComputePrefix| $line');
+        debugPrint('$_debugComputePrefix  $line');
       }
     }
     if (_debugLogging) {
