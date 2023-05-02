@@ -6,8 +6,11 @@ import 'observable.dart';
 var _computeDepth = 0;
 String get _computePrefix => '  ' * _computeDepth;
 
-const _printObserveValue = false;
-const _printSetValue = false;
+const _printObserveValue = true;
+const _targetPrintObserveValueComputeDepth = 0;
+
+const _printSetValue = true;
+const _targetSetValueComputeDepth = 0;
 
 const _printNotifyChange = true;
 const _targetNotifyChangeComputeDepth = 0;
@@ -72,6 +75,10 @@ bool debugPrintAfterRecompute(
 }
 
 bool debugPrintSetValue(Observable observable, ObservedKey key, Object? value) {
+  if (_targetSetValueComputeDepth != -1 &&
+      _computeDepth != _targetSetValueComputeDepth) {
+    return true;
+  }
   if (_printSetValue) {
     debugPrint('${_computePrefix}SET $observable -> $key = $value');
   }
@@ -79,6 +86,10 @@ bool debugPrintSetValue(Observable observable, ObservedKey key, Object? value) {
 }
 
 bool debugPrintObserveValue(Observable observable, ObservedKey key) {
+  if (_targetPrintObserveValueComputeDepth != -1 &&
+      _computeDepth != _targetPrintObserveValueComputeDepth) {
+    return true;
+  }
   if (_printObserveValue) {
     debugPrint('${_computePrefix}OBSERVE $observable -> $key');
   }
