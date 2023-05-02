@@ -19,6 +19,13 @@ const _printBeforeRecompute = true;
 const _printAfterRecompute = true;
 const _targetComputeDepth = 1;
 
+// ANSI green
+const _green = '\u001b[32m';
+// ANSI blue
+const _blue = '\u001b[34m';
+// ANSI reset
+const _reset = '\u001b[0m';
+
 bool debugClearComputeDepth(ComputedObservable? currentScope) {
   if (currentScope == null) {
     _computeDepth = 0;
@@ -80,7 +87,9 @@ bool debugPrintSetValue(Observable observable, ObservedKey key, Object? value) {
     return true;
   }
   if (_printSetValue) {
-    debugPrint('${_computePrefix}SET $observable -> $key = $value');
+    debugPrint(
+      '$_computePrefix${_green}SET$_reset $observable -> $key = $value',
+    );
   }
   return true;
 }
@@ -102,7 +111,9 @@ bool debugPrintNotifyChange(Observable observable, List<ObservedKey> keys) {
     return true;
   }
   if (_printNotifyChange) {
-    debugPrint('${_computePrefix}NOTIFY $observable -> $keys');
+    debugPrint(
+      '$_computePrefix${_blue}NOTIFY$_reset $observable -> $keys',
+    );
   }
   return true;
 }
