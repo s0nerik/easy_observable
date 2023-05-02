@@ -62,7 +62,7 @@ class ComputedNotifier {
   }
 
   List<String> debugKeyReferencesTreeDescription({
-    int nestingLevel = 1,
+    int nestingLevel = 0,
     List<String>? lines,
   }) {
     final nesting = '  ' * nestingLevel;
@@ -70,7 +70,7 @@ class ComputedNotifier {
     lines ??= <String>[];
     for (final entry in _keyReferences.entries) {
       for (final ref in entry.value) {
-        lines.add('$nesting${entry.key} <- $ref');
+        lines.add('$nesting╰ ${entry.key} <- $ref');
         ref.computedNotifier.debugKeyReferencesTreeDescription(
           nestingLevel: nestingLevel + 1,
           lines: lines,
