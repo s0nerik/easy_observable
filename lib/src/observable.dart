@@ -6,7 +6,6 @@ import 'package:meta/meta.dart';
 import 'computed_notifier.dart';
 
 const _debugLogging = kDebugMode;
-
 var _debugComputeDepth = 0;
 String get _debugComputePrefix => '  ' * _debugComputeDepth;
 
