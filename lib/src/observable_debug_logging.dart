@@ -7,13 +7,13 @@ var _computeDepth = 0;
 String get _computePrefix => '  ' * _computeDepth;
 
 const _printObserveValue = true;
-const _targetPrintObserveValueComputeDepth = 0;
+const _targetPrintObserveValueComputeDepth = -1;
 
 const _printSetValue = true;
-const _targetSetValueComputeDepth = 0;
+const _targetSetValueComputeDepth = -1;
 
 const _printNotifyChange = true;
-const _targetNotifyChangeComputeDepth = 0;
+const _targetNotifyChangeComputeDepth = -1;
 
 const _printBeforeRecompute = true;
 const _printAfterRecompute = true;
