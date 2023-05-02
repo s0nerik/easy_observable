@@ -98,7 +98,7 @@ class ComputedObservable<T> extends Observable<T> {
   bool _initialized = false;
 
   void recompute() {
-    assert(debugClearComputeDepth(current));
+    assert(debugClearComputeDepthIfNeeded(current));
     for (final dependency in _dependencies) {
       dependency._computedNotifier.unregisterKeyReferences(this);
     }

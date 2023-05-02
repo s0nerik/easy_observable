@@ -36,7 +36,7 @@ const _eventNotifyChange = '${_blue}NOTIFY$_reset';
 const _eventBeforeRecompute = '${_yellow}BEFORE RECOMPUTE$_reset';
 const _eventAfterRecompute = '${_yellow}AFTER RECOMPUTE$_reset';
 
-bool debugClearComputeDepth(ComputedObservable? currentScope) {
+bool debugClearComputeDepthIfNeeded(ComputedObservable? currentScope) {
   if (currentScope == null) {
     _computeDepth = 0;
   }
