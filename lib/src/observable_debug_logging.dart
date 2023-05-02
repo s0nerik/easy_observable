@@ -104,7 +104,9 @@ bool debugPrintObserveValue(Observable observable, ObservedKey key) {
     return true;
   }
   if (_printObserveValue) {
-    debugPrint('${_computePrefix}OBSERVE $observable -> $key');
+    debugPrint(
+      '$_computePrefix${_magenta}OBSERVE$_reset $observable -> $key',
+    );
   }
   return true;
 }
