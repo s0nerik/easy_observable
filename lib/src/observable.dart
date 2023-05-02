@@ -101,7 +101,12 @@ class ComputedObservable<T> extends Observable<T> {
     assert(debugClearComputeDepthIfNeeded(current));
     assert(debugIncrementComputeDepth());
     assert(
-      debugPrintBeforeRecompute(this, ObservedKey.value, computedNotifier),
+      debugPrintRecomputeStatus(
+        this,
+        ObservedKey.value,
+        computedNotifier,
+        DebugRecomputeState.beforeRecompute,
+      ),
     );
 
     for (final dependency in _dependencies) {
@@ -113,7 +118,12 @@ class ComputedObservable<T> extends Observable<T> {
     });
 
     assert(
-      debugPrintAfterRecompute(this, ObservedKey.value, computedNotifier),
+      debugPrintRecomputeStatus(
+        this,
+        ObservedKey.value,
+        computedNotifier,
+        DebugRecomputeState.afterRecompute,
+      ),
     );
     assert(debugDecrementComputeDepth());
   }

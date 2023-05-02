@@ -36,6 +36,11 @@ const _eventNotifyChange = '${_blue}NOTIFY$_reset';
 const _eventBeforeRecompute = '${_yellow}BEFORE RECOMPUTE$_reset';
 const _eventAfterRecompute = '${_yellow}AFTER RECOMPUTE$_reset';
 
+enum DebugRecomputeState {
+  beforeRecompute,
+  afterRecompute,
+}
+
 bool debugClearComputeDepthIfNeeded(ComputedObservable? currentScope) {
   if (currentScope == null) {
     _computeDepth = 0;
@@ -53,35 +58,24 @@ bool debugDecrementComputeDepth() {
   return true;
 }
 
-bool debugPrintBeforeRecompute(
+bool debugPrintRecomputeStatus(
   Observable observable,
   ObservedKey key,
   ComputedNotifier computedNotifier,
+  DebugRecomputeState recomputeState,
 ) {
   if (_targetComputeDepth != -1 && _computeDepth != _targetComputeDepth) {
     return true;
   }
-  if (_printBeforeRecompute) {
-    debugPrint('$_computePrefix$_eventBeforeRecompute:');
-    debugPrint('$_computePrefix╰ $key <- $observable');
-    final descLines = computedNotifier.debugKeyReferencesTreeDescription();
-    for (final line in descLines) {
-      debugPrint('$_computePrefix  $line');
+  final shouldPrint = recomputeState == DebugRecomputeState.beforeRecompute
+      ? _printBeforeRecompute
+      : _printAfterRecompute;
+  if (shouldPrint) {
+    if (recomputeState == DebugRecomputeState.beforeRecompute) {
+      debugPrint('$_computePrefix$_eventBeforeRecompute:');
+    } else {
+      debugPrint('$_computePrefix$_eventAfterRecompute:');
     }
-  }
-  return true;
-}
-
-bool debugPrintAfterRecompute(
-  Observable observable,
-  ObservedKey key,
-  ComputedNotifier computedNotifier,
-) {
-  if (_targetComputeDepth != -1 && _computeDepth != _targetComputeDepth) {
-    return true;
-  }
-  if (_printAfterRecompute) {
-    debugPrint('$_computePrefix$_eventAfterRecompute:');
     debugPrint('$_computePrefix╰ $key <- $observable');
     final descLines = computedNotifier.debugKeyReferencesTreeDescription();
     for (final line in descLines) {
