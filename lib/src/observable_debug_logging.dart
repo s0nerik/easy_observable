@@ -78,12 +78,12 @@ bool debugPrintRecomputeStatus(
       debugPrint('$_computePrefix$_eventAfterRecompute $observable:');
     }
 
-    debugPrint('${_computePrefix}DEPENDENCIES:');
+    debugPrint('$_computePrefix  DEPENDENCIES:');
     for (final dependency in dependencies) {
       debugPrint('$_computePrefix  - $dependency');
     }
 
-    debugPrint('${_computePrefix}KEY REFERENCES:');
+    debugPrint('$_computePrefix  KEY REFERENCES:');
     final descLines = computedNotifier.debugKeyReferencesTreeDescription();
     for (final line in descLines) {
       debugPrint('$_computePrefix  $line');
