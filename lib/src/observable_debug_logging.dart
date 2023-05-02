@@ -33,6 +33,8 @@ const _reset = '\u001b[0m';
 const _eventObserve = '${_magenta}OBSERVE$_reset';
 const _eventSetValue = '${_green}SET$_reset';
 const _eventNotifyChange = '${_blue}NOTIFY$_reset';
+const _eventBeforeRecompute = '${_yellow}BEFORE RECOMPUTE$_reset';
+const _eventAfterRecompute = '${_yellow}AFTER RECOMPUTE$_reset';
 
 bool debugClearComputeDepth(ComputedObservable? currentScope) {
   if (currentScope == null) {
@@ -60,7 +62,7 @@ bool debugPrintBeforeRecompute(
     return true;
   }
   if (_printBeforeRecompute) {
-    debugPrint('$_computePrefix${_yellow}BEFORE RECOMPUTE:$_reset');
+    debugPrint('$_computePrefix$_eventBeforeRecompute:');
     debugPrint('$_computePrefix╰ $key <- $observable');
     final descLines = computedNotifier.debugKeyReferencesTreeDescription();
     for (final line in descLines) {
@@ -79,7 +81,7 @@ bool debugPrintAfterRecompute(
     return true;
   }
   if (_printAfterRecompute) {
-    debugPrint('$_computePrefix${_yellow}AFTER RECOMPUTE:$_reset');
+    debugPrint('$_computePrefix$_eventAfterRecompute:');
     debugPrint('$_computePrefix╰ $key <- $observable');
     final descLines = computedNotifier.debugKeyReferencesTreeDescription();
     for (final line in descLines) {
