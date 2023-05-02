@@ -8,6 +8,10 @@ import 'computed_notifier.dart';
 const _debugLogging = kDebugMode;
 var _debugComputeDepth = 0;
 String get _debugComputePrefix => '  ' * _debugComputeDepth;
+const _debugPrintBeforeRecompute = _debugLogging;
+const _debugPrintAfterRecompute = _debugLogging;
+const _debugPrintObserveValue = _debugLogging;
+const _debugPrintSetValue = _debugLogging;
 
 @internal
 extension RegisterKeyReferenceExtension on Observable {
@@ -23,7 +27,7 @@ extension RegisterKeyReferenceExtension on Observable {
 @internal
 extension ObserveValueExtension<T> on Observable<T> {
   T observeValue(ObservedKey key) {
-    if (_debugLogging) {
+    if (_debugPrintObserveValue) {
       debugPrint('${_debugComputePrefix}OBSERVE $this -> $key');
     }
     registerKeyReference(key);
@@ -76,7 +80,7 @@ class MutableObservable<T> extends Observable<T> {
 
   set value(T newValue) {
     _value = newValue;
-    if (_debugLogging) {
+    if (_debugPrintSetValue) {
       debugPrint('${_debugComputePrefix}SET VALUE $this -> $newValue');
     }
     notifyChange(const [ObservedKey.value]);
@@ -118,7 +122,7 @@ class ComputedObservable<T> extends Observable<T> {
   }
 
   void _recompute() {
-    if (_debugLogging) {
+    if (_debugPrintBeforeRecompute) {
       _debugComputeDepth++;
       debugPrint('${_debugComputePrefix}BEFORE RECOMPUTE:');
       debugPrint('$_debugComputePrefix| value <- $this');
@@ -132,7 +136,7 @@ class ComputedObservable<T> extends Observable<T> {
     notifyChange(const [ObservedKey.value]);
     _initialized = true;
 
-    if (_debugLogging) {
+    if (_debugPrintAfterRecompute) {
       _debugComputeDepth--;
       debugPrint('${_debugComputePrefix}AFTER RECOMPUTE:');
       debugPrint('$_debugComputePrefix| value <- $this');
