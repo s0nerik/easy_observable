@@ -53,7 +53,7 @@ class ComputedNotifier {
   }
 
   void recompute(ObservedKey key) {
-    final refs = _keyReferences[key]?.toSet();
+    final refs = _keyReferences[key]?.toList().reversed;
     if (refs == null) return;
 
     for (final ref in refs) {
@@ -61,22 +61,22 @@ class ComputedNotifier {
     }
   }
 
-  String debugKeyReferencesTreeDescription({
+  List<String> debugKeyReferencesTreeDescription({
     int nestingLevel = 1,
-    StringBuffer? strBuf,
+    List<String>? lines,
   }) {
     final nesting = '  ' * nestingLevel;
 
-    final sb = strBuf ?? StringBuffer();
+    lines ??= <String>[];
     for (final entry in _keyReferences.entries) {
       for (final ref in entry.value) {
-        sb.writeln('$nesting${entry.key} <- $ref');
+        lines.add('$nesting${entry.key} <- $ref');
         ref.computedNotifier.debugKeyReferencesTreeDescription(
           nestingLevel: nestingLevel + 1,
-          strBuf: sb,
+          lines: lines,
         );
       }
     }
-    return sb.toString();
+    return lines;
   }
 }
