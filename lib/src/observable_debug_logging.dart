@@ -23,6 +23,10 @@ const _targetComputeDepth = 1;
 const _green = '\u001b[32m';
 // ANSI blue
 const _blue = '\u001b[34m';
+// ANSI yellow
+const _yellow = '\u001b[33m';
+// ANSI magenta
+const _magenta = '\u001b[35m';
 // ANSI reset
 const _reset = '\u001b[0m';
 
@@ -52,7 +56,7 @@ bool debugPrintBeforeRecompute(
     return true;
   }
   if (_printBeforeRecompute) {
-    debugPrint('${_computePrefix}BEFORE RECOMPUTE:');
+    debugPrint('$_computePrefix${_yellow}BEFORE RECOMPUTE:$_reset');
     debugPrint('$_computePrefix╰ $key <- $observable');
     final descLines = computedNotifier.debugKeyReferencesTreeDescription();
     for (final line in descLines) {
@@ -71,7 +75,7 @@ bool debugPrintAfterRecompute(
     return true;
   }
   if (_printAfterRecompute) {
-    debugPrint('${_computePrefix}AFTER RECOMPUTE:');
+    debugPrint('$_computePrefix${_yellow}AFTER RECOMPUTE:$_reset');
     debugPrint('$_computePrefix╰ $key <- $observable');
     final descLines = computedNotifier.debugKeyReferencesTreeDescription();
     for (final line in descLines) {
