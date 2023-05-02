@@ -91,6 +91,9 @@ void main() {
     late Map<Observable, int> streamComputations;
 
     setUp(() {
+      final oldDebugPrint = debugPrint;
+      debugPrint = (String? message, {int? wrapWidth}) {};
+
       streamNotifications = {};
       streamComputations = {};
 
@@ -155,6 +158,8 @@ void main() {
         (value) =>
             streamNotifications.putIfAbsent(computed1and2, () => []).add(value),
       );
+
+      debugPrint = oldDebugPrint;
     });
 
     group('`stream` notification rules', () {
