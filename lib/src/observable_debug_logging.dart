@@ -30,6 +30,10 @@ const _magenta = '\u001b[35m';
 // ANSI reset
 const _reset = '\u001b[0m';
 
+const _eventObserve = '${_magenta}OBSERVE$_reset';
+const _eventSetValue = '${_green}SET$_reset';
+const _eventNotifyChange = '${_blue}NOTIFY$_reset';
+
 bool debugClearComputeDepth(ComputedObservable? currentScope) {
   if (currentScope == null) {
     _computeDepth = 0;
@@ -92,7 +96,7 @@ bool debugPrintSetValue(Observable observable, ObservedKey key, Object? value) {
   }
   if (_printSetValue) {
     debugPrint(
-      '$_computePrefix${_green}SET$_reset $observable -> $key = $value',
+      '$_computePrefix$_eventSetValue $observable -> $key = $value',
     );
   }
   return true;
@@ -105,7 +109,7 @@ bool debugPrintObserveValue(Observable observable, ObservedKey key) {
   }
   if (_printObserveValue) {
     debugPrint(
-      '$_computePrefix${_magenta}OBSERVE$_reset $observable -> $key',
+      '$_computePrefix$_eventObserve $observable -> $key',
     );
   }
   return true;
@@ -118,7 +122,7 @@ bool debugPrintNotifyChange(Observable observable, List<ObservedKey> keys) {
   }
   if (_printNotifyChange) {
     debugPrint(
-      '$_computePrefix${_blue}NOTIFY$_reset $observable -> $keys',
+      '$_computePrefix$_eventNotifyChange $observable -> $keys',
     );
   }
   return true;
