@@ -8,7 +8,9 @@ String get _computePrefix => '  ' * _computeDepth;
 
 const _printObserveValue = false;
 const _printSetValue = false;
+
 const _printNotifyChange = true;
+const _targetNotifyChangeComputeDepth = 0;
 
 const _printBeforeRecompute = true;
 const _printAfterRecompute = true;
@@ -84,6 +86,10 @@ bool debugPrintObserveValue(Observable observable, ObservedKey key) {
 }
 
 bool debugPrintNotifyChange(Observable observable, List<ObservedKey> keys) {
+  if (_targetNotifyChangeComputeDepth != -1 &&
+      _computeDepth != _targetNotifyChangeComputeDepth) {
+    return true;
+  }
   if (_printNotifyChange) {
     debugPrint('${_computePrefix}NOTIFY $observable -> $keys');
   }
