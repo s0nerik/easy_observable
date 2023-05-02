@@ -6,12 +6,12 @@ import 'observable.dart';
 var _computeDepth = 0;
 String get _computePrefix => '  ' * _computeDepth;
 
-const _printBeforeRecompute = true;
-const _printAfterRecompute = true;
-const _printObserveValue = true;
-const _printSetValue = true;
+const _printObserveValue = false;
+const _printSetValue = false;
 const _printNotifyChange = true;
 
+const _printBeforeRecompute = true;
+const _printAfterRecompute = true;
 const _targetComputeDepth = 1;
 
 bool debugClearComputeDepth(ComputedObservable? currentScope) {
