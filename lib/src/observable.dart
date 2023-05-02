@@ -10,7 +10,7 @@ var _debugComputeDepth = 0;
 String get _debugComputePrefix => '  ' * _debugComputeDepth;
 const _debugPrintBeforeRecompute = _debugLogging;
 const _debugPrintAfterRecompute = _debugLogging;
-const _debugPrintObserveValue = false;
+const _debugPrintObserveValue = _debugLogging;
 const _debugPrintSetValue = _debugLogging;
 const _debugPrintNotifyChange = _debugLogging;
 
