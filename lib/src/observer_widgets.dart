@@ -49,9 +49,10 @@ class ObserverStatefulElement extends StatefulElement
 }
 
 mixin ObserverElementMixin on ComponentElement {
-  Observable<void>? _computedBuild;
-  Widget? _builtWidget;
-  bool _buildScheduled = false;
+  Observable<void>? _computed;
+
+  Widget? _childWidget;
+  bool _childWidgetBuildScheduled = false;
 
   late final _build = kDebugMode ? _buildWithTypeErrorDebugging : super.build;
   Widget _buildWithTypeErrorDebugging() {
@@ -81,27 +82,27 @@ mixin ObserverElementMixin on ComponentElement {
   }
 
   void _scheduleBuild() {
-    if (_builtWidget == null) {
-      _builtWidget = _build();
+    if (_childWidget == null) {
+      _childWidget = _build();
       return;
     }
     if (!mounted) return;
     scheduleMicrotask(_runScheduledBuild);
-    _buildScheduled = true;
+    _childWidgetBuildScheduled = true;
   }
 
   void _runScheduledBuild() {
     if (!mounted) return;
-    if (!_buildScheduled) return;
-    _builtWidget = _build();
-    _buildScheduled = false;
+    if (!_childWidgetBuildScheduled) return;
+    _childWidget = _build();
+    _childWidgetBuildScheduled = false;
     markNeedsBuild();
   }
 
   @override
   Widget build() {
-    _computedBuild ??=
+    _computed ??=
         Observable.computed(_scheduleBuild, debugLabel: widget.toString());
-    return _builtWidget!;
+    return _childWidget!;
   }
 }
