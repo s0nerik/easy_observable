@@ -334,6 +334,45 @@ void main() {
           expect(rebuilds, 1);
         },
       );
+
+      testWidgets(
+        'ObserverBuilder rebuild can be triggered by the parent widget as usual',
+        (widgetTester) async {
+          final observable = Observable.mutable('a');
+
+          final observerWidget = ObserverBuilder(
+            builder: (context) {
+              MediaQuery.of(context);
+              observable.value;
+              rebuilds++;
+              return const SizedBox.shrink();
+            },
+          );
+
+          await widgetTester.pumpWidget(
+            MediaQuery(
+              data: const MediaQueryData(alwaysUse24HourFormat: false),
+              child: observerWidget,
+            ),
+          );
+
+          await widgetTester.pumpAndSettle();
+          expect(rebuilds, 1);
+
+          observable.value = 'b';
+
+          await widgetTester.pumpAndSettle();
+          expect(rebuilds, 2);
+
+          await widgetTester.pumpWidget(
+            MediaQuery(
+              data: const MediaQueryData(alwaysUse24HourFormat: true),
+              child: observerWidget,
+            ),
+          );
+          expect(rebuilds, 3);
+        },
+      );
     });
   });
 
