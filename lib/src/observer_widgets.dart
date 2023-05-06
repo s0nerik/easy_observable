@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:easy_observable/easy_observable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+
+import 'observable.dart';
 
 class ObserverBuilder extends ObserverStatefulWidget {
   const ObserverBuilder({
@@ -49,20 +49,11 @@ class ObserverStatefulElement extends StatefulElement
 }
 
 mixin ObserverElementMixin on ComponentElement {
-  late final Widget Function() _builder =
-      kDebugMode ? _buildWithTypeErrorDebugging : super.build;
+  Observable<void>? _computedBuild;
+  Widget? _builtWidget;
+  bool _doneScheduledBuild = false;
 
-  Observable<Widget>? _computedWidget;
-  StreamSubscription? _subscription;
-
-  bool _initialBuild = true;
-
-  @override
-  void unmount() {
-    _subscription?.cancel();
-    super.unmount();
-  }
-
+  late final _build = kDebugMode ? _buildWithTypeErrorDebugging : super.build;
   Widget _buildWithTypeErrorDebugging() {
     try {
       return super.build();
@@ -89,37 +80,30 @@ mixin ObserverElementMixin on ComponentElement {
     }
   }
 
-  bool get _shouldWaitForNextFrame {
-    final schedulerPhase = SchedulerBinding.instance.schedulerPhase;
-    return schedulerPhase != SchedulerPhase.idle &&
-        schedulerPhase != SchedulerPhase.postFrameCallbacks;
-  }
-
-  Widget _build() {
-    if (!_initialBuild && (dirty || _shouldWaitForNextFrame)) {
-      return _computedWidget!.value;
+  void _scheduleBuild() {
+    if (!mounted) {
+      _builtWidget = const SizedBox.shrink();
+      return;
     }
-    if (_initialBuild) {
-      _initialBuild = false;
+    if (_builtWidget == null) {
+      _builtWidget = _build();
+      markNeedsBuild();
+      return;
     }
-    return _builder();
-  }
-
-  void _markNeedsBuildNextFrame() async {
-    if (_shouldWaitForNextFrame) {
-      await SchedulerBinding.instance.endOfFrame;
-    }
-    if (!mounted || dirty) return;
-
-    markNeedsBuild();
+    _doneScheduledBuild = false;
+    scheduleMicrotask(() {
+      if (!mounted) return;
+      if (_doneScheduledBuild) return;
+      _builtWidget = _build();
+      markNeedsBuild();
+      _doneScheduledBuild = true;
+    });
   }
 
   @override
   Widget build() {
-    _computedWidget ??=
-        Observable.computed(_build, debugLabel: widget.toString());
-    _subscription ??=
-        _computedWidget!.stream.listen((_) => _markNeedsBuildNextFrame());
-    return _computedWidget!.value;
+    _computedBuild ??=
+        Observable.computed(_scheduleBuild, debugLabel: widget.toString());
+    return _builtWidget!;
   }
 }
