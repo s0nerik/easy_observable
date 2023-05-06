@@ -51,7 +51,7 @@ class ObserverStatefulElement extends StatefulElement
 mixin ObserverElementMixin on ComponentElement {
   Observable<void>? _computedBuild;
   Widget? _builtWidget;
-  bool _doneScheduledBuild = false;
+  bool _buildScheduled = false;
 
   late final _build = kDebugMode ? _buildWithTypeErrorDebugging : super.build;
   Widget _buildWithTypeErrorDebugging() {
@@ -81,23 +81,21 @@ mixin ObserverElementMixin on ComponentElement {
   }
 
   void _scheduleBuild() {
-    if (!mounted) {
-      _builtWidget = const SizedBox.shrink();
-      return;
-    }
     if (_builtWidget == null) {
       _builtWidget = _build();
-      markNeedsBuild();
       return;
     }
-    _doneScheduledBuild = false;
-    scheduleMicrotask(() {
-      if (!mounted) return;
-      if (_doneScheduledBuild) return;
-      _builtWidget = _build();
-      markNeedsBuild();
-      _doneScheduledBuild = true;
-    });
+    if (!mounted) return;
+    scheduleMicrotask(_runScheduledBuild);
+    _buildScheduled = true;
+  }
+
+  void _runScheduledBuild() {
+    if (!mounted) return;
+    if (!_buildScheduled) return;
+    _builtWidget = _build();
+    _buildScheduled = false;
+    markNeedsBuild();
   }
 
   @override
