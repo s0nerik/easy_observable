@@ -54,6 +54,8 @@ mixin ObserverElementMixin on ComponentElement {
   Widget? _childWidget;
   bool _childWidgetBuildScheduled = false;
 
+  bool _selfBuildScheduled = true;
+
   late final _build = kDebugMode ? _buildWithTypeErrorDebugging : super.build;
   Widget _buildWithTypeErrorDebugging() {
     try {
@@ -97,12 +99,21 @@ mixin ObserverElementMixin on ComponentElement {
     _childWidget = _build();
     _childWidgetBuildScheduled = false;
     markNeedsBuild();
+    _selfBuildScheduled = true;
   }
 
   @override
   Widget build() {
     _computed ??=
         Observable.computed(_scheduleBuild, debugLabel: widget.toString());
+
+    if (!_selfBuildScheduled) {
+      _childWidget = null;
+      _computed =
+          Observable.computed(_scheduleBuild, debugLabel: widget.toString());
+    }
+    _selfBuildScheduled = false;
+
     return _childWidget!;
   }
 }
