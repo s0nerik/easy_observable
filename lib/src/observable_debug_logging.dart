@@ -3,20 +3,22 @@ import 'package:flutter/foundation.dart';
 import 'computed_notifier.dart';
 import 'observable.dart';
 
+const _enableDebugLogging = false;
+
 var _computeDepth = 0;
 String get _computePrefix => '  ' * _computeDepth;
 
-const _printObserveValue = true;
+const _printObserveValue = _enableDebugLogging;
 const _targetPrintObserveValueComputeDepth = -1;
 
-const _printSetValue = true;
+const _printSetValue = _enableDebugLogging;
 const _targetSetValueComputeDepth = -1;
 
-const _printNotifyChange = true;
+const _printNotifyChange = _enableDebugLogging;
 const _targetNotifyChangeComputeDepth = -1;
 
-const _printBeforeRecompute = true;
-const _printAfterRecompute = true;
+const _printBeforeRecompute = _enableDebugLogging;
+const _printAfterRecompute = _enableDebugLogging;
 const _targetComputeDepth = 1;
 
 // ANSI green
