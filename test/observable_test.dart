@@ -371,6 +371,10 @@ void main() {
             ),
           );
           expect(rebuilds, 3);
+
+          observable.value = 'c';
+          await widgetTester.pumpAndSettle();
+          expect(rebuilds, 4);
         },
       );
     });

@@ -49,12 +49,12 @@ class ObserverStatefulElement extends StatefulElement
 }
 
 mixin ObserverElementMixin on ComponentElement {
-  Observable<void>? _computed;
-
   Widget? _childWidget;
   bool _childWidgetBuildScheduled = false;
 
   bool _selfBuildScheduled = true;
+
+  bool _isFirstBuild = true;
 
   late final _build = kDebugMode ? _buildWithTypeErrorDebugging : super.build;
   Widget _buildWithTypeErrorDebugging() {
@@ -102,17 +102,21 @@ mixin ObserverElementMixin on ComponentElement {
     _selfBuildScheduled = true;
   }
 
+  // TODO: try replacing this with a WeakReference for notifying computed values
+  int _builder = 0;
+
   @override
   Widget build() {
-    _computed ??=
-        Observable.computed(_scheduleBuild, debugLabel: widget.toString());
-
-    if (!_selfBuildScheduled) {
+    if (_isFirstBuild || !_selfBuildScheduled) {
       _childWidget = null;
-      _computed =
-          Observable.computed(_scheduleBuild, debugLabel: widget.toString());
+      final builder = ++_builder;
+      Observable.computed(() {
+        if (builder < _builder) return;
+        _scheduleBuild();
+      }, debugLabel: widget.toString());
     }
     _selfBuildScheduled = false;
+    _isFirstBuild = false;
 
     return _childWidget!;
   }
