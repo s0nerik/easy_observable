@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'computed_notifier.dart';
 import 'observable.dart';
 
@@ -75,20 +73,22 @@ bool debugPrintRecomputeStatus(
       : _printAfterRecompute;
   if (shouldPrint) {
     if (recomputeState == DebugRecomputeState.beforeRecompute) {
-      debugPrint('$_computePrefix$_eventBeforeRecompute $observable:');
+      Observable.debugPrint
+          ?.call('$_computePrefix$_eventBeforeRecompute $observable:');
     } else {
-      debugPrint('$_computePrefix$_eventAfterRecompute $observable:');
+      Observable.debugPrint
+          ?.call('$_computePrefix$_eventAfterRecompute $observable:');
     }
 
-    debugPrint('$_computePrefix  DEPENDENCIES:');
+    Observable.debugPrint?.call('$_computePrefix  DEPENDENCIES:');
     for (final dependency in dependencies) {
-      debugPrint('$_computePrefix  - $dependency');
+      Observable.debugPrint?.call('$_computePrefix  - $dependency');
     }
 
-    debugPrint('$_computePrefix  KEY REFERENCES:');
+    Observable.debugPrint?.call('$_computePrefix  KEY REFERENCES:');
     final descLines = computedNotifier.debugKeyReferencesTreeDescription();
     for (final line in descLines) {
-      debugPrint('$_computePrefix  $line');
+      Observable.debugPrint?.call('$_computePrefix  $line');
     }
   }
   return true;
@@ -100,7 +100,7 @@ bool debugPrintSetValue(Observable observable, ObservedKey key, Object? value) {
     return true;
   }
   if (_printSetValue) {
-    debugPrint(
+    Observable.debugPrint?.call(
       '$_computePrefix$_eventSetValue $observable -> $key = $value',
     );
   }
@@ -113,7 +113,7 @@ bool debugPrintObserveValue(Observable observable, ObservedKey key) {
     return true;
   }
   if (_printObserveValue) {
-    debugPrint(
+    Observable.debugPrint?.call(
       '$_computePrefix$_eventObserve $observable -> $key',
     );
   }
@@ -126,7 +126,7 @@ bool debugPrintNotifyChange(Observable observable, List<ObservedKey> keys) {
     return true;
   }
   if (_printNotifyChange) {
-    debugPrint(
+    Observable.debugPrint?.call(
       '$_computePrefix$_eventNotifyChange $observable -> $keys',
     );
   }

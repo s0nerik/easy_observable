@@ -60,6 +60,8 @@ abstract class Observable<T> {
   final _computedNotifier = ComputedNotifier();
   final _changes = StreamController<T>.broadcast(sync: true);
   Stream<T> get stream => _changes.stream;
+
+  static void Function(String message)? debugPrint;
 }
 
 class MutableObservable<T> extends Observable<T> {
