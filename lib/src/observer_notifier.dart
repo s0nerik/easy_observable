@@ -66,7 +66,7 @@ class ObservedKey {
   }
 }
 
-class ComputedNotifier {
+class ObserverNotifier {
   final _referencedKeys = LinkedHashMap<Object, Set<ObservedKey>>(
     equals: (a, b) => _ObserverWeakRef.checkEquals(a, b),
   );

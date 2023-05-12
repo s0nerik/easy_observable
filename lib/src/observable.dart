@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import 'computed_notifier.dart';
 import 'observable_debug_logging.dart';
 import 'observer.dart';
+import 'observer_notifier.dart';
 
 @internal
 extension RegisterKeyReferenceExtension on Observable {
@@ -39,7 +39,7 @@ extension NotifyChangeExtension on Observable {
 
 @internal
 extension ComputedNotifierExtension on Observable {
-  ComputedNotifier get computedNotifier => _computedNotifier;
+  ObserverNotifier get computedNotifier => _computedNotifier;
 }
 
 abstract class Observable<T> {
@@ -58,7 +58,7 @@ abstract class Observable<T> {
   late T _value;
   T get value => observeValue(ObservedKey.value);
 
-  final _computedNotifier = ComputedNotifier();
+  final _computedNotifier = ObserverNotifier();
   final _changes = StreamController<T>.broadcast(sync: true);
   Stream<T> get stream => _changes.stream;
 

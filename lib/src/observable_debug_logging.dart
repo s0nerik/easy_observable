@@ -1,5 +1,5 @@
-import 'computed_notifier.dart';
 import 'observable.dart';
+import 'observer_notifier.dart';
 
 const _enableDebugLogging = false;
 
@@ -62,7 +62,7 @@ bool debugPrintRecomputeStatus(
   Observable observable,
   ObservedKey key,
   Set<Observable> dependencies,
-  ComputedNotifier computedNotifier,
+  ObserverNotifier computedNotifier,
   DebugRecomputeState recomputeState,
 ) {
   if (_targetComputeDepth != -1 && _computeDepth != _targetComputeDepth) {
