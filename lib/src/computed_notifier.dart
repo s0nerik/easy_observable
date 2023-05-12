@@ -1,22 +1,23 @@
 import 'dart:collection';
 
 import 'observable.dart';
+import 'observer.dart';
 
 enum _Key { value }
 
-/// Matches the `ComputedObservable`'s `hashCode` and `==` behavior as long as
-/// the `ComputedObservable` is alive. After the `ComputedObservable` is
+/// Matches the `Observer`'s `hashCode` and `==` behavior as long as
+/// the `Observer` is alive. After the `Observer` is
 /// garbage collected, `equals` will always return `false`.
-class _ComputedWeakRefWrapper {
-  _ComputedWeakRefWrapper(ComputedObservable observable)
-      : weakRef = WeakReference(observable),
-        _hashCode = observable.hashCode;
+class _ObserverWeakRef {
+  _ObserverWeakRef(Observer observer)
+      : weakRef = WeakReference(observer),
+        _hashCode = observer.hashCode;
 
-  final WeakReference<ComputedObservable> weakRef;
+  final WeakReference<Observer> weakRef;
   final int _hashCode;
 
   static bool checkEquals(Object a, Object b) {
-    if (a is ComputedObservable) {
+    if (a is Observer) {
       return b == a;
     }
     return a == b;
@@ -27,10 +28,10 @@ class _ComputedWeakRefWrapper {
     if (weakRef.target == null) {
       return false;
     }
-    if (other is ComputedObservable) {
+    if (other is Observer) {
       return weakRef.target == other;
     }
-    if (other is! _ComputedWeakRefWrapper) {
+    if (other is! _ObserverWeakRef) {
       return false;
     }
     return weakRef.target == other.weakRef.target;
@@ -67,27 +68,27 @@ class ObservedKey {
 
 class ComputedNotifier {
   final _referencedKeys = LinkedHashMap<Object, Set<ObservedKey>>(
-    equals: (a, b) => _ComputedWeakRefWrapper.checkEquals(a, b),
+    equals: (a, b) => _ObserverWeakRef.checkEquals(a, b),
   );
-  final _keyReferences = <ObservedKey, Set<_ComputedWeakRefWrapper>>{};
+  final _keyReferences = <ObservedKey, Set<_ObserverWeakRef>>{};
 
-  void registerKeyReference(ComputedObservable computed, ObservedKey key) {
-    final weakRefWrapper = _ComputedWeakRefWrapper(computed);
+  void registerKeyReference(Observer observer, ObservedKey key) {
+    final weakRefWrapper = _ObserverWeakRef(observer);
     _referencedKeys[weakRefWrapper] ??= {};
-    _referencedKeys[computed]!.add(key);
+    _referencedKeys[observer]!.add(key);
     _keyReferences[key] ??= {};
     _keyReferences[key]!.add(weakRefWrapper);
   }
 
-  void unregisterKeyReferences(ComputedObservable computed) {
-    final keys = _referencedKeys[computed];
-    _referencedKeys.remove(computed);
+  void unregisterKeyReferences(Observer observer) {
+    final keys = _referencedKeys[observer];
+    _referencedKeys.remove(observer);
     if (keys == null) return;
 
     for (final key in keys) {
       final refs = _keyReferences[key];
       if (refs == null) continue;
-      refs.remove(computed);
+      refs.remove(observer);
       if (refs.isEmpty) {
         _keyReferences.remove(key);
       }
@@ -119,10 +120,15 @@ class ComputedNotifier {
     for (final entry in _keyReferences.entries) {
       for (final ref in entry.value) {
         lines.add('$nesting╰ ${entry.key} <- $ref');
-        ref.weakRef.target?.computedNotifier.debugKeyReferencesTreeDescription(
-          nestingLevel: nestingLevel + 1,
-          lines: lines,
-        );
+        final target = ref.weakRef.target;
+        if (target is Observable) {
+          (target as Observable)
+              .computedNotifier
+              .debugKeyReferencesTreeDescription(
+                nestingLevel: nestingLevel + 1,
+                lines: lines,
+              );
+        }
       }
     }
     return lines;
@@ -138,14 +144,15 @@ class ComputedNotifier {
     for (final entry in _referencedKeys.entries) {
       for (final key in entry.value) {
         lines.add('$nesting╰ $key <- ${entry.key}');
-        (entry.key as _ComputedWeakRefWrapper)
-            .weakRef
-            .target
-            ?.computedNotifier
-            .debugReferencedKeysTreeDescription(
-              nestingLevel: nestingLevel + 1,
-              lines: lines,
-            );
+        final target = (entry.key as _ObserverWeakRef).weakRef.target;
+        if (target is Observable) {
+          (target as Observable)
+              .computedNotifier
+              .debugReferencedKeysTreeDescription(
+                nestingLevel: nestingLevel + 1,
+                lines: lines,
+              );
+        }
       }
     }
     return lines;

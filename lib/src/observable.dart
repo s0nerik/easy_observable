@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 
 import 'computed_notifier.dart';
 import 'observable_debug_logging.dart';
+import 'observer.dart';
 
 @internal
 extension RegisterKeyReferenceExtension on Observable {
@@ -82,7 +83,7 @@ class MutableObservable<T> extends Observable<T> {
       '${_debugLabel != null ? '($_debugLabel) ' : ''}Observable.mutable($_value)';
 }
 
-class ComputedObservable<T> extends Observable<T> {
+class ComputedObservable<T> extends Observable<T> implements Observer {
   static const zoneKey = 'ComputedObservable';
   static ComputedObservable? get current =>
       Zone.current[ComputedObservable.zoneKey];
@@ -99,6 +100,8 @@ class ComputedObservable<T> extends Observable<T> {
 
   bool _initialized = false;
 
+  @internal
+  @override
   void recompute() {
     assert(debugClearComputeDepthIfNeeded(current));
     assert(debugIncrementComputeDepth());
