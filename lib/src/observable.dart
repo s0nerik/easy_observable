@@ -9,10 +9,10 @@ import 'observer_notifier.dart';
 @internal
 extension RegisterKeyReferenceExtension on Observable {
   void registerKeyReference(ObservedKey key) {
-    final computed = ComputedObservable.current;
-    if (computed != null && !identical(this, computed)) {
-      _notifier.registerObserver(computed, key);
-      computed.refs.add(this);
+    final refHolder = ObservableRefHolder.current;
+    if (refHolder != null && !identical(this, refHolder)) {
+      _notifier.registerObserver(refHolder, key);
+      refHolder.refs.add(this);
     }
   }
 }
@@ -84,10 +84,6 @@ class MutableObservable<T> extends Observable<T> {
 }
 
 class ComputedObservable<T> extends Observable<T> with ObservableRefHolder {
-  static const zoneKey = 'ComputedObservable';
-  static ComputedObservable? get current =>
-      Zone.current[ComputedObservable.zoneKey];
-
   ComputedObservable(this._compute, [this._debugLabel]) {
     recompute();
   }
@@ -98,39 +94,8 @@ class ComputedObservable<T> extends Observable<T> with ObservableRefHolder {
 
   bool _initialized = false;
 
-  @internal
   @override
-  void recompute() {
-    assert(debugClearComputeDepthIfNeeded(current));
-    assert(debugIncrementComputeDepth());
-    assert(
-      debugPrintRecomputeStatus(
-        this,
-        ObservedKey.value,
-        refs,
-        notifier,
-        DebugRecomputeState.beforeRecompute,
-      ),
-    );
-
-    clearObservableRefs();
-    runZoned(_recompute, zoneValues: {
-      ComputedObservable.zoneKey: this,
-    });
-
-    assert(
-      debugPrintRecomputeStatus(
-        this,
-        ObservedKey.value,
-        refs,
-        notifier,
-        DebugRecomputeState.afterRecompute,
-      ),
-    );
-    assert(debugDecrementComputeDepth());
-  }
-
-  void _recompute() {
+  void performRecompute() {
     _value = _compute();
     notifyChange(const [ObservedKey.value]);
     _initialized = true;

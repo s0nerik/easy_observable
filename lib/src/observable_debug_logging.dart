@@ -1,3 +1,5 @@
+import 'package:easy_observable/src/observable_ref_holder.dart';
+
 import 'observable.dart';
 import 'observer_notifier.dart';
 
@@ -41,7 +43,7 @@ enum DebugRecomputeState {
   afterRecompute,
 }
 
-bool debugClearComputeDepthIfNeeded(ComputedObservable? currentScope) {
+bool debugClearComputeDepthIfNeeded(ObservableRefHolder? currentScope) {
   if (currentScope == null) {
     _computeDepth = 0;
   }
@@ -59,10 +61,10 @@ bool debugDecrementComputeDepth() {
 }
 
 bool debugPrintRecomputeStatus(
-  Observable observable,
+  ObservableRefHolder observable,
   ObservedKey key,
   Set<Observable> dependencies,
-  ObserverNotifier computedNotifier,
+  ObserverNotifier? computedNotifier,
   DebugRecomputeState recomputeState,
 ) {
   if (_targetComputeDepth != -1 && _computeDepth != _targetComputeDepth) {
@@ -85,10 +87,12 @@ bool debugPrintRecomputeStatus(
       Observable.debugPrint?.call('$_computePrefix  - $dependency');
     }
 
-    Observable.debugPrint?.call('$_computePrefix  KEY REFERENCES:');
-    final descLines = computedNotifier.debugKeyReferencesTreeDescription();
-    for (final line in descLines) {
-      Observable.debugPrint?.call('$_computePrefix  $line');
+    if (computedNotifier != null) {
+      Observable.debugPrint?.call('$_computePrefix  KEY REFERENCES:');
+      final descLines = computedNotifier.debugKeyReferencesTreeDescription();
+      for (final line in descLines) {
+        Observable.debugPrint?.call('$_computePrefix  $line');
+      }
     }
   }
   return true;
