@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import 'observable.dart';
+import 'observer_scope.dart';
 
 class ObserverBuilder extends ObserverStatefulWidget {
   const ObserverBuilder({
@@ -52,9 +52,7 @@ mixin ObserverElementMixin on ComponentElement {
   Widget? _childWidget;
   bool _childWidgetBuildScheduled = false;
 
-  bool _selfBuildScheduled = true;
-
-  bool _isFirstBuild = true;
+  bool _selfBuildScheduled = false;
 
   late final _build = kDebugMode ? _buildWithTypeErrorDebugging : super.build;
   Widget _buildWithTypeErrorDebugging() {
@@ -102,22 +100,22 @@ mixin ObserverElementMixin on ComponentElement {
     _selfBuildScheduled = true;
   }
 
-  // TODO: try replacing this with a WeakReference for notifying computed values
-  int _builder = 0;
+  ObserverScope? _observerScope;
+
+  @override
+  void unmount() {
+    _observerScope?.dispose();
+    super.unmount();
+  }
 
   @override
   Widget build() {
-    if (_isFirstBuild || !_selfBuildScheduled) {
+    if (!_selfBuildScheduled) {
       _childWidget = null;
-      final builder = ++_builder;
-      Observable.computed(() {
-        if (builder < _builder) return;
-        _scheduleBuild();
-      }, debugLabel: widget.toString());
+      _observerScope?.dispose();
+      _observerScope = ObserverScope(_scheduleBuild);
     }
     _selfBuildScheduled = false;
-    _isFirstBuild = false;
-
     return _childWidget!;
   }
 }
