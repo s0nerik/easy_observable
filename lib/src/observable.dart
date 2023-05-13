@@ -11,7 +11,7 @@ extension RegisterKeyReferenceExtension on Observable {
   void registerKeyReference(ObservedKey key) {
     final computed = ComputedObservable.current;
     if (computed != null && !identical(this, computed)) {
-      _computedNotifier.registerKeyReference(computed, key);
+      _notifier.registerObserver(computed, key);
       computed._dependencies.add(this);
     }
   }
@@ -32,14 +32,14 @@ extension NotifyChangeExtension on Observable {
     assert(debugPrintNotifyChange(this, keys));
     _changes.add(_value);
     for (final key in keys) {
-      _computedNotifier.recompute(key);
+      _notifier.recompute(key);
     }
   }
 }
 
 @internal
 extension ComputedNotifierExtension on Observable {
-  ObserverNotifier get computedNotifier => _computedNotifier;
+  ObserverNotifier get notifier => _notifier;
 }
 
 abstract class Observable<T> {
@@ -58,7 +58,7 @@ abstract class Observable<T> {
   late T _value;
   T get value => observeValue(ObservedKey.value);
 
-  final _computedNotifier = ObserverNotifier();
+  final _notifier = ObserverNotifier();
   final _changes = StreamController<T>.broadcast(sync: true);
   Stream<T> get stream => _changes.stream;
 
@@ -110,13 +110,13 @@ class ComputedObservable<T> extends Observable<T> implements Observer {
         this,
         ObservedKey.value,
         _dependencies,
-        computedNotifier,
+        notifier,
         DebugRecomputeState.beforeRecompute,
       ),
     );
 
     for (final dependency in _dependencies) {
-      dependency._computedNotifier.unregisterKeyReferences(this);
+      dependency.notifier.unregisterObserver(this);
     }
     _dependencies.clear();
     runZoned(_recompute, zoneValues: {
@@ -128,7 +128,7 @@ class ComputedObservable<T> extends Observable<T> implements Observer {
         this,
         ObservedKey.value,
         _dependencies,
-        computedNotifier,
+        notifier,
         DebugRecomputeState.afterRecompute,
       ),
     );
