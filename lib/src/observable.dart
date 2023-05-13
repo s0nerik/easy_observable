@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:easy_observable/src/observable_ref_holder.dart';
 import 'package:meta/meta.dart';
 
 import 'observable_debug_logging.dart';
-import 'observer.dart';
 import 'observer_notifier.dart';
 
 @internal
@@ -12,7 +12,7 @@ extension RegisterKeyReferenceExtension on Observable {
     final computed = ComputedObservable.current;
     if (computed != null && !identical(this, computed)) {
       _notifier.registerObserver(computed, key);
-      computed._dependencies.add(this);
+      computed.refs.add(this);
     }
   }
 }
@@ -83,7 +83,7 @@ class MutableObservable<T> extends Observable<T> {
       '${_debugLabel != null ? '($_debugLabel) ' : ''}Observable.mutable($_value)';
 }
 
-class ComputedObservable<T> extends Observable<T> implements Observer {
+class ComputedObservable<T> extends Observable<T> with ObservableRefHolder {
   static const zoneKey = 'ComputedObservable';
   static ComputedObservable? get current =>
       Zone.current[ComputedObservable.zoneKey];
@@ -96,8 +96,6 @@ class ComputedObservable<T> extends Observable<T> implements Observer {
 
   final T Function() _compute;
 
-  final _dependencies = <Observable>{};
-
   bool _initialized = false;
 
   @internal
@@ -109,16 +107,13 @@ class ComputedObservable<T> extends Observable<T> implements Observer {
       debugPrintRecomputeStatus(
         this,
         ObservedKey.value,
-        _dependencies,
+        refs,
         notifier,
         DebugRecomputeState.beforeRecompute,
       ),
     );
 
-    for (final dependency in _dependencies) {
-      dependency.notifier.unregisterObserver(this);
-    }
-    _dependencies.clear();
+    clearObservableRefs();
     runZoned(_recompute, zoneValues: {
       ComputedObservable.zoneKey: this,
     });
@@ -127,7 +122,7 @@ class ComputedObservable<T> extends Observable<T> implements Observer {
       debugPrintRecomputeStatus(
         this,
         ObservedKey.value,
-        _dependencies,
+        refs,
         notifier,
         DebugRecomputeState.afterRecompute,
       ),
