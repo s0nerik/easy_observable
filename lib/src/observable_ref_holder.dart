@@ -10,7 +10,7 @@ import 'observer_notifier.dart';
 @internal
 mixin ObservableRefHolder implements Observer {
   static const zoneKey = 'ObservableRefHolder';
-  static ComputedObservable? get current =>
+  static ObservableRefHolder? get current =>
       Zone.current[ObservableRefHolder.zoneKey];
 
   final refs = <Observable>{};
