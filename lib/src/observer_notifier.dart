@@ -67,46 +67,46 @@ class ObservedKey {
 }
 
 class ObserverNotifier {
-  final _referencedKeys = LinkedHashMap<Object, Set<ObservedKey>>(
+  final _observerKeys = LinkedHashMap<Object, Set<ObservedKey>>(
     equals: (a, b) => _ObserverWeakRef.checkEquals(a, b),
   );
-  final _keyReferences = <ObservedKey, Set<_ObserverWeakRef>>{};
+  final _keyObservers = <ObservedKey, Set<_ObserverWeakRef>>{};
 
-  void registerKeyReference(Observer observer, ObservedKey key) {
+  void registerObserver(Observer observer, ObservedKey key) {
     final weakRefWrapper = _ObserverWeakRef(observer);
-    _referencedKeys[weakRefWrapper] ??= {};
-    _referencedKeys[observer]!.add(key);
-    _keyReferences[key] ??= {};
-    _keyReferences[key]!.add(weakRefWrapper);
+    _observerKeys[weakRefWrapper] ??= {};
+    _observerKeys[observer]!.add(key);
+    _keyObservers[key] ??= {};
+    _keyObservers[key]!.add(weakRefWrapper);
   }
 
-  void unregisterKeyReferences(Observer observer) {
-    final keys = _referencedKeys[observer];
-    _referencedKeys.remove(observer);
+  void unregisterObserver(Observer observer) {
+    final keys = _observerKeys[observer];
+    _observerKeys.remove(observer);
     if (keys == null) return;
 
     for (final key in keys) {
-      final refs = _keyReferences[key];
+      final refs = _keyObservers[key];
       if (refs == null) continue;
       refs.remove(observer);
       if (refs.isEmpty) {
-        _keyReferences.remove(key);
+        _keyObservers.remove(key);
       }
     }
   }
 
   void recompute(ObservedKey key) {
-    final refs = _keyReferences[key]?.toList().reversed;
+    final refs = _keyObservers[key]?.toList().reversed;
     if (refs == null) return;
 
     for (final ref in refs) {
-      final computed = ref.weakRef.target;
-      if (computed == null) {
-        _keyReferences[key]!.remove(ref);
-        _referencedKeys.remove(ref);
+      final observer = ref.weakRef.target;
+      if (observer == null) {
+        _keyObservers[key]!.remove(ref);
+        _observerKeys.remove(ref);
         continue;
       }
-      computed.recompute();
+      observer.recompute();
     }
   }
 
@@ -117,14 +117,12 @@ class ObserverNotifier {
     final nesting = '  ' * nestingLevel;
 
     lines ??= <String>[];
-    for (final entry in _keyReferences.entries) {
+    for (final entry in _keyObservers.entries) {
       for (final ref in entry.value) {
         lines.add('$nesting╰ ${entry.key} <- $ref');
         final target = ref.weakRef.target;
         if (target is Observable) {
-          (target as Observable)
-              .computedNotifier
-              .debugKeyReferencesTreeDescription(
+          (target as Observable).notifier.debugKeyReferencesTreeDescription(
                 nestingLevel: nestingLevel + 1,
                 lines: lines,
               );
@@ -141,14 +139,12 @@ class ObserverNotifier {
     final nesting = '  ' * nestingLevel;
 
     lines ??= <String>[];
-    for (final entry in _referencedKeys.entries) {
+    for (final entry in _observerKeys.entries) {
       for (final key in entry.value) {
         lines.add('$nesting╰ $key <- ${entry.key}');
         final target = (entry.key as _ObserverWeakRef).weakRef.target;
         if (target is Observable) {
-          (target as Observable)
-              .computedNotifier
-              .debugReferencedKeysTreeDescription(
+          (target as Observable).notifier.debugReferencedKeysTreeDescription(
                 nestingLevel: nestingLevel + 1,
                 lines: lines,
               );
