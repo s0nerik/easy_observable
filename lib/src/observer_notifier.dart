@@ -71,16 +71,27 @@ class ObservedKey {
 }
 
 class ObserverNotifier {
+  /// Keys are actually guaranteed to be an `_ObserverWeakRef` instances.
+  /// However, to be able to compare a normal ref with a weak ref, and since
+  /// Dart checks the key types before calling `equals`, `Object` is declared
+  /// as a key type.
   final _observerKeys = LinkedHashMap<Object, Set<ObservedKey>>(
     equals: (a, b) => _ObserverWeakRef.checkEquals(a, b),
   );
-  final _keyObservers = <ObservedKey, Set<_ObserverWeakRef>>{};
+
+  /// Set items are actually guaranteed to be an `_ObserverWeakRef` instances.
+  /// However, to be able to compare a normal ref with a weak ref, and since
+  /// Dart checks the key types before calling `equals`, `Object` is declared
+  /// as an item type.
+  final _keyObservers = <ObservedKey, Set<Object>>{};
 
   void registerObserver(Observer observer, ObservedKey key) {
     final weakRefWrapper = _ObserverWeakRef(observer);
     _observerKeys[weakRefWrapper] ??= {};
     _observerKeys[observer]!.add(key);
-    _keyObservers[key] ??= {};
+    _keyObservers[key] ??= LinkedHashSet(
+      equals: (a, b) => _ObserverWeakRef.checkEquals(a, b),
+    );
     _keyObservers[key]!.add(weakRefWrapper);
   }
 
@@ -104,7 +115,7 @@ class ObserverNotifier {
     if (refs == null) return;
 
     for (final ref in refs) {
-      final observer = ref.weakRef.target;
+      final observer = (ref as _ObserverWeakRef).weakRef.target;
       if (observer == null) {
         _keyObservers[key]!.remove(ref);
         _observerKeys.remove(ref);
@@ -124,7 +135,7 @@ class ObserverNotifier {
     for (final entry in _keyObservers.entries) {
       for (final ref in entry.value) {
         lines.add('$nesting╰ ${entry.key} <- $ref');
-        final target = ref.weakRef.target;
+        final target = (ref as _ObserverWeakRef).weakRef.target;
         if (target is Observable) {
           (target as Observable).notifier.debugKeyReferencesTreeDescription(
                 nestingLevel: nestingLevel + 1,
