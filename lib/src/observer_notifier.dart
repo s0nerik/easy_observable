@@ -39,6 +39,10 @@ class _ObserverWeakRef {
 
   @override
   int get hashCode => _hashCode;
+
+  @override
+  String toString() =>
+      weakRef.target?.toString() ?? '_ObserverWeakRef(target: null)';
 }
 
 class ObservedKey {
