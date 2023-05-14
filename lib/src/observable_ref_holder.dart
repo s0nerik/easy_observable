@@ -50,9 +50,6 @@ mixin ObservableRefHolder implements Observer {
   void clearObservableRefs() {
     for (final ref in refs) {
       ref.notifier.unregisterObserver(this);
-      if (ref is ObservableRefHolder) {
-        (ref as ObservableRefHolder).clearObservableRefs();
-      }
     }
     refs.clear();
   }
