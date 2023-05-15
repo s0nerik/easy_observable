@@ -97,6 +97,91 @@ void main() {
     });
   });
 
+  test('Observable.stream notifies of value changes', () async {
+    final observable = Observable.mutable(0);
+
+    var value = observable.value;
+    final sub =
+        observable.stream.listen((observedValue) => value = observedValue);
+
+    expect(value, 0);
+
+    observable.value = 1;
+    await Future.value();
+    expect(value, 1);
+
+    observable.value = 2;
+    await Future.value();
+    expect(value, 2);
+
+    observable.value = 5;
+    await Future.value();
+    expect(value, 5);
+
+    sub.cancel();
+  });
+
+  test(
+      'ComputedObservable.stream notifies of a computed value whenever any of the dependencies notify change',
+      () async {
+    final dep0 = Observable.mutable('a');
+    final dep1 = Observable.mutable(0);
+    final computedDep =
+        Observable.computed(() => '${dep0.value} ${dep1.value}');
+    final observable =
+        Observable.computed(() => 'result: ${computedDep.value}');
+
+    final streamNotifications = <String>[];
+    final sub = observable.stream.listen(streamNotifications.add);
+
+    expect(streamNotifications, []);
+    expect(observable.value, 'result: a 0');
+
+    dep0.value = 'b';
+    await Future.value();
+    expect(observable.value, 'result: b 0');
+    expect(streamNotifications, ['result: b 0']);
+
+    dep1.value = 1;
+    await Future.value();
+    expect(observable.value, 'result: b 1');
+    expect(streamNotifications, ['result: b 0', 'result: b 1']);
+
+    sub.cancel();
+  });
+
+  test(
+      'No matter how many subscribers, ComputedObservable.stream notifies them of a computed value change only once',
+      () async {
+    final dep0 = Observable.mutable('a');
+    final dep1 = Observable.mutable(0);
+    final computedDep =
+        Observable.computed(() => '${dep0.value} ${dep1.value}');
+    final observable =
+        Observable.computed(() => 'result: ${computedDep.value}');
+
+    final streamNotifications1 = <String>[];
+    final streamNotifications2 = <String>[];
+    final sub1 = observable.stream.listen(streamNotifications1.add);
+    final sub2 = observable.stream.listen(streamNotifications2.add);
+
+    expect(streamNotifications1, []);
+    expect(streamNotifications2, []);
+
+    dep0.value = 'b';
+    await Future.value();
+    expect(streamNotifications1, ['result: b 0']);
+    expect(streamNotifications2, ['result: b 0']);
+
+    dep1.value = 1;
+    await Future.value();
+    expect(streamNotifications1, ['result: b 0', 'result: b 1']);
+    expect(streamNotifications2, ['result: b 0', 'result: b 1']);
+
+    sub1.cancel();
+    sub2.cancel();
+  });
+
   test(
     'emits only when a dependency is changed (1)',
     () async {
