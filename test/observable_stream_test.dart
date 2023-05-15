@@ -15,6 +15,8 @@ void main() {
   late Map<Observable, List> streamNotifications;
   late Map<Observable, int> streamComputations;
 
+  final streamSubscriptions = <Observable, StreamSubscription>{};
+
   setUp(() {
     final oldDebugPrint = debugPrint;
     debugPrint = (String? message, {int? wrapWidth}) {};
@@ -58,33 +60,41 @@ void main() {
       return '${dep1computed.value}, ${dep2computed.value}';
     }, debugLabel: 'computed1and2');
 
-    dep1.stream.listen(
-      (value) => streamNotifications.putIfAbsent(dep1, () => []).add(value),
-    );
-    dep2.stream.listen(
-      (value) => streamNotifications.putIfAbsent(dep2, () => []).add(value),
-    );
-    dep3.stream.listen(
-      (value) => streamNotifications.putIfAbsent(dep3, () => []).add(value),
-    );
-    dep1computed.stream.listen(
-      (value) =>
-          streamNotifications.putIfAbsent(dep1computed, () => []).add(value),
-    );
-    dep2computed.stream.listen(
-      (value) =>
-          streamNotifications.putIfAbsent(dep2computed, () => []).add(value),
-    );
-    dep3computed.stream.listen(
-      (value) =>
-          streamNotifications.putIfAbsent(dep3computed, () => []).add(value),
-    );
-    computed1and2.stream.listen(
-      (value) =>
-          streamNotifications.putIfAbsent(computed1and2, () => []).add(value),
-    );
+    streamSubscriptions.addAll({
+      dep1: dep1.stream.listen(
+        (value) => streamNotifications.putIfAbsent(dep1, () => []).add(value),
+      ),
+      dep2: dep2.stream.listen(
+        (value) => streamNotifications.putIfAbsent(dep2, () => []).add(value),
+      ),
+      dep3: dep3.stream.listen(
+        (value) => streamNotifications.putIfAbsent(dep3, () => []).add(value),
+      ),
+      dep1computed: dep1computed.stream.listen(
+        (value) =>
+            streamNotifications.putIfAbsent(dep1computed, () => []).add(value),
+      ),
+      dep2computed: dep2computed.stream.listen(
+        (value) =>
+            streamNotifications.putIfAbsent(dep2computed, () => []).add(value),
+      ),
+      dep3computed: dep3computed.stream.listen(
+        (value) =>
+            streamNotifications.putIfAbsent(dep3computed, () => []).add(value),
+      ),
+      computed1and2: computed1and2.stream.listen(
+        (value) =>
+            streamNotifications.putIfAbsent(computed1and2, () => []).add(value),
+      ),
+    });
 
     debugPrint = oldDebugPrint;
+  });
+
+  tearDown(() {
+    streamSubscriptions.forEach((observable, subscription) {
+      subscription.cancel();
+    });
   });
 
   test(
