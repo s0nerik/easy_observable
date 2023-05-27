@@ -1,5 +1,6 @@
 import 'package:easy_observable/easy_observable.dart';
 import 'package:easy_provider/easy_provider.dart';
+import 'package:example/test_page.dart';
 import 'package:flutter/material.dart';
 
 class _State {
@@ -28,6 +29,18 @@ class MainApp extends StatelessWidget {
         home: Scaffold(
           appBar: AppBar(
             title: const Text('easy_observable example'),
+            actions: [
+              Builder(
+                builder: (context) => IconButton(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const TestPage(pageName: 'Page1'),
+                    ),
+                  ),
+                  icon: const Icon(Icons.ac_unit),
+                ),
+              ),
+            ],
           ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

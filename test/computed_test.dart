@@ -90,4 +90,46 @@ void main() {
     expect(computed.value, '');
     expect(recomputations, 5);
   });
+
+  // ????????
+  test(
+      'if computed is not listened by anyone (including other computeds) - it is not automatically recomputed',
+      () {
+    final obs1 = Observable.mutable('a');
+    final obs2 = Observable.mutable(0);
+
+    var recomputations = 0;
+    final computed = Observable.computed(() {
+      recomputations++;
+      return '${obs1.value}${obs2.value}';
+    });
+
+    expect(computed.value, 'a0');
+    expect(recomputations, 1);
+
+    obs1.value = 'b';
+    obs2.value = 1;
+    expect(computed.value, 'b1');
+    expect(recomputations, 2);
+
+    final obs3 = Observable.mutable('c');
+    final computed2 = Observable.computed(() {
+      recomputations++;
+      return '${obs3.value}${computed.value}';
+    });
+
+    expect(computed2.value, 'ca0');
+    expect(recomputations, 4);
+
+    obs1.value = 'd';
+    obs2.value = 2;
+    expect(computed.value, 'd2');
+    expect(computed2.value, 'cd2');
+    expect(recomputations, 6);
+
+    obs3.value = 'e';
+    expect(computed.value, 'd2');
+    expect(computed2.value, 'ed2');
+    expect(recomputations, 7);
+  });
 }
