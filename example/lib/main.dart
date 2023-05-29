@@ -23,7 +23,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return EasyProvider(
+    return Provider(
       init: (scope) => scope..provide(_State()),
       child: MaterialApp(
         home: Scaffold(
