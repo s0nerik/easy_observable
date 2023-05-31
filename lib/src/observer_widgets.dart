@@ -5,8 +5,24 @@ import 'package:flutter/widgets.dart';
 
 import 'observer_scope.dart';
 
+class ObserverWidgetKey extends LocalKey {
+  const ObserverWidgetKey._(this.key);
+
+  final Key? key;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ObserverWidgetKey &&
+          runtimeType == other.runtimeType &&
+          key == other.key;
+
+  @override
+  int get hashCode => key.hashCode;
+}
+
 class ObserverBuilder extends ObserverStatefulWidget {
-  const ObserverBuilder({
+  ObserverBuilder({
     Key? key,
     required this.builder,
   }) : super(key: key);
@@ -25,7 +41,7 @@ class _ObserverBuilderState extends State<ObserverBuilder> {
 }
 
 abstract class ObserverStatelessWidget extends StatelessWidget {
-  const ObserverStatelessWidget({Key? key}) : super(key: key);
+  ObserverStatelessWidget({Key? key}) : super(key: ObserverWidgetKey._(key));
 
   @override
   StatelessElement createElement() => ObserverStatelessElement(this);
@@ -37,7 +53,7 @@ class ObserverStatelessElement extends StatelessElement
 }
 
 abstract class ObserverStatefulWidget extends StatefulWidget {
-  const ObserverStatefulWidget({Key? key}) : super(key: key);
+  ObserverStatefulWidget({Key? key}) : super(key: ObserverWidgetKey._(key));
 
   @override
   StatefulElement createElement() => ObserverStatefulElement(this);
@@ -101,13 +117,6 @@ mixin ObserverElementMixin on ComponentElement {
   }
 
   ObserverScope? _observerScope;
-
-  @override
-  void reassemble() {
-    _observerScope?.dispose();
-    _observerScope = null;
-    super.reassemble();
-  }
 
   @override
   void unmount() {
