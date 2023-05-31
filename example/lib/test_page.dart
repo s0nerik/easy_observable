@@ -15,7 +15,7 @@ class _State {
   final counter1 = observable(0);
   final counter2 = observable(0);
   late final counterSum = computed(() {
-    print('$pageName counterSum computed');
+    // print('$pageName counterSum computed');
     return counter1.value + counter2.value;
   });
 }
@@ -56,7 +56,7 @@ class _Page extends StatelessWidget {
   }
 }
 
-class _Body extends ObserverStatefulWidget {
+class _Body extends StatefulWidget {
   const _Body({
     Key? key,
     required this.pageName,
@@ -70,41 +70,52 @@ class _Body extends ObserverStatefulWidget {
 
 class _BodyState extends State<_Body> {
   late final StreamSubscription sub;
-  late final Timer timer;
+  late final Timer counter1IncrementTimer;
+  late final Timer counter2IncrementTimer;
 
   @override
   void initState() {
     super.initState();
     final state = context.get<_State>();
     sub = state.counterSum.stream.listen(_onSumValue);
-    timer = Timer.periodic(const Duration(milliseconds: 20), (timer) {
+    counter1IncrementTimer =
+        Timer.periodic(const Duration(milliseconds: 20), (timer) {
       state.counter1.value++;
+    });
+    counter2IncrementTimer =
+        Timer.periodic(const Duration(milliseconds: 10), (timer) {
       state.counter2.value++;
     });
   }
 
   void _onSumValue(int value) {
-    print('${widget.pageName} counterSum value: $value');
+    // print('${widget.pageName} counterSum value: $value');
   }
 
   @override
   void dispose() {
     sub.cancel();
-    timer.cancel();
+    counter1IncrementTimer.cancel();
+    counter2IncrementTimer.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final pageIndex = int.parse(widget.pageName.replaceAll('Page', ''));
-    final state = context.get<_State>();
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Center(
-          child: Text('Counter sum: ${state.counterSum.value}'),
+          child: _Counter1(),
+        ),
+        Center(
+          child: _Counter2(),
+        ),
+        Center(
+          child: _CounterSum(),
         ),
         Center(
           child: TextButton(
@@ -115,10 +126,45 @@ class _BodyState extends State<_Body> {
                 ),
               ),
             ),
-            child: const Text('Move to next page'),
+            child: const Text('Open next page'),
           ),
         ),
       ],
     );
+  }
+}
+
+class _Counter1 extends ObserverStatelessWidget {
+  _Counter1({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.get<_State>();
+    return Text('Counter1: ${state.counter1.value}');
+  }
+}
+
+class _Counter2 extends ObserverStatefulWidget {
+  _Counter2({Key? key}) : super(key: key);
+
+  @override
+  State<_Counter2> createState() => _Counter2State();
+}
+
+class _Counter2State extends State<_Counter2> {
+  @override
+  Widget build(BuildContext context) {
+    final state = context.get<_State>();
+    return Text('Counter2: ${state.counter2.value}');
+  }
+}
+
+class _CounterSum extends ObserverStatelessWidget {
+  _CounterSum({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.get<_State>();
+    return Text('CounterSum: ${state.counterSum.value}');
   }
 }
