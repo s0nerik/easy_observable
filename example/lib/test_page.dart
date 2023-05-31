@@ -56,7 +56,7 @@ class _Page extends StatelessWidget {
   }
 }
 
-class _Body extends StatefulWidget {
+class _Body extends ObserverStatefulWidget {
   const _Body({
     Key? key,
     required this.pageName,
@@ -97,17 +97,28 @@ class _BodyState extends State<_Body> {
   @override
   Widget build(BuildContext context) {
     final pageIndex = int.parse(widget.pageName.replaceAll('Page', ''));
-    return Center(
-      child: TextButton(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => TestPage(
-              pageName: 'Page${pageIndex + 1}',
+    final state = context.get<_State>();
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Center(
+          child: Text('Counter sum: ${state.counterSum.value}'),
+        ),
+        Center(
+          child: TextButton(
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => TestPage(
+                  pageName: 'Page${pageIndex + 1}',
+                ),
+              ),
             ),
+            child: const Text('Move to next page'),
           ),
         ),
-        child: const Text('Move to next page'),
-      ),
+      ],
     );
   }
 }
