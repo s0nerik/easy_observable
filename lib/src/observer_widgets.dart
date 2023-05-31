@@ -103,8 +103,16 @@ mixin ObserverElementMixin on ComponentElement {
   ObserverScope? _observerScope;
 
   @override
+  void reassemble() {
+    _observerScope?.dispose();
+    _observerScope = null;
+    super.reassemble();
+  }
+
+  @override
   void unmount() {
     _observerScope?.dispose();
+    _observerScope = null;
     super.unmount();
   }
 
