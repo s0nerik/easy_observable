@@ -44,12 +44,12 @@ class MainApp extends StatelessWidget {
           ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              _Counter1(),
-              _Counter2(),
-              _CounterSum(),
-              _SumSquared(),
-              _List(),
+            children: [
+              _Counter1(key: const ValueKey('counter1')),
+              _Counter2(key: const ValueKey('counter2')),
+              _CounterSum(key: const ValueKey('counterSum')),
+              _SumSquared(key: const ValueKey('counterSumSquared')),
+              _List(key: const ValueKey('list')),
             ],
           ),
         ),
@@ -59,7 +59,7 @@ class MainApp extends StatelessWidget {
 }
 
 class _Counter1 extends ObserverStatelessWidget {
-  const _Counter1({Key? key}) : super(key: key);
+  _Counter1({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +77,7 @@ class _Counter1 extends ObserverStatelessWidget {
 }
 
 class _Counter2 extends ObserverStatelessWidget {
-  const _Counter2({Key? key}) : super(key: key);
+  _Counter2({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +95,7 @@ class _Counter2 extends ObserverStatelessWidget {
 }
 
 class _CounterSum extends ObserverStatelessWidget {
-  const _CounterSum({Key? key}) : super(key: key);
+  _CounterSum({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +105,7 @@ class _CounterSum extends ObserverStatelessWidget {
 }
 
 class _SumSquared extends ObserverStatelessWidget {
-  const _SumSquared({Key? key}) : super(key: key);
+  _SumSquared({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +115,7 @@ class _SumSquared extends ObserverStatelessWidget {
 }
 
 class _List extends ObserverStatelessWidget {
-  const _List({Key? key}) : super(key: key);
+  _List({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
