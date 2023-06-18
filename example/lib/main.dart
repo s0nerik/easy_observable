@@ -54,6 +54,8 @@ class MainApp extends StatelessWidget {
                 SizedBox(height: 16),
                 _SumSquared(),
                 SizedBox(height: 16),
+                _Dynamic(),
+                SizedBox(height: 16),
                 _List(),
                 SizedBox(height: 24),
               ],
@@ -192,6 +194,96 @@ class _SumSquared extends StatelessWidget {
         final state = context.get<_State>();
         final counterSumSquared = context.watch(state.counterSumSquared);
         return Text('$counterSumSquared');
+      },
+    );
+  }
+}
+
+class _Dynamic extends StatefulWidget {
+  const _Dynamic({Key? key}) : super(key: key);
+
+  @override
+  State<_Dynamic> createState() => _DynamicState();
+}
+
+class _DynamicState extends State<_Dynamic> {
+  var _watchCounter1 = false;
+  var _watchCounter2 = false;
+  var _watchCounterSum = false;
+  var _watchCounterSumSquared = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return _Card(
+      title: const Text('Dynamic set of properties'),
+      builder: (context) {
+        final state = context.get<_State>();
+        final counter1 = _watchCounter1
+            ? context.watch(state.counter1)
+            : state.counter1.value;
+        final counter2 = _watchCounter2
+            ? context.watch(state.counter2)
+            : state.counter2.value;
+        final counterSum = _watchCounterSum
+            ? context.watch(state.counterSum)
+            : state.counterSum.value;
+        final counterSumSquared = _watchCounterSumSquared
+            ? context.watch(state.counterSumSquared)
+            : state.counterSumSquared.value;
+        return Column(
+          children: [
+            Row(
+              children: [
+                Text('Counter 1: $counter1'),
+                const SizedBox(width: 8),
+                const Spacer(),
+                const Text('Watch?'),
+                Checkbox(
+                  value: _watchCounter1,
+                  onChanged: (value) => setState(() => _watchCounter1 = value!),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text('Counter 2: $counter2'),
+                const SizedBox(width: 8),
+                const Spacer(),
+                const Text('Watch?'),
+                Checkbox(
+                  value: _watchCounter2,
+                  onChanged: (value) => setState(() => _watchCounter2 = value!),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text('Counter sum: $counterSum'),
+                const SizedBox(width: 8),
+                const Spacer(),
+                const Text('Watch?'),
+                Checkbox(
+                  value: _watchCounterSum,
+                  onChanged: (value) =>
+                      setState(() => _watchCounterSum = value!),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text('Counter sum squared: $counterSumSquared'),
+                const SizedBox(width: 8),
+                const Spacer(),
+                const Text('Watch?'),
+                Checkbox(
+                  value: _watchCounterSumSquared,
+                  onChanged: (value) =>
+                      setState(() => _watchCounterSumSquared = value!),
+                ),
+              ],
+            ),
+          ],
+        );
       },
     );
   }
