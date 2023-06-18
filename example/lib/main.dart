@@ -23,34 +23,41 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider(
-      init: (scope) => scope..provide(_State()),
-      child: MaterialApp(
-        home: Scaffold(
-          appBar: AppBar(
-            title: const Text('easy_observable example'),
-            actions: [
-              Builder(
-                builder: (context) => IconButton(
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const TestPage(pageName: 'Page1'),
+    return InheritedObservableNotifier(
+      child: Provider(
+        init: (scope) => scope..provide(_State()),
+        child: MaterialApp(
+          home: Scaffold(
+            appBar: AppBar(
+              title: const Text('easy_observable example'),
+              actions: [
+                Builder(
+                  builder: (context) => IconButton(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const TestPage(pageName: 'Page1'),
+                      ),
                     ),
+                    icon: const Icon(Icons.ac_unit),
                   ),
-                  icon: const Icon(Icons.ac_unit),
                 ),
-              ),
-            ],
-          ),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _Counter1(key: const ValueKey('counter1')),
-              _Counter2(key: const ValueKey('counter2')),
-              _CounterSum(key: const ValueKey('counterSum')),
-              _SumSquared(key: const ValueKey('counterSumSquared')),
-              _List(key: const ValueKey('list')),
-            ],
+              ],
+            ),
+            body: ListView(
+              children: const [
+                SizedBox(height: 24),
+                _Counter1(),
+                SizedBox(height: 16),
+                _Counter2(),
+                SizedBox(height: 16),
+                _CounterSum(),
+                SizedBox(height: 16),
+                _SumSquared(),
+                SizedBox(height: 16),
+                _List(),
+                SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
       ),
@@ -58,76 +65,165 @@ class MainApp extends StatelessWidget {
   }
 }
 
-class _Counter1 extends ObserverStatelessWidget {
-  _Counter1({Key? key}) : super(key: key);
+class _Card extends StatefulWidget {
+  const _Card({
+    Key? key,
+    required this.title,
+    required this.builder,
+  }) : super(key: key);
+
+  final Widget title;
+  final WidgetBuilder builder;
+
+  @override
+  State<_Card> createState() => _CardState();
+}
+
+class _CardState extends State<_Card> {
+  int _buildCount = 0;
 
   @override
   Widget build(BuildContext context) {
-    final state = context.get<_State>();
-    return Row(
-      children: [
-        Text('Counter 1: ${state.counter1.value}'),
-        TextButton(
-          onPressed: () => state.counter1.value++,
-          child: const Text('Increment'),
+    _buildCount++;
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            DefaultTextStyle.merge(
+              style: const TextStyle(fontSize: 16),
+              child: Row(
+                children: [
+                  widget.title,
+                  const Spacer(),
+                  const Icon(Icons.refresh, size: 20),
+                  const SizedBox(width: 4),
+                  Text('$_buildCount'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            widget.builder(context),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
 
-class _Counter2 extends ObserverStatelessWidget {
-  _Counter2({Key? key}) : super(key: key);
+class _Counter1 extends StatelessWidget {
+  const _Counter1({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final state = context.get<_State>();
-    return Row(
-      children: [
-        Text('Counter 2: ${state.counter2.value}'),
-        TextButton(
-          onPressed: () => state.counter2.value++,
-          child: const Text('Increment'),
-        ),
-      ],
+    return _Card(
+      title: const Text('Counter 1'),
+      builder: (context) {
+        final state = context.get<_State>();
+        final counter1 = context.watch(state.counter1);
+        return Row(
+          children: [
+            Text('$counter1'),
+            const SizedBox(width: 16),
+            const Spacer(),
+            TextButton(
+              onPressed: () => state.counter1.value++,
+              child: const Text('Increment'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
 
-class _CounterSum extends ObserverStatelessWidget {
-  _CounterSum({Key? key}) : super(key: key);
+class _Counter2 extends StatelessWidget {
+  const _Counter2({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final state = context.get<_State>();
-    return Text('Counter sum: ${state.counterSum.value}');
+    return _Card(
+      title: const Text('Counter 2'),
+      builder: (context) {
+        final state = context.get<_State>();
+        final counter2 = context.watch(state.counter2);
+        return Row(
+          children: [
+            Text('$counter2'),
+            const SizedBox(width: 16),
+            const Spacer(),
+            TextButton(
+              onPressed: () => state.counter2.value++,
+              child: const Text('Increment'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
-class _SumSquared extends ObserverStatelessWidget {
-  _SumSquared({Key? key}) : super(key: key);
+class _CounterSum extends StatelessWidget {
+  const _CounterSum({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final state = context.get<_State>();
-    return Text('Counter sum squared: ${state.counterSumSquared.value}');
+    return _Card(
+      title: const Text('Counter sum'),
+      builder: (context) {
+        final state = context.get<_State>();
+        final counterSum = context.watch(state.counterSum);
+        return Text('$counterSum');
+      },
+    );
   }
 }
 
-class _List extends ObserverStatelessWidget {
-  _List({Key? key}) : super(key: key);
+class _SumSquared extends StatelessWidget {
+  const _SumSquared({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final state = context.get<_State>();
-    return Row(
-      children: [
-        Text('List: ${state.list.value}'),
-        TextButton(
-          onPressed: () => state.list.add(state.list.length),
-          child: const Text('Add'),
-        ),
-      ],
+    return _Card(
+      title: const Text('Counter sum squared'),
+      builder: (context) {
+        final state = context.get<_State>();
+        final counterSumSquared = context.watch(state.counterSumSquared);
+        return Text('$counterSumSquared');
+      },
+    );
+  }
+}
+
+class _List extends StatelessWidget {
+  const _List({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return _Card(
+      title: const Text('List'),
+      builder: (context) {
+        final state = context.get<_State>();
+        final list = context.watch(state.list);
+        return Row(
+          children: [
+            Expanded(
+              child: Text('$list'),
+            ),
+            const SizedBox(width: 16),
+            TextButton(
+              onPressed: () => state.list.add(state.list.length),
+              child: const Text('Add'),
+            ),
+            TextButton(
+              onPressed: () => state.list.removeLast(),
+              child: const Text('Remove'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
