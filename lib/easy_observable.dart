@@ -1,3 +1,4 @@
+export 'src/inherited_observable_notifier.dart';
 export 'src/observable.dart'
     hide
         ComputedObservable,
