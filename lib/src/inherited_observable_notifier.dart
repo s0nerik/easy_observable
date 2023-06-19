@@ -5,11 +5,6 @@ import 'package:flutter/widgets.dart';
 
 import 'observable.dart';
 
-final _frame = Observable.mutable(0);
-void _onBeginFrame(Duration timeStamp) {
-  _frame.value++;
-}
-
 class InheritedObservableNotifier extends InheritedWidget {
   const InheritedObservableNotifier({super.key, required super.child});
 
@@ -29,9 +24,6 @@ class ObservableNotifierInheritedElement extends InheritedElement {
   @override
   void mount(Element? parent, Object? newSlot) {
     super.mount(parent, newSlot);
-    if (_frame.value == 0) {
-      SchedulerBinding.instance.addPersistentFrameCallback(_onBeginFrame);
-    }
     SchedulerBinding.instance.addPostFrameCallback(_onPostFrame);
   }
 
