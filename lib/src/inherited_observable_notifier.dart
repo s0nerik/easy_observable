@@ -9,14 +9,14 @@ class InheritedObservableNotifier extends InheritedWidget {
   const InheritedObservableNotifier({super.key, required super.child});
 
   @override
-  InheritedElement createElement() => ObservableNotifierInheritedElement(this);
+  InheritedElement createElement() => _ObservableNotifierInheritedElement(this);
 
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) => false;
 }
 
-class ObservableNotifierInheritedElement extends InheritedElement {
-  ObservableNotifierInheritedElement(super.widget);
+class _ObservableNotifierInheritedElement extends InheritedElement {
+  _ObservableNotifierInheritedElement(super.widget);
 
   final _elementSubs = <Element, Map<Observable, StreamSubscription>>{};
   final _frameElementSubs = <Element, Map<Observable, StreamSubscription>>{};
