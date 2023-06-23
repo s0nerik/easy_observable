@@ -15,6 +15,40 @@ class InheritedObservableNotifier extends InheritedWidget {
   bool updateShouldNotify(covariant InheritedWidget oldWidget) => false;
 }
 
+extension InheritedObservableNotifierWatcherExtension on BuildContext {
+  T watch<T>(Observable<T> observable) {
+    dependOnInheritedWidgetOfExactType<InheritedObservableNotifier>(
+      aspect: observable,
+    );
+    return observable.value;
+  }
+
+  /// A workaround for https://github.com/flutter/flutter/issues/106549#issue-1283582212
+  ///
+  /// Use this on the first line of your build method if you specify
+  /// conditional observable watchers.
+  ///
+  /// This will ensure that any previously-specified observable subscriptions
+  /// are canceled before the new subscriptions are created via
+  /// `context.watch()` down the line.
+  ///
+  /// Example:
+  ///
+  /// ```dart
+  /// Widget build(BuildContext context) {
+  ///   context.unwatch();
+  ///   if (condition) {
+  ///     context.watch(observable);
+  ///   }
+  /// }
+  /// ```
+  void unwatch() {
+    dependOnInheritedWidgetOfExactType<InheritedObservableNotifier>(
+      aspect: null,
+    );
+  }
+}
+
 class _ObservableNotifierInheritedElement extends InheritedElement {
   _ObservableNotifierInheritedElement(super.widget);
 
@@ -83,39 +117,5 @@ class _ObservableNotifierInheritedElement extends InheritedElement {
       sub.cancel();
     }
     _elementSubs.remove(dependent);
-  }
-}
-
-extension InheritedObservableNotifierWatcherExtension on BuildContext {
-  T watch<T>(Observable<T> observable) {
-    dependOnInheritedWidgetOfExactType<InheritedObservableNotifier>(
-      aspect: observable,
-    );
-    return observable.value;
-  }
-
-  /// A workaround for https://github.com/flutter/flutter/issues/106549#issue-1283582212
-  ///
-  /// Use this on the first line of your build method if you specify
-  /// conditional observable watchers.
-  ///
-  /// This will ensure that any previously-specified observable subscriptions
-  /// are canceled before the new subscriptions are created via
-  /// `context.watch()` down the line.
-  ///
-  /// Example:
-  ///
-  /// ```dart
-  /// Widget build(BuildContext context) {
-  ///   context.unwatch();
-  ///   if (condition) {
-  ///     context.watch(observable);
-  ///   }
-  /// }
-  /// ```
-  void unwatch() {
-    dependOnInheritedWidgetOfExactType<InheritedObservableNotifier>(
-      aspect: null,
-    );
   }
 }
