@@ -43,22 +43,32 @@ class MainApp extends StatelessWidget {
                 ),
               ],
             ),
-            body: ListView(
-              children: const [
-                SizedBox(height: 24),
-                _Counter1(),
-                SizedBox(height: 16),
-                _Counter2(),
-                SizedBox(height: 16),
-                _CounterSum(),
-                SizedBox(height: 16),
-                _SumSquared(),
-                SizedBox(height: 16),
-                _Dynamic(),
-                SizedBox(height: 16),
-                _List(),
-                SizedBox(height: 24),
-              ],
+            body: const SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(height: 24),
+                    Row(
+                      children: [
+                        Expanded(child: _Counter1()),
+                        SizedBox(width: 16),
+                        Expanded(child: _Counter2()),
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    _CounterSum(),
+                    SizedBox(height: 16),
+                    _CounterSumSquared(),
+                    SizedBox(height: 16),
+                    _Dynamic(),
+                    SizedBox(height: 16),
+                    _List(),
+                    SizedBox(height: 24),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -88,19 +98,22 @@ class _CardState extends State<_Card> {
   Widget build(BuildContext context) {
     _buildCount++;
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             DefaultTextStyle.merge(
-              style: const TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
               child: Row(
                 children: [
                   widget.title,
                   const Spacer(),
-                  const Icon(Icons.refresh, size: 20),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 2),
+                    child: Icon(Icons.refresh, size: 16),
+                  ),
                   const SizedBox(width: 4),
                   Text('$_buildCount'),
                 ],
@@ -132,6 +145,9 @@ class _Counter1 extends StatelessWidget {
             const Spacer(),
             TextButton(
               onPressed: () => state.counter1.value++,
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all(EdgeInsets.zero),
+              ),
               child: const Text('Increment'),
             ),
           ],
@@ -158,6 +174,9 @@ class _Counter2 extends StatelessWidget {
             const Spacer(),
             TextButton(
               onPressed: () => state.counter2.value++,
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all(EdgeInsets.zero),
+              ),
               child: const Text('Increment'),
             ),
           ],
@@ -183,13 +202,13 @@ class _CounterSum extends StatelessWidget {
   }
 }
 
-class _SumSquared extends StatelessWidget {
-  const _SumSquared({Key? key}) : super(key: key);
+class _CounterSumSquared extends StatelessWidget {
+  const _CounterSumSquared({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return _Card(
-      title: const Text('Counter sum squared'),
+      title: const Text('Counter sum²'),
       builder: (context) {
         final state = context.get<_State>();
         final counterSumSquared = context.watch(state.counterSumSquared);
@@ -220,6 +239,7 @@ class _DynamicState extends State<_Dynamic> {
         context.unwatch();
 
         final state = context.get<_State>();
+
         final counter1 = _watchCounter1
             ? context.watch(state.counter1)
             : state.counter1.value;
@@ -274,7 +294,7 @@ class _DynamicState extends State<_Dynamic> {
             ),
             Row(
               children: [
-                Text('Counter sum squared: $counterSumSquared'),
+                Text('Counter sum²: $counterSumSquared'),
                 const SizedBox(width: 8),
                 const Spacer(),
                 const Text('Watch?'),
