@@ -45,27 +45,31 @@ class MainApp extends StatelessWidget {
             ),
             body: const SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: EdgeInsets.symmetric(horizontal: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SizedBox(height: 24),
+                    SizedBox(height: 8),
                     Row(
                       children: [
                         Expanded(child: _Counter1()),
-                        SizedBox(width: 16),
+                        SizedBox(width: 8),
                         Expanded(child: _Counter2()),
                       ],
                     ),
-                    SizedBox(height: 16),
-                    _CounterSum(),
-                    SizedBox(height: 16),
-                    _CounterSumSquared(),
-                    SizedBox(height: 16),
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(child: _CounterSum()),
+                        SizedBox(width: 8),
+                        Expanded(child: _CounterSumSquared()),
+                      ],
+                    ),
+                    SizedBox(height: 8),
                     _Dynamic(),
-                    SizedBox(height: 16),
+                    SizedBox(height: 8),
                     _List(),
-                    SizedBox(height: 24),
+                    SizedBox(height: 8),
                   ],
                 ),
               ),
