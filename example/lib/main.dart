@@ -217,6 +217,8 @@ class _DynamicState extends State<_Dynamic> {
     return _Card(
       title: const Text('Dynamic set of properties'),
       builder: (context) {
+        context.unwatch();
+
         final state = context.get<_State>();
         final counter1 = _watchCounter1
             ? context.watch(state.counter1)
@@ -230,6 +232,7 @@ class _DynamicState extends State<_Dynamic> {
         final counterSumSquared = _watchCounterSumSquared
             ? context.watch(state.counterSumSquared)
             : state.counterSumSquared.value;
+
         return Column(
           children: [
             Row(
