@@ -258,6 +258,7 @@ class _DynamicState extends State<_Dynamic> {
             : state.counterSumSquared.value;
 
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
               children: [
@@ -271,6 +272,7 @@ class _DynamicState extends State<_Dynamic> {
                 ),
               ],
             ),
+            const Divider(height: 0),
             Row(
               children: [
                 Text('Counter 2: $counter2'),
@@ -283,6 +285,7 @@ class _DynamicState extends State<_Dynamic> {
                 ),
               ],
             ),
+            const Divider(height: 0),
             Row(
               children: [
                 Text('Counter sum: $counterSum'),
@@ -296,6 +299,7 @@ class _DynamicState extends State<_Dynamic> {
                 ),
               ],
             ),
+            const Divider(height: 0),
             Row(
               children: [
                 Text('Counter sum²: $counterSumSquared'),
