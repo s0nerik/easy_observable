@@ -141,7 +141,7 @@ class _Counter1 extends StatelessWidget {
       title: const Text('Counter 1'),
       builder: (context) {
         final state = context.get<_State>();
-        final counter1 = context.watch(state.counter1);
+        final counter1 = state.counter1.watch(context);
         return Row(
           children: [
             Text('$counter1'),
@@ -170,7 +170,7 @@ class _Counter2 extends StatelessWidget {
       title: const Text('Counter 2'),
       builder: (context) {
         final state = context.get<_State>();
-        final counter2 = context.watch(state.counter2);
+        final counter2 = state.counter2.watch(context);
         return Row(
           children: [
             Text('$counter2'),
@@ -199,7 +199,7 @@ class _CounterSum extends StatelessWidget {
       title: const Text('Counter sum'),
       builder: (context) {
         final state = context.get<_State>();
-        final counterSum = context.watch(state.counterSum);
+        final counterSum = state.counterSum.watch(context);
         return Text('$counterSum');
       },
     );
@@ -215,7 +215,7 @@ class _CounterSumSquared extends StatelessWidget {
       title: const Text('Counter sum²'),
       builder: (context) {
         final state = context.get<_State>();
-        final counterSumSquared = context.watch(state.counterSumSquared);
+        final counterSumSquared = state.counterSumSquared.watch(context);
         return Text('$counterSumSquared');
       },
     );
@@ -245,16 +245,16 @@ class _DynamicState extends State<_Dynamic> {
         final state = context.get<_State>();
 
         final counter1 = _watchCounter1
-            ? context.watch(state.counter1)
+            ? state.counter1.watch(context)
             : state.counter1.value;
         final counter2 = _watchCounter2
-            ? context.watch(state.counter2)
+            ? state.counter2.watch(context)
             : state.counter2.value;
         final counterSum = _watchCounterSum
-            ? context.watch(state.counterSum)
+            ? state.counterSum.watch(context)
             : state.counterSum.value;
         final counterSumSquared = _watchCounterSumSquared
-            ? context.watch(state.counterSumSquared)
+            ? state.counterSumSquared.watch(context)
             : state.counterSumSquared.value;
 
         return Column(
@@ -329,7 +329,7 @@ class _List extends StatelessWidget {
       title: const Text('List'),
       builder: (context) {
         final state = context.get<_State>();
-        final list = context.watch(state.list);
+        final list = state.list.watch(context);
         return Row(
           children: [
             Expanded(

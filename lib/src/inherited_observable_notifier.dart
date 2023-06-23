@@ -16,13 +16,6 @@ class InheritedObservableNotifier extends InheritedWidget {
 }
 
 extension InheritedObservableNotifierWatcherExtension on BuildContext {
-  T watch<T>(Observable<T> observable) {
-    dependOnInheritedWidgetOfExactType<InheritedObservableNotifier>(
-      aspect: observable,
-    );
-    return observable.value;
-  }
-
   /// A workaround for https://github.com/flutter/flutter/issues/106549#issue-1283582212
   ///
   /// Use this on the first line of your build method if you specify
@@ -46,6 +39,15 @@ extension InheritedObservableNotifierWatcherExtension on BuildContext {
     dependOnInheritedWidgetOfExactType<InheritedObservableNotifier>(
       aspect: null,
     );
+  }
+}
+
+extension InheritedObservableNotifierObservableExtension<T> on Observable<T> {
+  T watch(BuildContext context) {
+    context.dependOnInheritedWidgetOfExactType<InheritedObservableNotifier>(
+      aspect: this,
+    );
+    return value;
   }
 }
 
