@@ -17,12 +17,12 @@ void main() async {
       '${uri!.toString().replaceAll('http', 'ws')}ws',
     );
 
-    final obs1 = Observable.mutable('a');
-    final obs2 = Observable.mutable(0);
+    final obs1 = observable('a');
+    final obs2 = observable(0);
 
     var computes = 0;
 
-    Observable? comp = Observable.computed(() {
+    Observable? comp = computed(() {
       computes++;
       return '${obs1.value}${obs2.value}';
     });

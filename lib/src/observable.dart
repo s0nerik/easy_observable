@@ -6,6 +6,18 @@ import 'package:meta/meta.dart';
 import 'observable_debug_logging.dart';
 import 'observer_notifier.dart';
 
+MutableObservable<T> observable<T>(
+  T value, {
+  String? debugLabel,
+}) =>
+    MutableObservable._(value, debugLabel);
+
+Observable<T> computed<T>(
+  T Function() compute, {
+  String? debugLabel,
+}) =>
+    ComputedObservable._(compute, debugLabel);
+
 @internal
 extension RegisterKeyReferenceExtension on Observable {
   void registerKeyReference(ObservedKey key) {
@@ -43,18 +55,6 @@ extension ComputedNotifierExtension on Observable {
 }
 
 abstract class Observable<T> {
-  static MutableObservable<T> mutable<T>(
-    T value, {
-    String? debugLabel,
-  }) =>
-      MutableObservable._(value, debugLabel);
-
-  static Observable<T> computed<T>(
-    T Function() compute, {
-    String? debugLabel,
-  }) =>
-      ComputedObservable(compute, debugLabel);
-
   late T _value;
   T get value => observeValue(ObservedKey.value);
 
@@ -80,11 +80,11 @@ class MutableObservable<T> extends Observable<T> {
 
   @override
   String toString() =>
-      '${_debugLabel != null ? '($_debugLabel) ' : ''}Observable.mutable($_value)';
+      '${_debugLabel != null ? '($_debugLabel) ' : ''}observable($_value)';
 }
 
 class ComputedObservable<T> extends Observable<T> with ObservableRefHolder {
-  ComputedObservable(this._compute, [this._debugLabel]) {
+  ComputedObservable._(this._compute, [this._debugLabel]) {
     recompute();
   }
 
@@ -104,8 +104,8 @@ class ComputedObservable<T> extends Observable<T> with ObservableRefHolder {
   @override
   String toString() {
     if (!_initialized) {
-      return '${_debugLabel != null ? '($_debugLabel) ' : ''}Observable.computed(UNINITIALIZED)';
+      return '${_debugLabel != null ? '($_debugLabel) ' : ''}computed(UNINITIALIZED)';
     }
-    return '${_debugLabel != null ? '($_debugLabel) ' : ''}Observable.computed($_value)';
+    return '${_debugLabel != null ? '($_debugLabel) ' : ''}computed($_value)';
   }
 }

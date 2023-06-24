@@ -24,10 +24,10 @@ void main() {
     streamNotifications = {};
     streamComputations = {};
 
-    dep1 = Observable.mutable('a', debugLabel: 'dep1');
-    dep2 = Observable.mutable(0, debugLabel: 'dep2');
-    dep3 = Observable.mutable(false, debugLabel: 'dep3');
-    dep1computed = Observable.computed(() {
+    dep1 = observable('a', debugLabel: 'dep1');
+    dep2 = observable(0, debugLabel: 'dep2');
+    dep3 = observable(false, debugLabel: 'dep3');
+    dep1computed = computed(() {
       scheduleMicrotask(() {
         streamComputations.putIfAbsent(dep1computed, () => 0);
         streamComputations[dep1computed] =
@@ -35,7 +35,7 @@ void main() {
       });
       return 'dep1computed: ${dep1.value}';
     }, debugLabel: 'dep1computed');
-    dep2computed = Observable.computed(() {
+    dep2computed = computed(() {
       scheduleMicrotask(() {
         streamComputations.putIfAbsent(dep2computed, () => 0);
         streamComputations[dep2computed] =
@@ -43,7 +43,7 @@ void main() {
       });
       return 'dep2computed: ${dep2.value}';
     }, debugLabel: 'dep2computed');
-    dep3computed = Observable.computed(() {
+    dep3computed = computed(() {
       scheduleMicrotask(() {
         streamComputations.putIfAbsent(dep3computed, () => 0);
         streamComputations[dep3computed] =
@@ -51,7 +51,7 @@ void main() {
       });
       return 'dep3computed: ${dep3.value}';
     }, debugLabel: 'dep3computed');
-    computed1and2 = Observable.computed(() {
+    computed1and2 = computed(() {
       scheduleMicrotask(() {
         streamComputations.putIfAbsent(computed1and2, () => 0);
         streamComputations[computed1and2] =
@@ -98,23 +98,23 @@ void main() {
   });
 
   test('Observable.stream notifies of value changes', () async {
-    final observable = Observable.mutable(0);
+    final observableValue = observable(0);
 
-    var value = observable.value;
+    var value = observableValue.value;
     final sub =
-        observable.stream.listen((observedValue) => value = observedValue);
+        observableValue.stream.listen((observedValue) => value = observedValue);
 
     expect(value, 0);
 
-    observable.value = 1;
+    observableValue.value = 1;
     await Future.value();
     expect(value, 1);
 
-    observable.value = 2;
+    observableValue.value = 2;
     await Future.value();
     expect(value, 2);
 
-    observable.value = 5;
+    observableValue.value = 5;
     await Future.value();
     expect(value, 5);
 
@@ -124,27 +124,25 @@ void main() {
   test(
       'ComputedObservable.stream notifies of a computed value whenever any of the dependencies notify change',
       () async {
-    final dep0 = Observable.mutable('a');
-    final dep1 = Observable.mutable(0);
-    final computedDep =
-        Observable.computed(() => '${dep0.value} ${dep1.value}');
-    final observable =
-        Observable.computed(() => 'result: ${computedDep.value}');
+    final dep0 = observable('a');
+    final dep1 = observable(0);
+    final computedDep = computed(() => '${dep0.value} ${dep1.value}');
+    final computedValue = computed(() => 'result: ${computedDep.value}');
 
     final streamNotifications = <String>[];
-    final sub = observable.stream.listen(streamNotifications.add);
+    final sub = computedValue.stream.listen(streamNotifications.add);
 
     expect(streamNotifications, []);
-    expect(observable.value, 'result: a 0');
+    expect(computedValue.value, 'result: a 0');
 
     dep0.value = 'b';
     await Future.value();
-    expect(observable.value, 'result: b 0');
+    expect(computedValue.value, 'result: b 0');
     expect(streamNotifications, ['result: b 0']);
 
     dep1.value = 1;
     await Future.value();
-    expect(observable.value, 'result: b 1');
+    expect(computedValue.value, 'result: b 1');
     expect(streamNotifications, ['result: b 0', 'result: b 1']);
 
     sub.cancel();
@@ -153,17 +151,15 @@ void main() {
   test(
       'No matter how many subscribers, ComputedObservable.stream notifies them of a computed value change only once',
       () async {
-    final dep0 = Observable.mutable('a');
-    final dep1 = Observable.mutable(0);
-    final computedDep =
-        Observable.computed(() => '${dep0.value} ${dep1.value}');
-    final observable =
-        Observable.computed(() => 'result: ${computedDep.value}');
+    final dep0 = observable('a');
+    final dep1 = observable(0);
+    final computedDep = computed(() => '${dep0.value} ${dep1.value}');
+    final computedValue = computed(() => 'result: ${computedDep.value}');
 
     final streamNotifications1 = <String>[];
     final streamNotifications2 = <String>[];
-    final sub1 = observable.stream.listen(streamNotifications1.add);
-    final sub2 = observable.stream.listen(streamNotifications2.add);
+    final sub1 = computedValue.stream.listen(streamNotifications1.add);
+    final sub2 = computedValue.stream.listen(streamNotifications2.add);
 
     expect(streamNotifications1, []);
     expect(streamNotifications2, []);

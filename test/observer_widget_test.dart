@@ -25,7 +25,7 @@ void main() {
   testWidgets(
     'ObserverBuilder builds only once before the first change',
     (widgetTester) async {
-      observed = [Observable.mutable(0)];
+      observed = [observable(0)];
       await widgetTester.pumpWidget(widget);
       await widgetTester.pumpAndSettle();
       expect(rebuilds, 1);
@@ -35,13 +35,13 @@ void main() {
   testWidgets(
     'ObserverBuilder rebuilds only once after each change',
     (widgetTester) async {
-      final observable = Observable.mutable('a');
-      observed = [observable];
+      final observableValue = observable('a');
+      observed = [observableValue];
 
       await widgetTester.pumpWidget(widget);
       expect(rebuilds, 1);
 
-      observable.value = 'b';
+      observableValue.value = 'b';
       await widgetTester.pumpAndSettle();
       expect(rebuilds, 2);
     },
@@ -50,12 +50,12 @@ void main() {
   testWidgets(
     'ObserverBuilder rebuilds only once after each bunch of synchronous changes',
     (widgetTester) async {
-      final observable1 = Observable.mutable('a');
-      final observable2 = Observable.mutable(0);
-      final computed =
-          Observable.computed(() => '${observable1.value}${observable2.value}');
+      final observable1 = observable('a');
+      final observable2 = observable(0);
+      final computedValue =
+          computed(() => '${observable1.value}${observable2.value}');
 
-      observed = [computed];
+      observed = [computedValue];
 
       await widgetTester.pumpWidget(widget);
       expect(rebuilds, 1);
@@ -74,8 +74,8 @@ void main() {
   testWidgets(
     'ObserverBuilder subscribes to changes in all Observables accessed during the previous build',
     (widgetTester) async {
-      final observable1 = Observable.mutable('a');
-      final observable2 = Observable.mutable(0);
+      final observable1 = observable('a');
+      final observable2 = observable(0);
 
       observed = [observable1, observable2];
 
@@ -123,7 +123,7 @@ void main() {
   testWidgets(
     'Accessing a specific list item rebuilds only when the value at that index changes',
     (widgetTester) async {
-      final listObservable = Observable.mutable(['a', 'b', 'c']);
+      final listObservable = observable(['a', 'b', 'c']);
 
       await widgetTester.pumpWidget(
         ObserverBuilder(
@@ -148,12 +148,12 @@ void main() {
   testWidgets(
     'ObserverBuilder rebuild can be triggered by the parent widget as usual',
     (widgetTester) async {
-      final observable = Observable.mutable('a');
+      final observableValue = observable('a');
 
       final observerWidget = ObserverBuilder(
         builder: (context) {
           MediaQuery.of(context);
-          observable.value;
+          observableValue.value;
           rebuilds++;
           return const SizedBox.shrink();
         },
@@ -169,7 +169,7 @@ void main() {
       await widgetTester.pumpAndSettle();
       expect(rebuilds, 1);
 
-      observable.value = 'b';
+      observableValue.value = 'b';
 
       await widgetTester.pumpAndSettle();
       expect(rebuilds, 2);
@@ -182,7 +182,7 @@ void main() {
       );
       expect(rebuilds, 3);
 
-      observable.value = 'c';
+      observableValue.value = 'c';
       await widgetTester.pumpAndSettle();
       expect(rebuilds, 4);
     },

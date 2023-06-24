@@ -4,9 +4,6 @@ import 'package:easy_observable/easy_observable.dart';
 import 'package:easy_provider/easy_provider.dart';
 import 'package:flutter/material.dart';
 
-MutableObservable<T> observable<T>(T value) => Observable.mutable(value);
-Observable<T> computed<T>(T Function() value) => Observable.computed(value);
-
 class _State {
   _State(this.pageName);
 

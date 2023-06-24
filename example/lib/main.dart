@@ -4,14 +4,13 @@ import 'package:example/test_page.dart';
 import 'package:flutter/material.dart';
 
 class _State {
-  final counter1 = Observable.mutable(0);
-  final counter2 = Observable.mutable(0);
-  late final counterSum =
-      Observable.computed(() => counter1.value + counter2.value);
+  final counter1 = observable(0);
+  final counter2 = observable(0);
+  late final counterSum = computed(() => counter1.value + counter2.value);
   late final counterSumSquared =
-      Observable.computed(() => counterSum.value * counterSum.value);
+      computed(() => counterSum.value * counterSum.value);
 
-  late final list = Observable.mutable(<int>[]);
+  late final list = observable(<int>[]);
 }
 
 void main() {
