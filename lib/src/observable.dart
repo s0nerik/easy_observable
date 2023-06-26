@@ -18,6 +18,17 @@ Observable<T> computed<T>(
 }) =>
     ComputedObservable._(compute, debugLabel);
 
+abstract class Observable<T> {
+  late T _value;
+  T get value => observeValue(ObservedKey.value);
+
+  final _notifier = ObserverNotifier();
+  final _changes = StreamController<T>.broadcast(sync: true);
+  Stream<T> get stream => _changes.stream;
+
+  static void Function(String message)? debugPrint;
+}
+
 @internal
 extension RegisterKeyReferenceExtension on Observable {
   void registerKeyReference(ObservedKey key) {
@@ -52,17 +63,6 @@ extension NotifyChangeExtension on Observable {
 @internal
 extension ComputedNotifierExtension on Observable {
   ObserverNotifier get notifier => _notifier;
-}
-
-abstract class Observable<T> {
-  late T _value;
-  T get value => observeValue(ObservedKey.value);
-
-  final _notifier = ObserverNotifier();
-  final _changes = StreamController<T>.broadcast(sync: true);
-  Stream<T> get stream => _changes.stream;
-
-  static void Function(String message)? debugPrint;
 }
 
 class MutableObservable<T> extends Observable<T> {
