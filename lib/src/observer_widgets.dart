@@ -21,7 +21,7 @@ class ObserverWidgetKey extends LocalKey {
   int get hashCode => key.hashCode;
 }
 
-class ObserverBuilder extends ObserverStatefulWidget {
+class ObserverBuilder extends ObserverStatelessWidget {
   ObserverBuilder({
     Key? key,
     required this.builder,
@@ -30,13 +30,8 @@ class ObserverBuilder extends ObserverStatefulWidget {
   final WidgetBuilder builder;
 
   @override
-  State<ObserverBuilder> createState() => _ObserverBuilderState();
-}
-
-class _ObserverBuilderState extends State<ObserverBuilder> {
-  @override
   Widget build(BuildContext context) {
-    return widget.builder(context);
+    return builder(context);
   }
 }
 
