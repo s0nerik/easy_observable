@@ -35,7 +35,7 @@ extension InheritedObservableNotifierWatcherExtension on BuildContext {
   ///   }
   /// }
   /// ```
-  void unwatch() {
+  void unwatchObservables() {
     dependOnInheritedWidgetOfExactType<InheritedObservableNotifier>(
       aspect: null,
     );

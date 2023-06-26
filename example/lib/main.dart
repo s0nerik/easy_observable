@@ -239,7 +239,7 @@ class _DynamicState extends State<_Dynamic> {
     return _Card(
       title: const Text('Dynamic set of properties'),
       builder: (context) {
-        context.unwatch();
+        context.unwatchObservables();
 
         final state = context.get<_State>();
 
