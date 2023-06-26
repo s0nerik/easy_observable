@@ -105,13 +105,13 @@ class _BodyState extends State<_Body> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Center(
+        const Center(
           child: _Counter1(),
         ),
-        Center(
+        const Center(
           child: _Counter2(),
         ),
-        Center(
+        const Center(
           child: _CounterSum(),
         ),
         Center(
@@ -131,18 +131,18 @@ class _BodyState extends State<_Body> {
   }
 }
 
-class _Counter1 extends ObserverStatelessWidget {
-  _Counter1({Key? key}) : super(key: key);
+class _Counter1 extends StatelessWidget {
+  const _Counter1({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final state = context.get<_State>();
-    return Text('Counter1: ${state.counter1.value}');
+    return Text('Counter1: ${state.counter1.watch(context)}');
   }
 }
 
-class _Counter2 extends ObserverStatefulWidget {
-  _Counter2({Key? key}) : super(key: key);
+class _Counter2 extends StatefulWidget {
+  const _Counter2({Key? key}) : super(key: key);
 
   @override
   State<_Counter2> createState() => _Counter2State();
@@ -152,16 +152,16 @@ class _Counter2State extends State<_Counter2> {
   @override
   Widget build(BuildContext context) {
     final state = context.get<_State>();
-    return Text('Counter2: ${state.counter2.value}');
+    return Text('Counter2: ${state.counter2.watch(context)}');
   }
 }
 
-class _CounterSum extends ObserverStatelessWidget {
-  _CounterSum({Key? key}) : super(key: key);
+class _CounterSum extends StatelessWidget {
+  const _CounterSum({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final state = context.get<_State>();
-    return Text('CounterSum: ${state.counterSum.value}');
+    return Text('CounterSum: ${state.counterSum.watch(context)}');
   }
 }
