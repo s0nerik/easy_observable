@@ -22,7 +22,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InheritedObservableNotifier(
+    return ObservableRoot(
       child: Provider(
         init: (scope) => scope..provide(_State()),
         child: MaterialApp(
