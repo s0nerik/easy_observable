@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
@@ -37,9 +38,11 @@ class _InheritedObservableNotifier extends InheritedWidget {
 class _ObservableNotifierInheritedElement extends InheritedElement {
   _ObservableNotifierInheritedElement(super.widget);
 
-  final _elementSubs = <Element, Map<Observable, StreamSubscription>>{};
-  final _frameElementSubs = <Element, Map<Observable, StreamSubscription>>{};
-  final _manuallyUnwatchedElements = <Element>{};
+  final _elementSubs =
+      HashMap<Element, HashMap<Observable, StreamSubscription>>();
+  final _frameElementSubs =
+      HashMap<Element, HashMap<Observable, StreamSubscription>>();
+  final _manuallyUnwatchedElements = HashSet<Element>();
 
   @override
   void mount(Element? parent, Object? newSlot) {
@@ -121,13 +124,13 @@ class _ObservableNotifierInheritedElement extends InheritedElement {
 
     final observable = aspect as Observable;
 
-    _elementSubs[dependent] ??= <Observable, StreamSubscription>{};
+    _elementSubs[dependent] ??= HashMap<Observable, StreamSubscription>();
     final observableSubs = _elementSubs[dependent]!;
     observableSubs[observable] ??= observable.stream.listen((_) {
       dependent.markNeedsBuild();
     });
 
-    _frameElementSubs[dependent] ??= <Observable, StreamSubscription>{};
+    _frameElementSubs[dependent] ??= HashMap<Observable, StreamSubscription>();
     final frameObservableSubs = _frameElementSubs[dependent]!;
     frameObservableSubs[observable] = observableSubs[observable]!;
   }
