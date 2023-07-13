@@ -104,6 +104,12 @@ class _ObservableNotifierInheritedElement extends InheritedElement {
 
   @override
   void updateDependencies(Element dependent, Object? aspect) {
+    if (SchedulerBinding.instance.schedulerPhase !=
+        SchedulerPhase.persistentCallbacks) {
+      // Don't update subscriptions outside the build phase
+      return;
+    }
+
     if (aspect == null) {
       if (_manuallyUnwatchedElements.contains(dependent)) {
         return;
