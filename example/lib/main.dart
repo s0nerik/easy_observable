@@ -22,6 +22,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const horizontalMargin = 0.0;
+    const verticalMargin = 2.0;
+    const gap = 2.0;
     return ObservableRoot(
       child: Provider(
         init: (scope) => scope..provide(_State()),
@@ -47,31 +50,31 @@ class MainApp extends StatelessWidget {
             ),
             body: const SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
+                padding: EdgeInsets.symmetric(horizontal: horizontalMargin),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SizedBox(height: 8),
+                    SizedBox(height: verticalMargin),
                     Row(
                       children: [
                         Expanded(child: _Counter1()),
-                        SizedBox(width: 8),
+                        SizedBox(width: gap),
                         Expanded(child: _Counter2()),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    SizedBox(height: gap),
                     Row(
                       children: [
                         Expanded(child: _CounterSum()),
-                        SizedBox(width: 8),
+                        SizedBox(width: gap),
                         Expanded(child: _CounterSumSquared()),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    SizedBox(height: gap),
                     _Dynamic(),
-                    SizedBox(height: 8),
+                    SizedBox(height: gap),
                     _List(),
-                    SizedBox(height: 8),
+                    SizedBox(height: verticalMargin),
                   ],
                 ),
               ),
@@ -105,6 +108,9 @@ class _CardState extends State<_Card> {
     _buildCount++;
     return Card(
       margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
