@@ -26,6 +26,9 @@ class MainApp extends StatelessWidget {
       child: Provider(
         init: (scope) => scope..provide(_State()),
         child: MaterialApp(
+          themeMode: ThemeMode.dark,
+          theme: ThemeData.dark(),
+          darkTheme: ThemeData.dark(),
           home: Scaffold(
             appBar: AppBar(
               title: const Text('easy_observable example'),
