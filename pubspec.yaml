@@ -3,7 +3,7 @@ description: An easy-to-use observability library for Flutter.
 version: 0.0.1
 
 environment:
-  sdk: '>=2.19.2 <3.0.0'
+  sdk: '>=2.19.2 <4.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
