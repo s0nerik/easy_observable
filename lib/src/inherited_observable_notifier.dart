@@ -36,6 +36,7 @@ class _ObservableNotifierInheritedElement extends InheritedElement {
 
   final _elementSubs = <Element, Map<Observable, StreamSubscription>>{};
   final _frameElementSubs = <Element, Map<Observable, StreamSubscription>>{};
+  final _manuallyUnwatchedElements = <Element>{};
 
   @override
   void mount(Element? parent, Object? newSlot) {
@@ -45,6 +46,7 @@ class _ObservableNotifierInheritedElement extends InheritedElement {
 
   void _onPostFrame(_) {
     if (!mounted) return;
+    _manuallyUnwatchedElements.clear();
     _clearSubscriptionsForUnwatchedObservables();
     _clearSubscriptionsForUnmountedElements();
     SchedulerBinding.instance.addPostFrameCallback(_onPostFrame);
@@ -100,7 +102,11 @@ class _ObservableNotifierInheritedElement extends InheritedElement {
   @override
   void updateDependencies(Element dependent, Object? aspect) {
     if (aspect == null) {
+      if (_manuallyUnwatchedElements.contains(dependent)) {
+        return;
+      }
       _disposeDependentSubscriptions(dependent);
+      _manuallyUnwatchedElements.add(dependent);
       return;
     }
 
