@@ -23,15 +23,26 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const horizontalMargin = 0.0;
-    const verticalMargin = 2.0;
-    const gap = 2.0;
+    const verticalMargin = 4.0;
+    const gap = 4.0;
+
+    var theme = ThemeData.dark();
+    theme = theme.copyWith(
+      checkboxTheme: CheckboxThemeData(
+        fillColor: MaterialStateProperty.all(theme.colorScheme.primary),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
+      ),
+    );
+
     return ObservableRoot(
       child: Provider(
         init: (scope) => scope..provide(_State()),
         child: MaterialApp(
           themeMode: ThemeMode.dark,
-          theme: ThemeData.dark(),
-          darkTheme: ThemeData.dark(),
+          theme: theme,
+          darkTheme: theme,
           home: Scaffold(
             appBar: AppBar(
               title: const Text('easy_observable example'),
@@ -127,7 +138,7 @@ class _CardState extends State<_Card> {
                       child: widget.title,
                     ),
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: 8),
                   buildRebuildCounter(context),
                 ],
               ),
@@ -142,7 +153,7 @@ class _CardState extends State<_Card> {
 
   Widget buildRebuildCounter(BuildContext context) {
     return Card(
-      color: Theme.of(context).colorScheme.onSecondary,
+      color: Theme.of(context).scaffoldBackgroundColor,
       margin: EdgeInsets.zero,
       elevation: 0,
       child: Row(
@@ -363,18 +374,33 @@ class _List extends StatelessWidget {
         final state = context.get<_State>();
         final list = state.list.watch(context);
         return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: Text('$list'),
+              child: Container(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text('$list'),
+              ),
             ),
             const SizedBox(width: 16),
-            TextButton(
-              onPressed: () => state.list.add(state.list.length),
-              child: const Text('Add'),
-            ),
-            TextButton(
-              onPressed: () => state.list.removeLast(),
-              child: const Text('Remove'),
+            Row(
+              children: [
+                TextButton(
+                  onPressed: () => state.list.add(state.list.length),
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.all(EdgeInsets.zero),
+                  ),
+                  child: const Text('Add'),
+                ),
+                const SizedBox(width: 4),
+                TextButton(
+                  onPressed: () => state.list.removeLast(),
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.all(EdgeInsets.zero),
+                  ),
+                  child: const Text('Remove'),
+                ),
+              ],
             ),
           ],
         );
