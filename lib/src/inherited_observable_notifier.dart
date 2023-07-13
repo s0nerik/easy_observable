@@ -45,7 +45,13 @@ class _ObservableNotifierInheritedElement extends InheritedElement {
 
   void _onPostFrame(_) {
     if (!mounted) return;
+    _clearSubscriptionsForUnwatchedObservables();
+    _clearSubscriptionsForUnmountedElements();
+    SchedulerBinding.instance.addPostFrameCallback(_onPostFrame);
+  }
 
+  // Workaround for https://github.com/flutter/flutter/issues/106549
+  void _clearSubscriptionsForUnwatchedObservables() {
     // dispose all subscriptions that are no longer present in the frame
     // subscriptions map, but only for elements that are present within the
     // frame element subscriptions map
@@ -64,9 +70,6 @@ class _ObservableNotifierInheritedElement extends InheritedElement {
       }
     }
     _frameElementSubs.clear();
-
-    _clearSubscriptionsForUnmountedElements();
-    SchedulerBinding.instance.addPostFrameCallback(_onPostFrame);
   }
 
   // Workaround for https://github.com/flutter/flutter/issues/128432
