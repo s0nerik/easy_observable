@@ -44,6 +44,8 @@ class _ObservableNotifierInheritedElement extends InheritedElement {
       HashMap<Element, HashMap<Observable, StreamSubscription>>();
   final _manuallyUnwatchedElements = HashSet<Element>();
 
+  bool _isFirstFrame = true;
+
   @override
   void mount(Element? parent, Object? newSlot) {
     super.mount(parent, newSlot);
@@ -52,6 +54,7 @@ class _ObservableNotifierInheritedElement extends InheritedElement {
 
   void _onPostFrame(_) {
     if (!mounted) return;
+    _isFirstFrame = false;
     _manuallyUnwatchedElements.clear();
     _clearSubscriptionsForUnwatchedObservables();
     _clearSubscriptionsForUnmountedElements();
@@ -107,8 +110,11 @@ class _ObservableNotifierInheritedElement extends InheritedElement {
 
   @override
   void updateDependencies(Element dependent, Object? aspect) {
-    if (SchedulerBinding.instance.schedulerPhase !=
-        SchedulerPhase.persistentCallbacks) {
+    final phase = SchedulerBinding.instance.schedulerPhase;
+    final isBuildPhase = phase == SchedulerPhase.persistentCallbacks ||
+        _isFirstFrame && phase == SchedulerPhase.idle;
+
+    if (!isBuildPhase) {
       // Don't update subscriptions outside the build phase
       return;
     }
