@@ -22,7 +22,10 @@ class ObservableRoot extends StatelessWidget {
 }
 
 class _InheritedObservableNotifier extends InheritedWidget {
-  const _InheritedObservableNotifier({super.key, required super.child});
+  const _InheritedObservableNotifier({
+    Key? key,
+    required super.child,
+  }) : super(key: key);
 
   @override
   InheritedElement createElement() => _ObservableNotifierInheritedElement(this);
