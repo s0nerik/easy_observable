@@ -128,12 +128,7 @@ class _CardState extends State<_Card> {
                     ),
                   ),
                   const SizedBox(width: 4),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 2),
-                    child: Icon(Icons.refresh, size: 16),
-                  ),
-                  const SizedBox(width: 4),
-                  Text('$_buildCount'),
+                  buildRebuildCounter(context),
                 ],
               ),
             ),
@@ -141,6 +136,29 @@ class _CardState extends State<_Card> {
             widget.builder(context),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildRebuildCounter(BuildContext context) {
+    return Card(
+      color: Theme.of(context).colorScheme.onSecondary,
+      margin: EdgeInsets.zero,
+      elevation: 0,
+      child: Row(
+        children: [
+          const SizedBox(width: 2),
+          const Padding(
+            padding: EdgeInsets.only(top: 1),
+            child: Icon(Icons.refresh, size: 16),
+          ),
+          const SizedBox(width: 2),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 1),
+            child: Text('$_buildCount'),
+          ),
+          const SizedBox(width: 3),
+        ],
       ),
     );
   }
