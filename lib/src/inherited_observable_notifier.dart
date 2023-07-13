@@ -116,11 +116,6 @@ class _ObservableNotifierInheritedElement extends InheritedElement {
     final frameObservableSubs = _frameElementSubs[dependent]!;
     frameObservableSubs[observable] = observableSubs[observable]!;
   }
-
-  @override
-  void onDependentRemoved(Element dependent) {
-    _disposeDependentSubscriptions(dependent);
-  }
 }
 
 extension InheritedObservableNotifierWatcherExtension on BuildContext {
