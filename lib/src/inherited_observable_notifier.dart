@@ -63,15 +63,41 @@ class _ObservableNotifierInheritedElement extends InheritedElement {
         _elementSubs.remove(element);
       }
     }
-
     _frameElementSubs.clear();
+
+    _clearSubscriptionsForUnmountedElements();
     SchedulerBinding.instance.addPostFrameCallback(_onPostFrame);
+  }
+
+  // Workaround for https://github.com/flutter/flutter/issues/128432
+  void _clearSubscriptionsForUnmountedElements() {
+    final unmountedElements = <Element>[];
+    for (final element in _elementSubs.keys) {
+      if (!element.mounted) {
+        unmountedElements.add(element);
+      }
+    }
+    for (final element in unmountedElements) {
+      _disposeDependentSubscriptions(element);
+    }
+  }
+
+  void _disposeDependentSubscriptions(Element dependent) {
+    final observableSubs = _elementSubs[dependent];
+    if (observableSubs == null) {
+      return;
+    }
+
+    for (final sub in observableSubs.values) {
+      sub.cancel();
+    }
+    _elementSubs.remove(dependent);
   }
 
   @override
   void updateDependencies(Element dependent, Object? aspect) {
     if (aspect == null) {
-      onDependentRemoved(dependent);
+      _disposeDependentSubscriptions(dependent);
       return;
     }
 
@@ -90,15 +116,7 @@ class _ObservableNotifierInheritedElement extends InheritedElement {
 
   @override
   void onDependentRemoved(Element dependent) {
-    final observableSubs = _elementSubs[dependent];
-    if (observableSubs == null) {
-      return;
-    }
-
-    for (final sub in observableSubs.values) {
-      sub.cancel();
-    }
-    _elementSubs.remove(dependent);
+    _disposeDependentSubscriptions(dependent);
   }
 }
 
