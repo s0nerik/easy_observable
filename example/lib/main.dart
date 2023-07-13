@@ -111,8 +111,14 @@ class _CardState extends State<_Card> {
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
               child: Row(
                 children: [
-                  widget.title,
-                  const Spacer(),
+                  Expanded(
+                    child: FittedBox(
+                      alignment: AlignmentDirectional.bottomStart,
+                      fit: BoxFit.scaleDown,
+                      child: widget.title,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
                   const Padding(
                     padding: EdgeInsets.only(top: 2),
                     child: Icon(Icons.refresh, size: 16),
