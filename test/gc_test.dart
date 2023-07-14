@@ -11,7 +11,7 @@ import 'package:vm_service/vm_service_io.dart';
 extension _WatchObservableExtension<T> on Observable<T> {
   T watch(ComputedContext context) {
     assert(context == ComputedContext.instance);
-    registerKeyReference(ObservedKey.value);
+    registerObserver(ObservedKey.value);
     return value;
   }
 }

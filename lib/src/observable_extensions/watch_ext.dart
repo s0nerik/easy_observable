@@ -37,7 +37,7 @@ extension InheritedObservableNotifierObservableExtension<T> on Observable<T> {
     assert(context is BuildContext || context == ComputedContext.instance);
 
     if (context == ComputedContext.instance) {
-      registerKeyReference(ObservedKey.value);
+      registerObserver(ObservedKey.value);
       return value;
     }
     (context as BuildContext)

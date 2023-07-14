@@ -34,7 +34,7 @@ extension InternalAPI<T> on Observable<T> {
     notifyChange(keys);
   }
 
-  void registerKeyReference(ObservedKey key) {
+  void registerObserver(ObservedKey key) {
     final refHolder = ObservableRefHolder.current;
     if (refHolder != null && !identical(this, refHolder)) {
       _notifier.registerObserver(refHolder, key);
