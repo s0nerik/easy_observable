@@ -386,7 +386,7 @@ class _List extends StatelessWidget {
             Row(
               children: [
                 TextButton(
-                  onPressed: () => state.list.add(state.list.length),
+                  onPressed: () => state.list.add(state.list.value.length),
                   style: ButtonStyle(
                     padding: MaterialStateProperty.all(EdgeInsets.zero),
                   ),

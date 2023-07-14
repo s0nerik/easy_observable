@@ -6,5 +6,7 @@ export 'src/observable.dart'
         NotifyChangeExtension,
         RegisterKeyReferenceExtension,
         ComputedNotifierExtension;
-export 'src/observable_collection_extensions.dart';
+export 'src/observable_extensions/mutable_observable_list_ext.dart';
+export 'src/observable_extensions/mutable_observable_map_ext.dart';
+export 'src/observable_extensions/mutable_observable_set_ext.dart';
 export 'src/observer_widgets.dart';
