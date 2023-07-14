@@ -16,27 +16,27 @@ class ObservableRoot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _InheritedObservableNotifier(
+    return InheritedObservableNotifier(
       child: child,
     );
   }
 }
 
-class _InheritedObservableNotifier extends InheritedWidget {
-  const _InheritedObservableNotifier({
+class InheritedObservableNotifier extends InheritedWidget {
+  const InheritedObservableNotifier({
     Key? key,
     required super.child,
   }) : super(key: key);
 
   @override
-  InheritedElement createElement() => _ObservableNotifierInheritedElement(this);
+  InheritedElement createElement() => ObservableNotifierInheritedElement(this);
 
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) => false;
 }
 
-class _ObservableNotifierInheritedElement extends InheritedElement {
-  _ObservableNotifierInheritedElement(super.widget);
+class ObservableNotifierInheritedElement extends InheritedElement {
+  ObservableNotifierInheritedElement(super.widget);
 
   final _elementSubs =
       HashMap<Element, HashMap<Observable, StreamSubscription>>();
@@ -163,7 +163,7 @@ extension InheritedObservableNotifierWatcherExtension on BuildContext {
   /// }
   /// ```
   void unwatchObservables() {
-    dependOnInheritedWidgetOfExactType<_InheritedObservableNotifier>(
+    dependOnInheritedWidgetOfExactType<InheritedObservableNotifier>(
       aspect: null,
     );
   }
@@ -171,7 +171,7 @@ extension InheritedObservableNotifierWatcherExtension on BuildContext {
 
 extension InheritedObservableNotifierObservableExtension<T> on Observable<T> {
   T watch(BuildContext context) {
-    context.dependOnInheritedWidgetOfExactType<_InheritedObservableNotifier>(
+    context.dependOnInheritedWidgetOfExactType<InheritedObservableNotifier>(
       aspect: this,
     );
     return value;
