@@ -1,4 +1,4 @@
-import '../observable/observable.dart';
+import '../observable/mutable_observable.dart';
 import 'mutation_extension.dart';
 
 extension ObservableMutableMapExtension<K, V> on MutableObservable<Map<K, V>> {

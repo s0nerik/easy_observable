@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import '../observable/observable.dart';
+import '../observable/mutable_observable.dart';
 import 'mutation_extension.dart';
 
 extension ObservableMutableListExtension<E> on MutableObservable<List<E>> {

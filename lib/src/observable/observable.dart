@@ -6,12 +6,6 @@ import 'package:meta/meta.dart';
 import '../observable_debug_logging.dart';
 import '../observer_notifier.dart';
 
-MutableObservable<T> observable<T>(
-  T value, {
-  String? debugLabel,
-}) =>
-    MutableObservable._(value, debugLabel);
-
 abstract class Observable<T> {
   late T _value;
   T get value => _value;
@@ -58,20 +52,13 @@ extension SetValueExtension<T> on Observable<T> {
 }
 
 @internal
-extension ComputedNotifierExtension on Observable {
-  ObserverNotifier get notifier => _notifier;
+extension InitValueExtension<T> on Observable<T> {
+  void initValue(T newValue) {
+    _value = newValue;
+  }
 }
 
-class MutableObservable<T> extends Observable<T> {
-  MutableObservable._(T value, [this._debugLabel]) {
-    _value = value;
-  }
-
-  final String? _debugLabel;
-
-  set value(T newValue) => setValue(newValue);
-
-  @override
-  String toString() =>
-      '${_debugLabel != null ? '($_debugLabel) ' : ''}observable($_value)';
+@internal
+extension ComputedNotifierExtension on Observable {
+  ObserverNotifier get notifier => _notifier;
 }
