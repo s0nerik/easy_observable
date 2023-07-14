@@ -18,29 +18,13 @@ abstract class Observable<T> {
 }
 
 @internal
-extension RegisterKeyReferenceExtension on Observable {
-  void registerKeyReference(ObservedKey key) {
-    final refHolder = ObservableRefHolder.current;
-    if (refHolder != null && !identical(this, refHolder)) {
-      _notifier.registerObserver(refHolder, key);
-      refHolder.refs.add(this);
-    }
-  }
-}
+extension InternalAPI<T> on Observable<T> {
+  ObserverNotifier get notifier => _notifier;
 
-@internal
-extension NotifyChangeExtension on Observable {
-  void notifyChange(List<ObservedKey> keys) {
-    assert(debugPrintNotifyChange(this, keys));
-    _changes.add(_value);
-    for (final key in keys) {
-      _notifier.recompute(key);
-    }
+  void initValue(T newValue) {
+    _value = newValue;
   }
-}
 
-@internal
-extension SetValueExtension<T> on Observable<T> {
   void setValue(
     T newValue, {
     List<ObservedKey> keys = const [ObservedKey.value],
@@ -49,16 +33,20 @@ extension SetValueExtension<T> on Observable<T> {
     _value = newValue;
     notifyChange(keys);
   }
-}
 
-@internal
-extension InitValueExtension<T> on Observable<T> {
-  void initValue(T newValue) {
-    _value = newValue;
+  void registerKeyReference(ObservedKey key) {
+    final refHolder = ObservableRefHolder.current;
+    if (refHolder != null && !identical(this, refHolder)) {
+      _notifier.registerObserver(refHolder, key);
+      refHolder.refs.add(this);
+    }
   }
-}
 
-@internal
-extension ComputedNotifierExtension on Observable {
-  ObserverNotifier get notifier => _notifier;
+  void notifyChange(List<ObservedKey> keys) {
+    assert(debugPrintNotifyChange(this, keys));
+    _changes.add(_value);
+    for (final key in keys) {
+      _notifier.recompute(key);
+    }
+  }
 }
