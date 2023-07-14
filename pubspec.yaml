@@ -18,5 +18,6 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   vm_service:
   test:
+  benchmarking: ^0.6.1
 
 flutter:
