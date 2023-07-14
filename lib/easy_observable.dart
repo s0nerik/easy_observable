@@ -1,7 +1,8 @@
 export 'src/inherited_observable_notifier.dart' show ObservableRoot;
+export 'src/observable/computed.dart' hide ComputedObservable;
 export 'src/observable/observable.dart'
     hide
-        ComputedObservable,
+        SetValueExtension,
         NotifyChangeExtension,
         RegisterKeyReferenceExtension,
         ComputedNotifierExtension;

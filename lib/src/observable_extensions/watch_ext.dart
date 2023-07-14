@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../inherited_observable_notifier.dart';
+import '../observable/computed.dart';
 import '../observable/observable.dart';
 import '../observer_notifier.dart';
 

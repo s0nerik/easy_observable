@@ -98,14 +98,15 @@ bool debugPrintRecomputeStatus(
   return true;
 }
 
-bool debugPrintSetValue(Observable observable, ObservedKey key, Object? value) {
+bool debugPrintSetValue(
+    Observable observable, List<ObservedKey> keys, Object? value) {
   if (_targetSetValueComputeDepth != -1 &&
       _computeDepth != _targetSetValueComputeDepth) {
     return true;
   }
   if (_printSetValue) {
     Observable.debugPrint?.call(
-      '$_computePrefix$_eventSetValue $observable -> $key = $value',
+      '$_computePrefix$_eventSetValue $observable -> $keys = $value',
     );
   }
   return true;

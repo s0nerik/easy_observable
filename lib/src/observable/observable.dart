@@ -12,12 +12,6 @@ MutableObservable<T> observable<T>(
 }) =>
     MutableObservable._(value, debugLabel);
 
-Observable<T> computed<T>(
-  T Function(ComputedContext context) compute, {
-  String? debugLabel,
-}) =>
-    ComputedObservable._(compute, debugLabel);
-
 abstract class Observable<T> {
   late T _value;
   T get value => _value;
@@ -52,6 +46,18 @@ extension NotifyChangeExtension on Observable {
 }
 
 @internal
+extension SetValueExtension<T> on Observable<T> {
+  void setValue(
+    T newValue, {
+    List<ObservedKey> keys = const [ObservedKey.value],
+  }) {
+    assert(debugPrintSetValue(this, keys, newValue));
+    _value = newValue;
+    notifyChange(keys);
+  }
+}
+
+@internal
 extension ComputedNotifierExtension on Observable {
   ObserverNotifier get notifier => _notifier;
 }
@@ -63,45 +69,9 @@ class MutableObservable<T> extends Observable<T> {
 
   final String? _debugLabel;
 
-  set value(T newValue) {
-    assert(debugPrintSetValue(this, ObservedKey.value, newValue));
-    _value = newValue;
-    notifyChange(const [ObservedKey.value]);
-  }
+  set value(T newValue) => setValue(newValue);
 
   @override
   String toString() =>
       '${_debugLabel != null ? '($_debugLabel) ' : ''}observable($_value)';
-}
-
-class ComputedContext {
-  const ComputedContext._();
-
-  static const instance = ComputedContext._();
-}
-
-class ComputedObservable<T> extends Observable<T> with ObservableRefHolder {
-  ComputedObservable._(this._compute, [this._debugLabel]) {
-    recompute();
-  }
-
-  final String? _debugLabel;
-  final T Function(ComputedContext context) _compute;
-
-  bool _initialized = false;
-
-  @override
-  void performRecompute() {
-    _value = _compute(ComputedContext.instance);
-    notifyChange(const [ObservedKey.value]);
-    _initialized = true;
-  }
-
-  @override
-  String toString() {
-    if (!_initialized) {
-      return '${_debugLabel != null ? '($_debugLabel) ' : ''}computed(UNINITIALIZED)';
-    }
-    return '${_debugLabel != null ? '($_debugLabel) ' : ''}computed($_value)';
-  }
 }
