@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:easy_observable/src/observable_ref_holder.dart';
 import 'package:meta/meta.dart';
 
-import 'observable_debug_logging.dart';
-import 'observer_notifier.dart';
+import '../observable_debug_logging.dart';
+import '../observer_notifier.dart';
 
 MutableObservable<T> observable<T>(
   T value, {

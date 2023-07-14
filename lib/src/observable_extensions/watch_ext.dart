@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../inherited_observable_notifier.dart';
-import '../observable.dart';
+import '../observable/observable.dart';
 import '../observer_notifier.dart';
 
 extension InheritedObservableNotifierWatcherExtension on BuildContext {

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import 'observable.dart';
+import 'observable/observable.dart';
 import 'observable_debug_logging.dart';
 import 'observer.dart';
 import 'observer_notifier.dart';

@@ -1,6 +1,6 @@
 import 'package:easy_observable/src/observable_ref_holder.dart';
 
-import 'observable.dart';
+import 'observable/observable.dart';
 import 'observer_notifier.dart';
 
 const _enableDebugLogging = false;

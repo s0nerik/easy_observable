@@ -1,4 +1,4 @@
-import '../observable.dart';
+import '../observable/observable.dart';
 import '../observer_notifier.dart';
 
 extension MutationExtension<T> on MutableObservable<T> {

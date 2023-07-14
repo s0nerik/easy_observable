@@ -1,4 +1,4 @@
-import '../observable.dart';
+import '../observable/observable.dart';
 import 'mutation_extension.dart';
 
 extension ObservableMutableSetExtension<E> on MutableObservable<Set<E>> {

@@ -1,5 +1,5 @@
 export 'src/inherited_observable_notifier.dart' show ObservableRoot;
-export 'src/observable.dart'
+export 'src/observable/observable.dart'
     hide
         ComputedObservable,
         NotifyChangeExtension,

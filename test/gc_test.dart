@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'dart:isolate';
 
-import 'package:easy_observable/src/observable.dart';
+import 'package:easy_observable/src/observable/observable.dart';
 import 'package:easy_observable/src/observer_notifier.dart';
 import 'package:test/test.dart';
 import 'package:vm_service/vm_service_io.dart';
