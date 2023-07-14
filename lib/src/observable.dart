@@ -13,14 +13,14 @@ MutableObservable<T> observable<T>(
     MutableObservable._(value, debugLabel);
 
 Observable<T> computed<T>(
-  T Function() compute, {
+  T Function(ComputedContext context) compute, {
   String? debugLabel,
 }) =>
     ComputedObservable._(compute, debugLabel);
 
 abstract class Observable<T> {
   late T _value;
-  T get value => observeValue(ObservedKey.value);
+  T get value => _value;
 
   final _notifier = ObserverNotifier();
   final _changes = StreamController<T>.broadcast(sync: true);
@@ -83,20 +83,25 @@ class MutableObservable<T> extends Observable<T> {
       '${_debugLabel != null ? '($_debugLabel) ' : ''}observable($_value)';
 }
 
+class ComputedContext {
+  const ComputedContext._();
+
+  static const instance = ComputedContext._();
+}
+
 class ComputedObservable<T> extends Observable<T> with ObservableRefHolder {
   ComputedObservable._(this._compute, [this._debugLabel]) {
     recompute();
   }
 
   final String? _debugLabel;
-
-  final T Function() _compute;
+  final T Function(ComputedContext context) _compute;
 
   bool _initialized = false;
 
   @override
   void performRecompute() {
-    _value = _compute();
+    _value = _compute(ComputedContext.instance);
     notifyChange(const [ObservedKey.value]);
     _initialized = true;
   }

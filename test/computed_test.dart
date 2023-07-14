@@ -7,9 +7,9 @@ void main() {
     final obs2 = observable(0);
 
     var recomputations = 0;
-    final computedValue = computed(() {
+    final computedValue = computed((context) {
       recomputations++;
-      return '${obs1.value}${obs2.value}';
+      return '${obs1.watch(context)}${obs2.watch(context)}';
     });
 
     expect(computedValue.value, 'a0');
@@ -29,9 +29,9 @@ void main() {
     final obs2 = observable(0);
 
     var recomputations = 0;
-    final computedValue = computed(() {
+    final computedValue = computed((context) {
       recomputations++;
-      return '${obs1.value}${obs2.value}';
+      return '${obs1.watch(context)}${obs2.watch(context)}';
     });
 
     expect(computedValue.value, 'a0');
@@ -50,14 +50,14 @@ void main() {
     bool readObs1 = true;
     bool readObs2 = true;
     var recomputations = 0;
-    final computedValue = computed(() {
+    final computedValue = computed((context) {
       recomputations++;
       if (readObs1 && readObs2) {
-        return '${obs1.value}${obs2.value}';
+        return '${obs1.watch(context)}${obs2.watch(context)}';
       } else if (readObs1) {
-        return obs1.value;
+        return obs1.watch(context);
       } else if (readObs2) {
-        return '${obs2.value}';
+        return '${obs2.watch(context)}';
       } else {
         return '';
       }

@@ -1,9 +1,18 @@
 import 'dart:developer';
 import 'dart:isolate';
 
-import 'package:easy_observable/easy_observable.dart';
+import 'package:easy_observable/src/observable.dart';
+import 'package:easy_observable/src/observer_notifier.dart';
 import 'package:test/test.dart';
 import 'package:vm_service/vm_service_io.dart';
+
+extension _WatchObservableExtension<T> on Observable<T> {
+  T watch(ComputedContext context) {
+    assert(context == ComputedContext.instance);
+    registerKeyReference(ObservedKey.value);
+    return value;
+  }
+}
 
 /// Must be run via `dart run --enable-vm-service test/gc_test.dart` after
 /// removing all Flutter-related lib exports and changing `skip: true` to `skip: false`
@@ -22,9 +31,9 @@ void main() async {
 
     var computes = 0;
 
-    Observable? comp = computed(() {
+    Observable? comp = computed((context) {
       computes++;
-      return '${obs1.value}${obs2.value}';
+      return '${obs1.watch(context)}${obs2.watch(context)}';
     });
     expect(comp.value, 'a0');
     expect(computes, 1);

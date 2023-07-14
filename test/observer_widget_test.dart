@@ -54,8 +54,10 @@ void main() {
     (widgetTester) async {
       final observable1 = observable('a');
       final observable2 = observable(0);
-      final computedValue =
-          computed(() => '${observable1.value}${observable2.value}');
+      final computedValue = computed(
+        (context) =>
+            '${observable1.watch(context)}${observable2.watch(context)}',
+      );
 
       observed = [computedValue];
 

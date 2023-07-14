@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../inherited_observable_notifier.dart';
 import '../observable.dart';
+import '../observer_notifier.dart';
 
 extension InheritedObservableNotifierWatcherExtension on BuildContext {
   /// A workaround for https://github.com/flutter/flutter/issues/106549#issue-1283582212
@@ -31,8 +32,15 @@ extension InheritedObservableNotifierWatcherExtension on BuildContext {
 }
 
 extension InheritedObservableNotifierObservableExtension<T> on Observable<T> {
-  T watch(BuildContext context) {
-    context.dependOnInheritedWidgetOfExactType<InheritedObservableNotifier>(
+  T watch(Object context) {
+    assert(context is BuildContext || context == ComputedContext.instance);
+
+    if (context == ComputedContext.instance) {
+      registerKeyReference(ObservedKey.value);
+      return value;
+    }
+    (context as BuildContext)
+        .dependOnInheritedWidgetOfExactType<InheritedObservableNotifier>(
       aspect: this,
     );
     return value;

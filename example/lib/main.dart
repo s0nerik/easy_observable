@@ -6,9 +6,12 @@ import 'package:flutter/material.dart';
 class _State {
   final counter1 = observable(0);
   final counter2 = observable(0);
-  late final counterSum = computed(() => counter1.value + counter2.value);
-  late final counterSumSquared =
-      computed(() => counterSum.value * counterSum.value);
+  late final counterSum = computed(
+    (context) => counter1.watch(context) + counter2.watch(context),
+  );
+  late final counterSumSquared = computed(
+    (context) => counterSum.watch(context) * counterSum.watch(context),
+  );
 
   late final list = observable(<int>[]);
 }

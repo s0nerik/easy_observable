@@ -11,9 +11,9 @@ class _State {
 
   final counter1 = observable(0);
   final counter2 = observable(0);
-  late final counterSum = computed(() {
+  late final counterSum = computed((context) {
     // print('$pageName counterSum computed');
-    return counter1.value + counter2.value;
+    return counter1.watch(context) + counter2.watch(context);
   });
 }
 
