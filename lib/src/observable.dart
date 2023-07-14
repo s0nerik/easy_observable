@@ -41,15 +41,6 @@ extension RegisterKeyReferenceExtension on Observable {
 }
 
 @internal
-extension ObserveValueExtension<T> on Observable<T> {
-  T observeValue(ObservedKey key) {
-    assert(debugPrintObserveValue(this, key));
-    registerKeyReference(key);
-    return _value;
-  }
-}
-
-@internal
 extension NotifyChangeExtension on Observable {
   void notifyChange(List<ObservedKey> keys) {
     assert(debugPrintNotifyChange(this, keys));
