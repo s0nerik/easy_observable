@@ -153,7 +153,7 @@ class _CardState extends State<_Card> {
 
   Widget buildRebuildCounter(BuildContext context) {
     return Card(
-      color: Theme.of(context).scaffoldBackgroundColor,
+      color: Colors.grey[900],
       margin: EdgeInsets.zero,
       elevation: 0,
       child: Row(
