@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../observable/observable.dart';
-import '../observer.dart';
+import '../observer_context.dart';
 import '../observer_notifier.dart';
 import '../widgets/inherited_observable_notifier.dart';
 
@@ -34,9 +34,9 @@ extension InheritedObservableNotifierWatcherExtension on BuildContext {
 
 extension InheritedObservableNotifierObservableExtension<T> on Observable<T> {
   T watch(Object context) {
-    assert(context is BuildContext || context is Observer);
+    assert(context is BuildContext || context is ObserverContext);
 
-    if (context is Observer) {
+    if (context is ObserverContext) {
       registerObserver(context, ObservedKey.value);
       return value;
     }

@@ -1,7 +1,7 @@
-import '../observer.dart';
+import '../observer_context.dart';
 import 'observable.dart';
 
-typedef ComputedCallback<T> = T Function(Observer context);
+typedef ComputedCallback<T> = T Function(ObserverContext context);
 
 Observable<T> computed<T>(
   ComputedCallback<T> compute, {
@@ -9,7 +9,7 @@ Observable<T> computed<T>(
 }) =>
     ComputedObservable._(compute, debugLabel);
 
-class ComputedObservable<T> extends Observable<T> with Observer {
+class ComputedObservable<T> extends Observable<T> with ObserverContext {
   ComputedObservable._(this._compute, [this._debugLabel]) {
     recompute();
   }

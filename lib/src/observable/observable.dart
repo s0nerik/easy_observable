@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:easy_observable/src/observer.dart';
+import 'package:easy_observable/src/observer_context.dart';
 import 'package:meta/meta.dart';
 
 import '../debug_logging.dart';
@@ -34,7 +34,7 @@ extension InternalAPI<T> on Observable<T> {
     notifyChange(keys);
   }
 
-  void registerObserver(Observer observer, ObservedKey key) {
+  void registerObserver(ObserverContext observer, ObservedKey key) {
     if (identical(this, observer)) {
       return;
     }

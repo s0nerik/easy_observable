@@ -5,7 +5,7 @@ import 'observable/observable.dart';
 import 'observer_notifier.dart';
 
 @internal
-mixin Observer {
+mixin ObserverContext {
   final refs = <Observable>{};
 
   @internal

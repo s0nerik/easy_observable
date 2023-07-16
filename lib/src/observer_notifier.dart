@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'observable/observable.dart';
-import 'observer.dart';
+import 'observer_context.dart';
 
 enum _Key { value }
 
@@ -9,15 +9,15 @@ enum _Key { value }
 /// the `Observer` is alive. After the `Observer` is
 /// garbage collected, `equals` will always return `false`.
 class _ObserverWeakRef {
-  _ObserverWeakRef(Observer observer)
+  _ObserverWeakRef(ObserverContext observer)
       : weakRef = WeakReference(observer),
         _hashCode = observer.hashCode;
 
-  final WeakReference<Observer> weakRef;
+  final WeakReference<ObserverContext> weakRef;
   final int _hashCode;
 
   static bool checkEquals(Object a, Object b) {
-    if (a is Observer) {
+    if (a is ObserverContext) {
       return b == a;
     }
     return a == b;
@@ -28,7 +28,7 @@ class _ObserverWeakRef {
     if (weakRef.target == null) {
       return false;
     }
-    if (other is Observer) {
+    if (other is ObserverContext) {
       return weakRef.target == other;
     }
     if (other is! _ObserverWeakRef) {
@@ -85,7 +85,7 @@ class ObserverNotifier {
   /// as an item type.
   final _keyObservers = <ObservedKey, Set<Object>>{};
 
-  void registerObserver(Observer observer, ObservedKey key) {
+  void registerObserver(ObserverContext observer, ObservedKey key) {
     final weakRefWrapper = _ObserverWeakRef(observer);
     _observerKeys[weakRefWrapper] ??= {};
     _observerKeys[observer]!.add(key);
@@ -95,7 +95,7 @@ class ObserverNotifier {
     _keyObservers[key]!.add(weakRefWrapper);
   }
 
-  void unregisterObserver(Observer observer) {
+  void unregisterObserver(ObserverContext observer) {
     final keys = _observerKeys[observer];
     _observerKeys.remove(observer);
     if (keys == null) return;
