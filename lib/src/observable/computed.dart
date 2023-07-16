@@ -29,8 +29,8 @@ class ComputedObservable<T> extends Observable<T> with ObserverContext {
   @override
   String toString() {
     if (!_initialized) {
-      return '${_debugLabel != null ? '($_debugLabel) ' : ''}computed(UNINITIALIZED)';
+      return '${_debugLabel != null ? '($_debugLabel) ' : ''}computed<$T>(UNINITIALIZED)';
     }
-    return '${_debugLabel != null ? '($_debugLabel) ' : ''}computed($value)';
+    return '${_debugLabel != null ? '($_debugLabel) ' : ''}computed<$T>($value)';
   }
 }
