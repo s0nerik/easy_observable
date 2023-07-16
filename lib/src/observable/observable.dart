@@ -35,9 +35,6 @@ extension InternalAPI<T> on Observable<T> {
   }
 
   void registerObserver(ObserverContext observer, ObservedKey key) {
-    if (identical(this, observer)) {
-      return;
-    }
     _notifier.registerObserver(observer, key);
     observer.refs.add(this);
   }
