@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
-import 'debug_logging.dart';
-import 'observable/observable.dart';
+import '../debug_logging.dart';
+import 'observable.dart';
 import 'observer_notifier.dart';
 
 @internal

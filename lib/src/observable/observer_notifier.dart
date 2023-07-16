@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'observable/observable.dart';
+import 'observable.dart';
 import 'observer_context.dart';
 
 enum _Key { value }

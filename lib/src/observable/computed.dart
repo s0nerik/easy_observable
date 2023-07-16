@@ -1,5 +1,5 @@
-import '../observer_context.dart';
 import 'observable.dart';
+import 'observer_context.dart';
 
 typedef ComputedCallback<T> = T Function(ObserverContext context);
 

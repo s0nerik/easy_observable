@@ -1,6 +1,6 @@
 import 'observable/observable.dart';
-import 'observer_context.dart';
-import 'observer_notifier.dart';
+import 'observable/observer_context.dart';
+import 'observable/observer_notifier.dart';
 
 const _enableDebugLogging = false;
 

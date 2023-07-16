@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:easy_observable/src/observer_context.dart';
+import 'package:easy_observable/src/observable/observer_context.dart';
 import 'package:meta/meta.dart';
 
 import '../debug_logging.dart';
-import '../observer_notifier.dart';
+import 'observer_notifier.dart';
 
 abstract class Observable<T> {
   late T _value;
