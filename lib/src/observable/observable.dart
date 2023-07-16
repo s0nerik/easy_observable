@@ -23,6 +23,7 @@ extension InternalAPI<T> on Observable<T> {
 
   void initValue(T newValue) {
     _value = newValue;
+    assert(debugPrintInitValue(this, newValue));
   }
 
   void setValue(

@@ -17,5 +17,5 @@ class MutableObservable<T> extends Observable<T> {
 
   @override
   String toString() =>
-      '${_debugLabel != null ? '($_debugLabel) ' : ''}observable($value)';
+      '${_debugLabel != null ? '($_debugLabel) ' : ''}observable<$T>($value)';
 }
