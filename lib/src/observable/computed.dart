@@ -1,4 +1,4 @@
-import '../observable_ref_holder.dart';
+import '../observer.dart';
 import 'observable.dart';
 
 Observable<T> computed<T>(
@@ -13,7 +13,7 @@ class ComputedContext {
   static const instance = ComputedContext._();
 }
 
-class ComputedObservable<T> extends Observable<T> with ObservableRefHolder {
+class ComputedObservable<T> extends Observable<T> with Observer {
   ComputedObservable._(this._compute, [this._debugLabel]) {
     recompute();
   }

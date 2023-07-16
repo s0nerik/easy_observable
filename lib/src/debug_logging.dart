@@ -1,5 +1,5 @@
 import 'observable/observable.dart';
-import 'observable_ref_holder.dart';
+import 'observer.dart';
 import 'observer_notifier.dart';
 
 const _enableDebugLogging = false;
@@ -42,7 +42,7 @@ enum DebugRecomputeState {
   afterRecompute,
 }
 
-bool debugClearComputeDepthIfNeeded(ObservableRefHolder? currentScope) {
+bool debugClearComputeDepthIfNeeded(Observer? currentScope) {
   if (currentScope == null) {
     _computeDepth = 0;
   }
@@ -60,7 +60,7 @@ bool debugDecrementComputeDepth() {
 }
 
 bool debugPrintRecomputeStatus(
-  ObservableRefHolder observable,
+  Observer observable,
   ObservedKey key,
   Set<Observable> dependencies,
   ObserverNotifier? computedNotifier,

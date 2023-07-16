@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:easy_observable/src/observable_ref_holder.dart';
+import 'package:easy_observable/src/observer.dart';
 import 'package:meta/meta.dart';
 
 import '../debug_logging.dart';
@@ -35,7 +35,7 @@ extension InternalAPI<T> on Observable<T> {
   }
 
   void registerObserver(ObservedKey key) {
-    final refHolder = ObservableRefHolder.current;
+    final refHolder = Observer.current;
     if (refHolder != null && !identical(this, refHolder)) {
       _notifier.registerObserver(refHolder, key);
       refHolder.refs.add(this);

@@ -1,6 +1,6 @@
-import 'package:easy_observable/src/observable_ref_holder.dart';
+import 'package:easy_observable/src/observer.dart';
 
-class ObserverScope<T> with ObservableRefHolder {
+class ObserverScope<T> with Observer {
   ObserverScope(this._recompute) {
     recompute();
   }
