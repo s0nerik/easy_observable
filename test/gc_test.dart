@@ -4,14 +4,14 @@ import 'dart:isolate';
 import 'package:easy_observable/src/observable/computed.dart';
 import 'package:easy_observable/src/observable/mutable_observable.dart';
 import 'package:easy_observable/src/observable/observable.dart';
+import 'package:easy_observable/src/observer.dart';
 import 'package:easy_observable/src/observer_notifier.dart';
 import 'package:test/test.dart';
 import 'package:vm_service/vm_service_io.dart';
 
 extension _WatchObservableExtension<T> on Observable<T> {
-  T watch(ComputedContext context) {
-    assert(context == ComputedContext.instance);
-    registerObserver(ObservedKey.value);
+  T watch(Observer context) {
+    registerObserver(context, ObservedKey.value);
     return value;
   }
 }

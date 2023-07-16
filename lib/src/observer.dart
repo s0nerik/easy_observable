@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:meta/meta.dart';
 
 import 'debug_logging.dart';
@@ -8,14 +6,11 @@ import 'observer_notifier.dart';
 
 @internal
 mixin Observer {
-  static const zoneKey = 'ObservableRefHolder';
-  static Observer? get current => Zone.current[Observer.zoneKey];
-
   final refs = <Observable>{};
 
   @internal
   void recompute() {
-    assert(debugClearComputeDepthIfNeeded(current));
+    assert(debugClearComputeDepthIfNeeded(this));
     assert(debugIncrementComputeDepth());
     assert(
       debugPrintRecomputeStatus(
@@ -28,9 +23,7 @@ mixin Observer {
     );
 
     clearObservableRefs();
-    runZoned(performRecompute, zoneValues: {
-      Observer.zoneKey: this,
-    });
+    performRecompute();
 
     assert(
       debugPrintRecomputeStatus(

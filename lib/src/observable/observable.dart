@@ -34,12 +34,12 @@ extension InternalAPI<T> on Observable<T> {
     notifyChange(keys);
   }
 
-  void registerObserver(ObservedKey key) {
-    final refHolder = Observer.current;
-    if (refHolder != null && !identical(this, refHolder)) {
-      _notifier.registerObserver(refHolder, key);
-      refHolder.refs.add(this);
+  void registerObserver(Observer observer, ObservedKey key) {
+    if (identical(this, observer)) {
+      return;
     }
+    _notifier.registerObserver(observer, key);
+    observer.refs.add(this);
   }
 
   void notifyChange(List<ObservedKey> keys) {
