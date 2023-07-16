@@ -1,4 +1,4 @@
-export 'src/observable/computed.dart' hide ComputedObservable;
+export 'src/observable/computed_observable.dart' hide ComputedObservable;
 export 'src/observable/mutable_observable.dart';
 export 'src/observable/observable.dart' hide InternalAPI;
 export 'src/observable_extensions/mutable_observable_list_ext.dart';
