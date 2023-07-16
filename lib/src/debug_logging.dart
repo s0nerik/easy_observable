@@ -23,6 +23,8 @@ const _printBeforeRecompute = _enableDebugLogging;
 const _printAfterRecompute = _enableDebugLogging;
 const _targetComputeDepth = 1;
 
+// ANSI red
+const _red = '\u001b[31m';
 // ANSI green
 const _green = '\u001b[32m';
 // ANSI blue
@@ -33,6 +35,8 @@ const _yellow = '\u001b[33m';
 const _magenta = '\u001b[35m';
 // ANSI cyan
 const _cyan = '\u001b[36m';
+// ANSI bright green
+const _brightGreen = '\u001b[92m';
 // ANSI reset
 const _reset = '\u001b[0m';
 
@@ -42,6 +46,8 @@ const _eventSetValue = '${_green}SET$_reset';
 const _eventNotifyChange = '${_blue}NOTIFY$_reset';
 const _eventBeforeRecompute = '${_yellow}BEFORE RECOMPUTE$_reset';
 const _eventAfterRecompute = '${_yellow}AFTER RECOMPUTE$_reset';
+const _recomputeDependencies = '${_brightGreen}DEPENDENCIES$_reset';
+const _recomputeDependents = '${_brightGreen}DEPENDENTS$_reset';
 
 enum DebugRecomputeState {
   beforeRecompute,
@@ -87,13 +93,13 @@ bool debugPrintRecomputeStatus(
           ?.call('$_computePrefix$_eventAfterRecompute $observable:');
     }
 
-    Observable.debugPrint?.call('$_computePrefix  DEPENDENCIES:');
+    Observable.debugPrint?.call('$_computePrefix  $_recomputeDependencies:');
     for (final dependency in dependencies) {
       Observable.debugPrint?.call('$_computePrefix  - $dependency');
     }
 
     if (computedNotifier != null) {
-      Observable.debugPrint?.call('$_computePrefix  KEY REFERENCES:');
+      Observable.debugPrint?.call('$_computePrefix  $_recomputeDependents:');
       final descLines = computedNotifier.debugKeyReferencesTreeDescription();
       for (final line in descLines) {
         Observable.debugPrint?.call('$_computePrefix  $line');
