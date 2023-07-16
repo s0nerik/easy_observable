@@ -2,13 +2,16 @@ import 'observable/observable.dart';
 import 'observable/observer_context.dart';
 import 'observable/observer_notifier.dart';
 
-const _enableDebugLogging = false;
+const _enableDebugLogging = true;
 
 var _computeDepth = 0;
 String get _computePrefix => '  ' * _computeDepth;
 
 const _printObserveValue = _enableDebugLogging;
 const _targetPrintObserveValueComputeDepth = -1;
+
+const _printInitValue = _enableDebugLogging;
+const _targetInitValueComputeDepth = -1;
 
 const _printSetValue = _enableDebugLogging;
 const _targetSetValueComputeDepth = -1;
@@ -28,10 +31,13 @@ const _blue = '\u001b[34m';
 const _yellow = '\u001b[33m';
 // ANSI magenta
 const _magenta = '\u001b[35m';
+// ANSI cyan
+const _cyan = '\u001b[36m';
 // ANSI reset
 const _reset = '\u001b[0m';
 
 const _eventObserve = '${_magenta}OBSERVE$_reset';
+const _eventInitValue = '${_cyan}INIT$_reset';
 const _eventSetValue = '${_green}SET$_reset';
 const _eventNotifyChange = '${_blue}NOTIFY$_reset';
 const _eventBeforeRecompute = '${_yellow}BEFORE RECOMPUTE$_reset';
@@ -93,6 +99,19 @@ bool debugPrintRecomputeStatus(
         Observable.debugPrint?.call('$_computePrefix  $line');
       }
     }
+  }
+  return true;
+}
+
+bool debugPrintInitValue(Observable observable, Object? value) {
+  if (_targetInitValueComputeDepth != -1 &&
+      _computeDepth != _targetInitValueComputeDepth) {
+    return true;
+  }
+  if (_printInitValue) {
+    Observable.debugPrint?.call(
+      '$_computePrefix$_eventInitValue $observable = $value',
+    );
   }
   return true;
 }
