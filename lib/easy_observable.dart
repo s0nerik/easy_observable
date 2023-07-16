@@ -5,5 +5,5 @@ export 'src/observable_extensions/mutable_observable_list_ext.dart';
 export 'src/observable_extensions/mutable_observable_map_ext.dart';
 export 'src/observable_extensions/mutable_observable_set_ext.dart';
 export 'src/observable_extensions/watch_ext.dart';
-export 'src/widgets/inherited_observable_notifier.dart' show ObservableRoot;
+export 'src/widgets/observable_root.dart';
 export 'src/widgets/observer_builder.dart';

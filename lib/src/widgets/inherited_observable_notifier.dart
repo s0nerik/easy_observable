@@ -6,22 +6,6 @@ import 'package:flutter/widgets.dart';
 
 import '../observable/observable.dart';
 
-class ObservableRoot extends StatelessWidget {
-  const ObservableRoot({
-    super.key,
-    required this.child,
-  });
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return InheritedObservableNotifier(
-      child: child,
-    );
-  }
-}
-
 class InheritedObservableNotifier extends InheritedWidget {
   const InheritedObservableNotifier({
     Key? key,
