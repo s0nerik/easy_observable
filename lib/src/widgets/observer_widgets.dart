@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import 'observable_extensions/watch_ext.dart';
+import '../observable_extensions/watch_ext.dart';
 
 class ObserverBuilder extends StatelessWidget {
   const ObserverBuilder({

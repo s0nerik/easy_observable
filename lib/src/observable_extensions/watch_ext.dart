@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-import '../inherited_observable_notifier.dart';
 import '../observable/computed.dart';
 import '../observable/observable.dart';
 import '../observer_notifier.dart';
+import '../widgets/inherited_observable_notifier.dart';
 
 extension InheritedObservableNotifierWatcherExtension on BuildContext {
   /// A workaround for https://github.com/flutter/flutter/issues/106549#issue-1283582212

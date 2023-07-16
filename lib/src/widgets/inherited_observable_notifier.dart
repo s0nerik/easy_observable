@@ -4,7 +4,7 @@ import 'dart:collection';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import 'observable/observable.dart';
+import '../observable/observable.dart';
 
 class ObservableRoot extends StatelessWidget {
   const ObservableRoot({
