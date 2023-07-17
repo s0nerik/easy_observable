@@ -1,6 +1,6 @@
 import '../observable/mutable_observable.dart';
 import '../observable/observable.dart';
-import '../observable/observer_notifier.dart';
+import '../observable/observed_key.dart';
 
 extension MutationExtension<T> on MutableObservable<T> {
   TResult mutate<TResult>(

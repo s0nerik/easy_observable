@@ -2,7 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../debug_logging.dart';
 import 'observable.dart';
-import 'observer_notifier.dart';
+import 'observed_key.dart';
 
 @internal
 mixin ObserverContext {

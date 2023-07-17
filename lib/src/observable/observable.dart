@@ -4,6 +4,7 @@ import 'package:easy_observable/src/observable/observer_context.dart';
 import 'package:meta/meta.dart';
 
 import '../debug_logging.dart';
+import 'observed_key.dart';
 import 'observer_notifier.dart';
 
 abstract class Observable<T> {

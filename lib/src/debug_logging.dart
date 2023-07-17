@@ -1,4 +1,5 @@
 import 'observable/observable.dart';
+import 'observable/observed_key.dart';
 import 'observable/observer_context.dart';
 import 'observable/observer_notifier.dart';
 

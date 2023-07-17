@@ -1,9 +1,8 @@
 import 'dart:collection';
 
 import 'observable.dart';
+import 'observed_key.dart';
 import 'observer_context.dart';
-
-enum _Key { value }
 
 /// Matches the `Observer`'s `hashCode` and `==` behavior as long as
 /// the `Observer` is alive. After the `Observer` is
@@ -43,31 +42,6 @@ class _ObserverWeakRef {
   @override
   String toString() =>
       weakRef.target?.toString() ?? '_ObserverWeakRef(target: null)';
-}
-
-class ObservedKey {
-  const ObservedKey(this.key);
-  const ObservedKey._value() : key = _Key.value;
-
-  static const value = ObservedKey._value();
-
-  final Object? key;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ObservedKey &&
-          runtimeType == other.runtimeType &&
-          key == other.key;
-
-  @override
-  int get hashCode => key.hashCode;
-
-  @override
-  String toString() {
-    if (key == _Key.value) return 'value';
-    return '$key';
-  }
 }
 
 class ObserverNotifier {
