@@ -5,7 +5,7 @@ import '../observable/observed_key.dart';
 import '../observable/observer_context.dart';
 import '../widgets/inherited_observable_notifier.dart';
 
-extension InheritedObservableNotifierWatcherExtension on BuildContext {
+extension UnwatchObservablesExtension on BuildContext {
   /// A workaround for https://github.com/flutter/flutter/issues/106549#issue-1283582212
   ///
   /// Use this on the first line of your build method if you specify
@@ -32,7 +32,7 @@ extension InheritedObservableNotifierWatcherExtension on BuildContext {
   }
 }
 
-extension InheritedObservableNotifierObservableExtension<T> on Observable<T> {
+extension WatchObservableExtension<T> on Observable<T> {
   T watch(Object context) {
     assert(context is BuildContext || context is ObserverContext);
 
