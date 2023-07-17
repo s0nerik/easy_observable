@@ -23,8 +23,6 @@ const _printBeforeRecompute = _enableDebugLogging;
 const _printAfterRecompute = _enableDebugLogging;
 const _targetComputeDepth = 1;
 
-// ANSI red
-const _red = '\u001b[31m';
 // ANSI green
 const _green = '\u001b[32m';
 // ANSI blue
