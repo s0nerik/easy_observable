@@ -78,7 +78,7 @@ void main() {
     },
   );
   testWidgets(
-    'ObserverBuilder subscribes to changes in all Observables accessed during the previous build',
+    'ObserverBuilder subscribes to changes in all Observables watched during the previous build',
     (widgetTester) async {
       final observable1 = observable('a');
       final observable2 = observable(0);

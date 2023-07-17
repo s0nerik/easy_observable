@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   Observable.debugPrint = debugPrint;
 
-  test('value is recomputed only when referenced observables notify', () {
+  test('value is recomputed only when watched observables notify', () {
     final obs1 = observable('a');
     final obs2 = observable(0);
 
@@ -27,7 +27,7 @@ void main() {
     expect(recomputations, 3);
   });
 
-  test('each referenced observable notification == 1 recompute', () {
+  test('each watched observable notification == 1 recompute', () {
     final obs1 = observable('a');
     final obs2 = observable(0);
 
@@ -46,7 +46,7 @@ void main() {
     expect(recomputations, 3);
   });
 
-  test('no longer referenced observables do_not trigger a recompute', () {
+  test('no longer watched observables do_not trigger a recompute', () {
     final obs1 = observable('a');
     final obs2 = observable(0);
 
