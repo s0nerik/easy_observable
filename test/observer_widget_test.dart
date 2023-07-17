@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  Observable.debugPrint = debugPrint;
+
   late int rebuilds;
   late Widget widget;
   late List<Observable> observed;

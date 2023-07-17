@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  Observable.debugPrint = debugPrint;
+
   late MutableObservable<String> dep1;
   late MutableObservable<int> dep2;
   late MutableObservable<bool> dep3;

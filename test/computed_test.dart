@@ -1,7 +1,10 @@
 import 'package:easy_observable/easy_observable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  Observable.debugPrint = debugPrint;
+
   test('value is recomputed only when referenced observables notify', () {
     final obs1 = observable('a');
     final obs2 = observable(0);
