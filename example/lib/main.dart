@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 class _State {
   final counter1 = observable(0);
   final counter2 = observable(0);
-  late final counterSum = computed(
-    (context) => counter1.watch(context) + counter2.watch(context),
-  );
-  late final counterSumSquared = computed(
-    (context) => counterSum.watch(context) * counterSum.watch(context),
-  );
+
+  late final counterSum = computed(_counterSum);
+  int _counterSum(ObserverContext context) =>
+      counter1.watch(context) + counter2.watch(context);
+
+  late final counterSumSquared = computed(_counterSumSquared);
+  int _counterSumSquared(ObserverContext context) =>
+      counterSum.watch(context) * counterSum.watch(context);
 
   late final list = observable(<int>[]);
 }
