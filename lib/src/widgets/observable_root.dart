@@ -1,8 +1,9 @@
+import 'package:easy_observable/src/observable/computed_hot_reload.dart';
 import 'package:flutter/widgets.dart';
 
 import 'inherited_observable_notifier.dart';
 
-class ObservableRoot extends StatelessWidget {
+class ObservableRoot extends StatefulWidget {
   const ObservableRoot({
     super.key,
     required this.child,
@@ -11,9 +12,20 @@ class ObservableRoot extends StatelessWidget {
   final Widget child;
 
   @override
+  State<ObservableRoot> createState() => _ObservableRootState();
+}
+
+class _ObservableRootState extends State<ObservableRoot> {
+  @override
+  void reassemble() {
+    assert(performComputedHotReload());
+    super.reassemble();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return InheritedObservableNotifier(
-      child: child,
+      child: widget.child,
     );
   }
 }
