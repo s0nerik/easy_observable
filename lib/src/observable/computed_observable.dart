@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import 'observable.dart';
 import 'observer_context.dart';
 
@@ -9,7 +11,7 @@ Observable<T> computed<T>(
 }) =>
     ComputedObservable._(compute, debugLabel);
 
-class ComputedObservable<T> extends Observable<T> with ObserverContext {
+class ComputedObservable<T> extends Observable<T> with ObserverContextMixin {
   ComputedObservable._(this._compute, [this._debugLabel]) {
     recompute();
   }
@@ -20,6 +22,7 @@ class ComputedObservable<T> extends Observable<T> with ObserverContext {
   bool _initialized = false;
 
   @override
+  @internal
   void performRecompute() {
     final newValue = _compute(this);
     setValue(newValue);

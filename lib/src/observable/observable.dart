@@ -38,7 +38,7 @@ extension InternalAPI<T> on Observable<T> {
 
   void registerObserver(ObserverContext observer, ObservedKey key) {
     _notifier.registerObserver(observer, key);
-    observer.refs.add(this);
+    observer.registerObservable(this);
   }
 
   void notifyChange(List<ObservedKey> keys) {
