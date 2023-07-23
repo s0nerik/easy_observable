@@ -63,7 +63,20 @@ bool performComputedHotReload() {
       clearedComputedRefs.add(computedRef);
       continue;
     }
-    computed.recompute();
+    try {
+      computed.recompute();
+    } catch (e) {
+      if (e.runtimeType.toString() == '_CompileTimeError') {
+        // This happens when the compute callback refers to a no-longer-existing
+        // parent object type which was renamed.
+        //
+        // It is safe to ignore this error as the `computed` here is outdated
+        // and will be garbage collected soon anyway.
+        clearedComputedRefs.add(computedRef);
+        continue;
+      }
+      rethrow;
+    }
   }
   _hotReloadableComputedObservables.removeAll(clearedComputedRefs);
   return true;
