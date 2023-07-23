@@ -28,7 +28,7 @@ class TestPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
-      init: (scope) => scope..provide(_State(pageName)),
+      init: (scope) => scope..provide(() => _State(pageName)),
       child: _Page(pageName: pageName),
     );
   }

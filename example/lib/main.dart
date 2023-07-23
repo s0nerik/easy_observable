@@ -43,7 +43,7 @@ class MainApp extends StatelessWidget {
 
     return ObservableRoot(
       child: Provider(
-        init: (scope) => scope..provide(_State()),
+        init: (scope) => scope..provide(() => _State()),
         child: MaterialApp(
           themeMode: ThemeMode.dark,
           theme: theme,

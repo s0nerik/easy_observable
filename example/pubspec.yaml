@@ -14,7 +14,7 @@ dependencies:
   easy_provider:
     git:
       url: git@github.com:s0nerik/easy_provider.git
-      ref: b0f013e474ff747bcff79621be73fde7f238d945
+      ref: aacda5329f42799e205a8258e218e21d8ca56145
 
 dev_dependencies:
   flutter_test:
