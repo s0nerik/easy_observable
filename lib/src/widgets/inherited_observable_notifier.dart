@@ -36,6 +36,18 @@ class ObservableNotifierInheritedElement extends InheritedElement {
     SchedulerBinding.instance.addPostFrameCallback(_onPostFrame);
   }
 
+  @override
+  void unmount() {
+    _clearAllSubscriptions();
+    super.unmount();
+  }
+
+  @override
+  void reassemble() {
+    _clearAllSubscriptions();
+    super.reassemble();
+  }
+
   void _onPostFrame(_) {
     if (!mounted) return;
     _isFirstFrame = false;
@@ -90,6 +102,18 @@ class ObservableNotifierInheritedElement extends InheritedElement {
       sub.cancel();
     }
     _elementSubs.remove(dependent);
+  }
+
+  void _clearAllSubscriptions() {
+    _frameElementSubs.clear();
+    _manuallyUnwatchedElements.clear();
+
+    for (final observableSubs in _elementSubs.values) {
+      for (final sub in observableSubs.values) {
+        sub.cancel();
+      }
+    }
+    _elementSubs.clear();
   }
 
   @override
