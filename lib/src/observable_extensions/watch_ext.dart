@@ -1,9 +1,10 @@
+import 'package:context_watch/context_watch.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../observable/observable.dart';
 import '../observable/observed_key.dart';
 import '../observable/observer_context.dart';
-import '../widgets/inherited_observable_notifier.dart';
 
 extension UnwatchObservablesExtension on BuildContext {
   /// A workaround for https://github.com/flutter/flutter/issues/106549#issue-1283582212
@@ -19,17 +20,13 @@ extension UnwatchObservablesExtension on BuildContext {
   ///
   /// ```dart
   /// Widget build(BuildContext context) {
-  ///   context.unwatch();
+  ///   context.unwatchObservables();
   ///   if (condition) {
   ///     context.watch(observable);
   ///   }
   /// }
   /// ```
-  void unwatchObservables() {
-    dependOnInheritedWidgetOfExactType<InheritedObservableNotifier>(
-      aspect: null,
-    );
-  }
+  void unwatchObservables() => unwatch();
 }
 
 extension WatchObservableExtension<T> on Observable<T> {
@@ -40,10 +37,7 @@ extension WatchObservableExtension<T> on Observable<T> {
       registerObserver(context, ObservedKey.value);
       return value;
     }
-    (context as BuildContext)
-        .dependOnInheritedWidgetOfExactType<InheritedObservableNotifier>(
-      aspect: this,
-    );
-    return value;
+    // ignore: unnecessary_cast
+    return (this as ValueListenable<T>).watch(context as BuildContext);
   }
 }

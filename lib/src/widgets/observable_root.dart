@@ -1,7 +1,6 @@
+import 'package:context_watch/context_watch.dart';
 import 'package:easy_observable/src/observable/computed_hot_reload.dart';
 import 'package:flutter/widgets.dart';
-
-import 'inherited_observable_notifier.dart';
 
 class ObservableRoot extends StatefulWidget {
   const ObservableRoot({
@@ -24,7 +23,7 @@ class _ObservableRootState extends State<ObservableRoot> {
 
   @override
   Widget build(BuildContext context) {
-    return InheritedObservableNotifier(
+    return ContextWatchRoot(
       child: widget.child,
     );
   }
