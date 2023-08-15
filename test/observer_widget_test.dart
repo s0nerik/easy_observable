@@ -59,6 +59,7 @@ void main() {
       final computedValue = computed(
         (context) =>
             '${observable1.watch(context)}${observable2.watch(context)}',
+        hotReloadable: false,
       );
 
       observed = [computedValue];

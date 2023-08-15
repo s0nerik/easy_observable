@@ -36,7 +36,7 @@ void main() {
             streamComputations[dep1computed]! + 1;
       });
       return 'dep1computed: ${dep1.watch(context)}';
-    }, debugLabel: 'dep1computed');
+    }, debugLabel: 'dep1computed', hotReloadable: false);
     dep2computed = computed((context) {
       scheduleMicrotask(() {
         streamComputations.putIfAbsent(dep2computed, () => 0);
@@ -44,7 +44,7 @@ void main() {
             streamComputations[dep2computed]! + 1;
       });
       return 'dep2computed: ${dep2.watch(context)}';
-    }, debugLabel: 'dep2computed');
+    }, debugLabel: 'dep2computed', hotReloadable: false);
     dep3computed = computed((context) {
       scheduleMicrotask(() {
         streamComputations.putIfAbsent(dep3computed, () => 0);
@@ -52,7 +52,7 @@ void main() {
             streamComputations[dep3computed]! + 1;
       });
       return 'dep3computed: ${dep3.watch(context)}';
-    }, debugLabel: 'dep3computed');
+    }, debugLabel: 'dep3computed', hotReloadable: false);
     computed1and2 = computed((context) {
       scheduleMicrotask(() {
         streamComputations.putIfAbsent(computed1and2, () => 0);
@@ -60,7 +60,7 @@ void main() {
             streamComputations[computed1and2]! + 1;
       });
       return '${dep1computed.watch(context)}, ${dep2computed.watch(context)}';
-    }, debugLabel: 'computed1and2');
+    }, debugLabel: 'computed1and2', hotReloadable: false);
 
     streamSubscriptions.addAll({
       dep1: dep1.stream.listen(
@@ -128,10 +128,12 @@ void main() {
       () async {
     final dep0 = observable('a');
     final dep1 = observable(0);
-    final computedDep =
-        computed((context) => '${dep0.watch(context)} ${dep1.watch(context)}');
-    final computedValue =
-        computed((context) => 'result: ${computedDep.watch(context)}');
+    final computedDep = computed(
+        (context) => '${dep0.watch(context)} ${dep1.watch(context)}',
+        hotReloadable: false);
+    final computedValue = computed(
+        (context) => 'result: ${computedDep.watch(context)}',
+        hotReloadable: false);
 
     final streamNotifications = <String>[];
     final sub = computedValue.stream.listen(streamNotifications.add);
@@ -157,10 +159,12 @@ void main() {
       () async {
     final dep0 = observable('a');
     final dep1 = observable(0);
-    final computedDep =
-        computed((context) => '${dep0.watch(context)} ${dep1.watch(context)}');
-    final computedValue =
-        computed((context) => 'result: ${computedDep.watch(context)}');
+    final computedDep = computed(
+        (context) => '${dep0.watch(context)} ${dep1.watch(context)}',
+        hotReloadable: false);
+    final computedValue = computed(
+        (context) => 'result: ${computedDep.watch(context)}',
+        hotReloadable: false);
 
     final streamNotifications1 = <String>[];
     final streamNotifications2 = <String>[];

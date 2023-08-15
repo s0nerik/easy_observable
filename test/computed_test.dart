@@ -13,7 +13,7 @@ void main() {
     final computedValue = computed((context) {
       recomputations++;
       return '${obs1.watch(context)}${obs2.watch(context)}';
-    });
+    }, hotReloadable: false);
 
     expect(computedValue.value, 'a0');
     expect(recomputations, 1);
@@ -35,7 +35,7 @@ void main() {
     final computedValue = computed((context) {
       recomputations++;
       return '${obs1.watch(context)}${obs2.watch(context)}';
-    });
+    }, hotReloadable: false);
 
     expect(computedValue.value, 'a0');
     expect(recomputations, 1);
@@ -64,7 +64,7 @@ void main() {
       } else {
         return '';
       }
-    });
+    }, hotReloadable: false);
 
     expect(computedValue.value, 'a0');
     expect(recomputations, 1);

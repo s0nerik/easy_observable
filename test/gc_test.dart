@@ -36,7 +36,7 @@ void main() async {
     Observable? comp = computed((context) {
       computes++;
       return '${obs1.watch(context)}${obs2.watch(context)}';
-    });
+    }, hotReloadable: false);
     expect(comp.value, 'a0');
     expect(computes, 1);
 
