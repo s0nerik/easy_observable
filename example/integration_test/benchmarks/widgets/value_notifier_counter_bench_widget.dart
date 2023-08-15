@@ -51,7 +51,9 @@ class _Observer extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: counter,
-      builder: (context, child) => const SizedBox.shrink(),
+      builder: _build,
     );
   }
+
+  Widget _build(BuildContext context, Widget? child) => const SizedBox.shrink();
 }
