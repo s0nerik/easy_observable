@@ -19,19 +19,22 @@ class _ValueNotifierCounterBenchWidgetState
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          TextButton(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Center(
+          child: TextButton(
             onPressed: () => counter.value++,
             child: ListenableBuilder(
               listenable: counter,
               builder: (context, child) => Text(counter.value.toString()),
             ),
           ),
-          ...List.filled(widget.observers, _Observer(counter: counter)),
-        ],
-      ),
+        ),
+        ...List.filled(widget.observers, _Observer(counter: counter)),
+      ],
     );
   }
 }

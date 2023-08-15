@@ -20,18 +20,21 @@ class _ObservableCounterBenchWidgetState
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          TextButton(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Center(
+          child: TextButton(
             onPressed: () => counter.value++,
             child: ObserverBuilder(
               builder: (context) => Text(counter.watch(context).toString()),
             ),
           ),
-          ...List.filled(widget.observers, _Observer(counter: counter)),
-        ],
-      ),
+        ),
+        ...List.filled(widget.observers, _Observer(counter: counter)),
+      ],
     );
   }
 }
