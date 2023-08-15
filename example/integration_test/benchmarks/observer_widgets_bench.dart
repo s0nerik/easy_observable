@@ -1,9 +1,12 @@
+import 'package:easy_observable/easy_observable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:meta/meta.dart';
 
 import 'widgets/observable_counter_bench_widget.dart';
+import 'widgets/riverpod_counter_bench_widget.dart';
 import 'widgets/value_notifier_counter_bench_widget.dart';
 
 Future<void> main() async {
@@ -16,8 +19,20 @@ Future<void> main() async {
     const ValueNotifierCounterBenchWidget(observers: 10000),
   );
   _benchmark(
+    'Riverpod',
+    const RiverpodCounterBenchWidget(observers: 10000),
+  );
+  _benchmark(
+    'MobX',
+    const RiverpodCounterBenchWidget(observers: 10000),
+  );
+  _benchmark(
     'EasyObservable',
-    const ObservableCounterBenchWidget(observers: 10000),
+    const ObservableCounterBenchWidget(observers: 10000, unwatchInBuild: false),
+  );
+  _benchmark(
+    'EasyObservable (unwatch)',
+    const ObservableCounterBenchWidget(observers: 10000, unwatchInBuild: true),
   );
 }
 
@@ -25,8 +40,12 @@ Future<void> main() async {
 void _benchmark(String description, Widget widget) {
   testWidgets(description, (widgetTester) async {
     await widgetTester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(body: widget),
+      ObservableRoot(
+        child: ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(body: widget),
+          ),
+        ),
       ),
     );
 

@@ -5,9 +5,11 @@ class ObservableCounterBenchWidget extends StatefulWidget {
   const ObservableCounterBenchWidget({
     super.key,
     required this.observers,
+    required this.unwatchInBuild,
   });
 
   final int observers;
+  final bool unwatchInBuild;
 
   @override
   State<ObservableCounterBenchWidget> createState() =>
@@ -28,12 +30,23 @@ class _ObservableCounterBenchWidgetState
         Center(
           child: TextButton(
             onPressed: () => counter.value++,
-            child: ObserverBuilder(
-              builder: (context) => Text(counter.watch(context).toString()),
-            ),
+            child: widget.unwatchInBuild
+                ? ObserverBuilder(
+                    builder: (context) =>
+                        Text(counter.watch(context).toString()),
+                  )
+                : Builder(
+                    builder: (context) =>
+                        Text(counter.watch(context).toString()),
+                  ),
           ),
         ),
-        ...List.filled(widget.observers, _Observer(counter: counter)),
+        ...List.filled(
+          widget.observers,
+          widget.unwatchInBuild
+              ? _UnwatchingObserver(counter: counter)
+              : _Observer(counter: counter),
+        ),
       ],
     );
   }
@@ -41,6 +54,21 @@ class _ObservableCounterBenchWidgetState
 
 class _Observer extends StatelessWidget {
   const _Observer({
+    super.key,
+    required this.counter,
+  });
+
+  final Observable counter;
+
+  @override
+  Widget build(BuildContext context) {
+    counter.watch(context);
+    return const SizedBox.shrink();
+  }
+}
+
+class _UnwatchingObserver extends StatelessWidget {
+  const _UnwatchingObserver({
     super.key,
     required this.counter,
   });

@@ -26,5 +26,10 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   meta:
 
+  # For comparison benchmarks
+  flutter_riverpod:
+  mobx:
+  flutter_mobx:
+
 flutter:
   uses-material-design: true
