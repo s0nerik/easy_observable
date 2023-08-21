@@ -26,13 +26,13 @@ Future<void> main() async {
       unwatchInBuild: false,
     ),
   );
-  // _benchmark(
-  //   'ValueNotifier (context_watch, unwatch)',
-  //   const ValueNotifierWatchCounterBenchWidget(
-  //     observers: 10000,
-  //     unwatchInBuild: true,
-  //   ),
-  // );
+  _benchmark(
+    'ValueNotifier (context_watch, unwatch)',
+    const ValueNotifierWatchCounterBenchWidget(
+      observers: 10000,
+      unwatchInBuild: true,
+    ),
+  );
   _benchmark(
     'Riverpod',
     const RiverpodCounterBenchWidget(observers: 10000),
@@ -45,10 +45,10 @@ Future<void> main() async {
     'EasyObservable',
     const ObservableCounterBenchWidget(observers: 10000, unwatchInBuild: false),
   );
-  // _benchmark(
-  //   'EasyObservable (unwatch)',
-  //   const ObservableCounterBenchWidget(observers: 10000, unwatchInBuild: true),
-  // );
+  _benchmark(
+    'EasyObservable (unwatch)',
+    const ObservableCounterBenchWidget(observers: 10000, unwatchInBuild: true),
+  );
 }
 
 @isTest
