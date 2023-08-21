@@ -42,7 +42,7 @@ packages:
     source: hosted
     version: "1.17.1"
   context_watch:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       path: "../../context_watch"
       relative: true

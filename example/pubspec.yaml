@@ -30,6 +30,8 @@ dev_dependencies:
   flutter_riverpod:
   mobx:
   flutter_mobx:
+  context_watch:
+    path: ../../context_watch
 
 flutter:
   uses-material-design: true

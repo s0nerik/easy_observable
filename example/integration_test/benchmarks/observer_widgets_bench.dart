@@ -8,15 +8,30 @@ import 'package:meta/meta.dart';
 import 'widgets/observable_counter_bench_widget.dart';
 import 'widgets/riverpod_counter_bench_widget.dart';
 import 'widgets/value_notifier_counter_bench_widget.dart';
+import 'widgets/value_notifier_watch_counter_bench_widget.dart';
 
 Future<void> main() async {
-  assert(false); // fail in debug mode
+  // assert(false); // fail in debug mode
 
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   _benchmark(
     'ValueNotifier',
     const ValueNotifierCounterBenchWidget(observers: 10000),
+  );
+  _benchmark(
+    'ValueNotifier (context_watch)',
+    const ValueNotifierWatchCounterBenchWidget(
+      observers: 10000,
+      unwatchInBuild: false,
+    ),
+  );
+  _benchmark(
+    'ValueNotifier (context_watch, unwatch)',
+    const ValueNotifierWatchCounterBenchWidget(
+      observers: 10000,
+      unwatchInBuild: true,
+    ),
   );
   _benchmark(
     'Riverpod',
