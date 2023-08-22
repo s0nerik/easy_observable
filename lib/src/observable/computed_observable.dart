@@ -17,7 +17,8 @@ Observable<T> computed<T>(
       hotReloadable: hotReloadable,
     );
 
-class ComputedObservable<T> extends Observable<T> with ObserverContextMixin {
+class ComputedObservable<T> extends Observable<T>
+    with ObserverContextMixin, FakeBuildContext {
   ComputedObservable._(
     this._compute, {
     String? debugLabel,

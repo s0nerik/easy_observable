@@ -1,10 +1,12 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
 import '../debug_logging.dart';
 import 'observable.dart';
 import 'observed_key.dart';
 
-abstract interface class ObserverContext {
+abstract interface class ObserverContext implements BuildContext {
   void _recompute();
   void _registerObservable(Observable observable);
 }
@@ -67,4 +69,102 @@ extension InternalAPI on ObserverContext {
   void registerObservable(Observable observable) {
     _registerObservable(observable);
   }
+}
+
+/// A fake [BuildContext] implementation to make [ObserverContext] conform to
+/// the [BuildContext] interface.
+@internal
+mixin FakeBuildContext on ObserverContext implements BuildContext {
+  @override
+  bool get debugDoingBuild => throw UnsupportedError('debugDoingBuild');
+
+  @override
+  InheritedWidget dependOnInheritedElement(
+    InheritedElement ancestor, {
+    Object? aspect,
+  }) =>
+      throw UnsupportedError('dependOnInheritedElement');
+
+  @override
+  T? dependOnInheritedWidgetOfExactType<T extends InheritedWidget>({
+    Object? aspect,
+  }) =>
+      throw UnsupportedError('dependOnInheritedWidgetOfExactType');
+
+  @override
+  DiagnosticsNode describeElement(
+    String name, {
+    DiagnosticsTreeStyle style = DiagnosticsTreeStyle.errorProperty,
+  }) =>
+      throw UnsupportedError('describeElement');
+
+  @override
+  List<DiagnosticsNode> describeMissingAncestor({
+    required Type expectedAncestorType,
+  }) =>
+      throw UnsupportedError('describeMissingAncestor');
+
+  @override
+  DiagnosticsNode describeOwnershipChain(String name) =>
+      throw UnsupportedError('describeOwnershipChain');
+
+  @override
+  DiagnosticsNode describeWidget(
+    String name, {
+    DiagnosticsTreeStyle style = DiagnosticsTreeStyle.errorProperty,
+  }) =>
+      throw UnsupportedError('describeWidget');
+
+  @override
+  void dispatchNotification(Notification notification) =>
+      throw UnsupportedError('dispatchNotification');
+
+  @override
+  T? findAncestorRenderObjectOfType<T extends RenderObject>() =>
+      throw UnsupportedError('findAncestorRenderObjectOfType');
+
+  @override
+  T? findAncestorStateOfType<T extends State<StatefulWidget>>() =>
+      throw UnsupportedError('findAncestorStateOfType');
+
+  @override
+  T? findAncestorWidgetOfExactType<T extends Widget>() =>
+      throw UnsupportedError('findAncestorWidgetOfExactType');
+
+  @override
+  RenderObject? findRenderObject() =>
+      throw UnsupportedError('findRenderObject');
+
+  @override
+  T? findRootAncestorStateOfType<T extends State<StatefulWidget>>() =>
+      throw UnsupportedError('findRootAncestorStateOfType');
+
+  @override
+  InheritedElement?
+      getElementForInheritedWidgetOfExactType<T extends InheritedWidget>() =>
+          throw UnsupportedError('getElementForInheritedWidgetOfExactType');
+
+  @override
+  T? getInheritedWidgetOfExactType<T extends InheritedWidget>() =>
+      throw UnsupportedError('getInheritedWidgetOfExactType');
+
+  @override
+  bool get mounted => throw UnsupportedError('mounted');
+
+  @override
+  BuildOwner? get owner => throw UnsupportedError('owner');
+
+  @override
+  Size? get size => throw UnsupportedError('size');
+
+  @override
+  void visitAncestorElements(ConditionalElementVisitor visitor) =>
+      throw UnsupportedError('visitAncestorElements');
+
+  @override
+  void visitChildElements(ElementVisitor visitor) =>
+      throw UnsupportedError('visitChildElements');
+
+  @override
+  Widget get widget => throw UnsupportedError('widget');
 }

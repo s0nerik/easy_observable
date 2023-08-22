@@ -30,14 +30,12 @@ extension UnwatchObservablesExtension on BuildContext {
 }
 
 extension WatchObservableExtension<T> on Observable<T> {
-  T watch(Object context) {
-    assert(context is BuildContext || context is ObserverContext);
-
+  T watch(BuildContext context) {
     if (context is ObserverContext) {
       registerObserver(context, ObservedKey.value);
       return value;
     }
     // ignore: unnecessary_cast
-    return (this as ValueListenable<T>).watch(context as BuildContext);
+    return (this as ValueListenable<T>).watch(context);
   }
 }
