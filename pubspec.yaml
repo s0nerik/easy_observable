@@ -10,6 +10,11 @@ dependencies:
   flutter:
     sdk: flutter
   meta: ^1.8.0
+  rxdart:
+  context_watch:
+    git:
+      url: git@github.com:s0nerik/context_watch.git
+      ref: 28120ad1503f88f2dee5487388a305e2b931251e
 
 dev_dependencies:
   flutter_test:

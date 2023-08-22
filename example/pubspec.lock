@@ -42,11 +42,13 @@ packages:
     source: hosted
     version: "1.17.1"
   context_watch:
-    dependency: "direct dev"
+    dependency: transitive
     description:
-      path: "../../context_watch"
-      relative: true
-    source: path
+      path: "."
+      ref: "28120ad1503f88f2dee5487388a305e2b931251e"
+      resolved-ref: "28120ad1503f88f2dee5487388a305e2b931251e"
+      url: "git@github.com:s0nerik/context_watch.git"
+    source: git
     version: "0.0.1"
   easy_observable:
     dependency: "direct main"
