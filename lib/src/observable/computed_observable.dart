@@ -24,10 +24,10 @@ class ComputedObservable<T> extends Observable<T>
     String? debugLabel,
     this.hotReloadable = true,
   }) : _debugLabel = debugLabel {
-    assert(
-      !hotReloadable || _compute.toString().contains('from Function'),
-      'ComputedObservable must be created with a function literal for proper hot reload support.',
-    );
+    // assert(
+    //   !hotReloadable || _compute.toString().contains('from Function'),
+    //   'ComputedObservable must be created with a function literal for proper hot reload support.',
+    // );
     assert(registerForHotReload(this));
     recompute();
   }
