@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  context_watch: ^1.0.0
   easy_observable:
     path: ../
   easy_provider:
