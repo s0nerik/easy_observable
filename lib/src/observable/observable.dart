@@ -75,7 +75,7 @@ abstract class Observable<T> implements ValueListenable<T> {
   T get value => _value;
 
   final _notifier = ObserverNotifier();
-  final _changes = StreamController<T>.broadcast(sync: true);
+  final _changes = StreamController<T>.broadcast();
   Stream<T> get stream => _changes.stream;
 
   @override

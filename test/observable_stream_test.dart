@@ -231,6 +231,9 @@ void main() {
       await Future.value();
       dep1.value = 'b';
       await Future.value();
+      // stream notifications happen according to the stream contract
+      expect(streamNotifications[dep1], ['b', 'b']);
+      await Future.value();
       expect(streamNotifications[dep1], ['b', 'b', 'b']);
       expect(
         streamNotifications[dep1computed],
